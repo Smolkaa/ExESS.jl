@@ -1,0 +1,12 @@
+# ExESS -- Changelog
+
+## v1.0.0 (Feb. ??, 2024) - Current
+
+- initial copy of the repository from private GitLab to public GitHub
+  + repository structure update >> new folders under `src`
+  + reworking of `README.md` to fit the new structure
+- changing of distribution integration (**breaking change**)
+  + reduction to `Base.rand` for sampling, `cdf`, and `pdf`
+  + every distribution gets its own type, for example `MBAzimuthDistribution` for the
+    distribution of the azimuth angle of the three-dimensional Maxwell-Boltzmann velocity
+    distribution

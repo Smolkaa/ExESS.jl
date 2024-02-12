@@ -1,0 +1,11 @@
+name = "ExESS.jl"
+uuid = "cd8272e7-a048-4f4d-9590-52850697824a"
+authors = ["Alexander Smolka <a.smolka@tum.de>"]
+version = "1.0.0"
+
+[deps]
+DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
+Interpolations = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
+NearestNeighbors = "b8a86587-4115-5ab1-83bc-aa920d37bbce"
+SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
