@@ -8,14 +8,15 @@ end
 @testset verbose=true "ExESS ===========================" begin
 
 
-    include(joinpath(@__DIR__, "constants.jl"))
-    include(joinpath(@__DIR__, "coordinates.jl"))
-
-
 
     
 #::. base
 @testset verbose=true "BASE --------------------------" begin
+
+    include(joinpath(@__DIR__, "base", "constants.jl"))
+    include(joinpath(@__DIR__, "base", "coordinates.jl"))
+
+
     # include(joinpath(@__DIR__, "tests", "base", "cs.jl"))
     # include(joinpath(@__DIR__, "tests", "base", "distributions.jl"))
     # include(joinpath(@__DIR__, "tests", "base", "utils.jl"))

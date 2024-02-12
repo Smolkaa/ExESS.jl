@@ -1,7 +1,7 @@
 name = "ExESS.jl"
 uuid = "cd8272e7-a048-4f4d-9590-52850697824a"
 authors = ["Alexander Smolka <a.smolka@tum.de>"]
-version = "1.0.0"
+version = "0.1.0"
 
 [deps]
 DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
