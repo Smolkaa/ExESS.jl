@@ -12,11 +12,14 @@ end
 
         include(joinpath(@__DIR__, "base", "constants.jl"))
         include(joinpath(@__DIR__, "base", "coordinates.jl"))
+        # TODO: statistics test?
         include(joinpath(@__DIR__, "base", "utils.jl"))
     end
 
     # drivers
     @testset verbose=true "DRIVERS -------------------------" begin
+        
+        include(joinpath(@__DIR__, "drivers", "maxwellian.jl"))
     end
 
     # grids

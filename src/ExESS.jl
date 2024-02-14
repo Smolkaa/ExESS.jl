@@ -10,6 +10,7 @@ using LinearAlgebra
 using NearestNeighbors: KDTree, knn
 using SpecialFunctions: gamma, gamma_inc, erf
 using StaticArrays: SA
+using Statistics
 
 
 #::. BASE
@@ -20,7 +21,6 @@ include(joinpath(@__DIR__, "base", "utils.jl"))
 
 #::. DRIVERS
 include(joinpath(@__DIR__, "drivers", "maxwellian.jl"))
-include(joinpath(@__DIR__, "drivers", "maxwellian_flux.jl"))
 # include(joinpath(@__DIR__, "drivers", "thermal_sorption.jl"))
 # include(joinpath(@__DIR__, "drivers", "solar_wind.jl"))
 

@@ -356,6 +356,21 @@ speed(v::Union{Tuple, AbstractVector, LocalCartesianVelocity, GlobalCartesianVel
 speed(S::Type{<:AbstractFloat}, args...) = S(speed(args...))
 
 
+"""
+    [1] zenith([S::Type{<:Real}], v::Tuple)
+    [2] zenith([S::Type{<:Real}], v::AbstractVector)
+    [3] zenith([S::Type{<:Real}], v::AbstractCartesianCoordinates)
+
+Calculate the zenith angle (in [rad]) of the the cartesian vector `c`.
+
+**Notes**
+- the zenith angle is the same-sign `pi/2`-inversion of the elevation angle
+"""
+zenith(v::Union{Tuple, AbstractVector}) = atan(sqrt(v[1]^2 + v[2]^2) / v[3])
+zenith(v::AbstractCartesianCoordinates) = atan(sqrt(v.x^2 + v.y^2) / v.z)
+zenith(S::Type{<:AbstractFloat}, args...) = S(zenith(args...))
+
+
 
 #::. extensions
 Base.:+(a::AbstractCoordinate) = a
@@ -436,4 +451,4 @@ export
     LocalCartesianVelocity, 
     GlobalSphericalVelocity,
 
-    azimuth, elevation, speed
+    azimuth, elevation, speed, zenith
