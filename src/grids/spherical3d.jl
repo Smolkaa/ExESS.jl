@@ -2,7 +2,7 @@
 abstract type AbstractSpherical3DGrid <: AbstractSphericalGrid end
 
 
-#::. functions
+#::. FUNCTIONS
 """
     [1] struct Spherical3DGrid{T<:AbstractFloat} <: AbstractSpherical3DGrid
     [2] Spherical3DGrid([T::Type{<:AbstractFloat}, ] r0::Real, h::AbstractVector, N_theta::Integer, N_phi::Integer)
@@ -461,7 +461,7 @@ Base.show(io::IO, ::MIME"text/plain", grid::Spherical3DGrid_Reduced) =
             "            max: $(max(grid.volumes...))\n")
 
 
-#::. exports
+#::. EXPORTS
 export 
     Spherical3DGrid,
     Spherical3DGrid_EqSim,

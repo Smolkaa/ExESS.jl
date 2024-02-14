@@ -1,4 +1,4 @@
-#::. structs
+#::. STRUCTS
 abstract type AbstractMBDistribution end
 abstract type AbstractMBAzimuthDistribution{S<:AbstractFloat} <: AbstractMBDistribution end
 abstract type AbstractMBElevationDistribution{S<:AbstractFloat} <: AbstractMBDistribution end
@@ -103,7 +103,7 @@ MBFluxVelocityDistribution(T::Integer, m::Integer) = MBFluxVelocityDistribution(
 
 
 
-#::. functions
+#::. FUNCTIONS
 """
     [1] cdf([S::Type{<:AbstractFloat}], ad::AbstractMBAzimuthDistribution, theta1::Real, 
             [theta2::Real])
@@ -290,6 +290,7 @@ pdf(S::Type{<:AbstractFloat}, vd::AbstractMBVelocityDistribution, args...) = S(p
 
 
 #::. extensions
+# TODO: finish docstrings
 """
 # ExESS.jl -- `Base.rand` Extension
 """
@@ -347,10 +348,7 @@ function Base.rand(mbfvd::MBFluxVelocityDistribution{S}) where {S<:AbstractFloat
 end
 
 
-
-
-
-#::. exports
+#::. EXPORTS
 export 
     MBAzimuthDistribution, 
     MBElevationDistribution, 

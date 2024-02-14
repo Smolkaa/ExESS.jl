@@ -15,10 +15,14 @@ using StaticArrays: SA
 #::. BASE
 include(joinpath(@__DIR__, "base", "constants.jl"))
 include(joinpath(@__DIR__, "base", "coordinates.jl"))
+include(joinpath(@__DIR__, "base", "statistics.jl"))
 include(joinpath(@__DIR__, "base", "utils.jl"))
 
 #::. DRIVERS
-include(joinpath(@__DIR__, "drivers", "thermal_sorption.jl"))
+include(joinpath(@__DIR__, "drivers", "maxwellian.jl"))
+include(joinpath(@__DIR__, "drivers", "maxwellian_flux.jl"))
+# include(joinpath(@__DIR__, "drivers", "thermal_sorption.jl"))
+# include(joinpath(@__DIR__, "drivers", "solar_wind.jl"))
 
 
 #::. GRIDS

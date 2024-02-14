@@ -2,7 +2,7 @@
 abstract type AbstractSpherical2DGrid <: AbstractSphericalGrid end
 
 
-#::. functions
+#::. FUNCTIONS
 """
     [1] struct Spherical2DGrid{T<:AbstractFloat} <: AbstractSpherical2DGrid end
     [2] Spherical2DGrid([T::Type,] r::Real, N_theta::Int64, N_phi::Int64)
@@ -262,7 +262,7 @@ Base.show(io::IO, ::MIME"text/plain", grid::Spherical2DGrid_Reduced_EqSim) =
             "            max: $(max(grid.areas...))\n") 
 
             
-#::. exports
+#::. EXPORTS
 export 
     Spherical2DGrid,
     Spherical2DGrid_EqSim, 

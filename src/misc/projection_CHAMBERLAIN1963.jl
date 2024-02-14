@@ -1,4 +1,4 @@
-#::. functions
+#::. FUNCTIONS
 """
     [1] projection_CHAMBERLAIN1963(n1::Real, r1::Real, r2::Real, T::Real, m::Real; M::Real=LUNAR_MASS)
 
@@ -37,5 +37,5 @@ end
 
 
 
-#::. exports
+#::. EXPORTS
 export projection_CHAMBERLAIN1963

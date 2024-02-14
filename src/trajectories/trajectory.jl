@@ -1,4 +1,4 @@
-#::. functions
+#::. FUNCTIONS
 """
     [1] trajectory(x0::AbstractVector, v0::AbstractVector, ddx::Function; kwargs...)
     [2] trajectory(x0::AbstractPosition, v0::AbstractVelocity, ddx::Function; kwargs...)
@@ -136,5 +136,5 @@ function GlobalCartesianVelocity(sol::ODESolution, t::AbstractVector)
 end
 
 
-#::. exports
+#::. EXPORTS
 export trajectory, ddx_gravity

@@ -6,7 +6,8 @@
   + repository structure update >> new folders under `src`
   + reworking of `README.md` to fit the new structure
 - changing of distribution integration (**breaking change**)
-  + reduction to `Base.rand` for sampling, `cdf`, and `pdf`
+  + main statistical functionality in new `\base` script: `statistics.jl`
+  + individual distributions now have their own script, e.g. `maxwellian.jl`
   + every distribution gets its own type, for example `MBAzimuthDistribution` for the
     distribution of the azimuth angle of the three-dimensional Maxwell-Boltzmann velocity
     distribution

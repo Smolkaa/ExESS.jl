@@ -5,41 +5,35 @@ if !isdefined(Main, :ExESS)
 end
 
 #::. begin ExESS package test
-@testset verbose=true "ExESS ===========================" begin
+@testset verbose=true "ExESS =============================" begin
+        
+    # base
+    @testset verbose=true "BASE ----------------------------" begin
 
+        include(joinpath(@__DIR__, "base", "constants.jl"))
+        include(joinpath(@__DIR__, "base", "coordinates.jl"))
+        include(joinpath(@__DIR__, "base", "utils.jl"))
+    end
 
+    # drivers
+    @testset verbose=true "DRIVERS -------------------------" begin
+    end
 
-    
-#::. base
-@testset verbose=true "BASE --------------------------" begin
+    # grids
+    @testset verbose=true "GRIDS ---------------------------" begin
+    end
 
-    include(joinpath(@__DIR__, "base", "constants.jl"))
-    include(joinpath(@__DIR__, "base", "coordinates.jl"))
+    # misc
+    @testset verbose=true "MISC ----------------------------" begin
+    end
 
+    # moon
+    @testset verbose=true "MOON ----------------------------" begin
+    end
 
-    # include(joinpath(@__DIR__, "tests", "base", "cs.jl"))
-    # include(joinpath(@__DIR__, "tests", "base", "distributions.jl"))
-    # include(joinpath(@__DIR__, "tests", "base", "utils.jl"))
-end
-
-#::. grids
-@testset verbose=true "GRIDS -------------------------" begin
-    # include(joinpath(@__DIR__, "tests", "grids", "global_structured_2d_grids.jl"))
-    # include(joinpath(@__DIR__, "tests", "grids", "global_structured_3d_grids.jl"))
-    # include(joinpath(@__DIR__, "tests", "grids", "local_structured_3d_grids.jl"))
-end
-
-#::. exospheres
-@testset verbose=true "EXOSPHERES --------------------" begin
-    # include(joinpath(@__DIR__, "tests", "exospheres", "landing_position.jl"))
-    # include(joinpath(@__DIR__, "tests", "exospheres", "trajectory.jl"))
-end
-
-#::. surfaces
-@testset verbose=true "SURFACES ----------------------" begin
-    # include(joinpath(@__DIR__, "tests", "surfaces", "temperatures.jl"))
-
-end
+    # trajectories
+    @testset verbose=true "TRAJECTORIES --------------------" begin
+    end
 
 end
 

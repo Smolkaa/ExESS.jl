@@ -1,4 +1,4 @@
-#::. functions
+#::. FUNCTIONS
 """
     [1] scale_height(T, m::Real; R::Real=LUNAR_RADIUS, M::Real=LUNAR_MASS)
 
@@ -13,5 +13,5 @@ function scale_height(T::Real, m::Real; R::Real=LUNAR_RADIUS, M::Real=LUNAR_MASS
 end
 
 
-#::. exports
+#::. EXPORTS
 export scale_height

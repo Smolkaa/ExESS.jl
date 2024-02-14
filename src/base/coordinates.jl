@@ -1,4 +1,4 @@
-#::. structs
+#::. STRUCTS
 abstract type AbstractCoordinate end
 abstract type AbstractPosition{T<:AbstractFloat} <: AbstractCoordinate end
 abstract type AbstractVelocity{T<:AbstractFloat} <: AbstractCoordinate end
@@ -98,7 +98,7 @@ const AbstractCartesianCoordinates = Union{
 const AbstractSphericalCoordinates = Union{GlobalSphericalPosition, GlobalSphericalVelocity}
 
 
-#::. functions
+#::. FUNCTIONS
 """
     [1] GlobalCartesianPosition(x::Real, y::Real, z::Real)
     [2] GlobalCartesianPosition(X::Tuple)
@@ -350,7 +350,7 @@ elevation(S::Type{<:AbstractFloat}, args...) = S(elevation(args...))
     [3] speed([S::Type], v::LocalCartesianVelocity)
     [4] speed([S::Type], v::GobalCartesianVelocity)
 
-Calculate the speed (in [m s-1]) of the velocity vector `v` (in [m s-1]).
+Calculate the speed (in [m s-1]) of the cartesian velocity vector `v` (in [m s-1]).
 """
 speed(v::Union{Tuple, AbstractVector, LocalCartesianVelocity, GlobalCartesianVelocity}) = norm(v)
 speed(S::Type{<:AbstractFloat}, args...) = S(speed(args...))
@@ -427,7 +427,7 @@ LinearAlgebra.norm(x::GlobalSphericalPosition) = x.r
 LinearAlgebra.dot(a::T, b::S) where {T<:AbstractCoordinate, S<:AbstractCoordinate} = a * b
 
 
-#::. exports
+#::. EXPORTS
 export 
     GlobalCartesianPosition, 
     LocalCartesianPosition, 

@@ -5,7 +5,7 @@ abstract type AbstractCartesianGrid <: AbstractGrid end
 abstract type AbstractSphericalGrid <: AbstractGrid end
 
 
-#::. functions
+#::. FUNCTIONS
 (grid::AbstractGrid)(idx::Integer) = grid.coords[idx]
 
 """
@@ -61,5 +61,5 @@ volumes(T::Type, grid::AbstractGrid) = T.(volumes(grid))
 volumes(grid::AbstractGrid) = grid.volumes
 
 
-#::. exports
+#::. EXPORTS
 export areas, coords, coord2idx, surfacecoords, volumes

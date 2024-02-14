@@ -1,4 +1,4 @@
-#::. functions
+#::. FUNCTIONS
 """
     [1] lunar_surface_temperatures_BUTLER1997(theta::Real, phi::Real)
     [2] lunar_surface_temperatures_BUTLER1997(thetas::AbstractVector, phis::AbstractVector; matrix=true)
@@ -245,7 +245,7 @@ function lunar_surface_temperatures_HURLEY2015(grid::AbstractGrid)
 end
 
 
-#::. exports
+#::. EXPORTS
 export 
     lunar_surface_temperatures_diviner, 
     lunar_surface_temperatures_diviner_avg, 

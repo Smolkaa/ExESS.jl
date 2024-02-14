@@ -1,4 +1,4 @@
-@testset "constants.jl" begin
+@testset verbose=true "constants.jl .................." begin
     @test isdefined(ExESS, :AVOGADRO_CONSTANT)
     @test isdefined(ExESS, :BOLTZMANN_CONSTANT)
     @test isdefined(ExESS, :GRAVITATIONAL_CONSTANT)

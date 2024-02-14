@@ -2,7 +2,7 @@
 abstract type AbstractCartesian3DGrid <: AbstractCartesianGrid end
 
 
-#::. functions
+#::. FUNCTIONS
 """
     [1] struct Cartesian3DGrid{T<:AbstractFloat} <: AbstractCartesian3DGrid
     [2] Cartesian3DGrid([T::Type,] xrange::Tuple, yrange::Tuple, zrange::Tuple, N_x::Int64, N_y::Int64, N_z::Int64)
@@ -244,7 +244,7 @@ Base.show(io::IO, ::MIME"text/plain", grid::Cartesian3DGrid_Exponential) =
             " c:       $(grid.c)\n")
 
 
-#::. exports
+#::. EXPORTS
 export 
     Cartesian3DGrid, 
     Cartesian3DGrid_Exponential

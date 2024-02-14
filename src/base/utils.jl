@@ -1,4 +1,4 @@
-#::. functions
+#::. FUNCTIONS
 """
     [1] amu2kg(amu::Real)
 
@@ -72,5 +72,5 @@ Base.promote_rule(::Type{Vector{T}}, ::Type{Vector{BigInt}}) where {T<:Integer} 
 Base.promote_rule(::Type{Vector{T}}, ::Type{Vector{BigInt}}) where {T<:Real} = Vector{BigFloat}
 
 
-#::. exports
+#::. EXPORTS
 export amu2kg, eV2J, J2eV, limit_acos, lng2LT, LT2lng, sgn

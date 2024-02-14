@@ -1,4 +1,4 @@
-#::. functions
+#::. FUNCTIONS
 """
     [1] solar_angle(theta::Real, phi::Real)
     [2] solar_angle(xs::GlobalSphericalPosition)
@@ -14,6 +14,6 @@ solar_angle(x::AbstractPosition) = solar_angle(GlobalSphericalPosition(x))
 solar_angle(grid::AbstractGrid) = [solar_angle(c.theta, c.phi) for c in grid.coords]
 
 
-#::. exports
+#::. EXPORTS
 export solar_angle
 

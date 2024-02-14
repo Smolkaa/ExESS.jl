@@ -1,4 +1,4 @@
-#::. functions
+#::. FUNCTIONS
 """
     [1] escape_velocity(r::Real, m::Real)
 
@@ -9,5 +9,5 @@ escape_velocity(r::Real, m::Real) = escape_velocity(promote(r, m)...)
 escape_velocity(r::Integer, m::Integer) = escape_velocity(promote(r, m, 1.0)[1:2]...)
 
 
-#::. exports
+#::. EXPORTS
 export escape_velocity

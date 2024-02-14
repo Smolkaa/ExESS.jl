@@ -2,7 +2,7 @@
 abstract type AbstractSpherical2DGrid_HEALPix <: AbstractSphericalGrid end
 
 
-#::. functions
+#::. FUNCTIONS
 """
     [1] struct Spherical2DGrid_HEALPix{T<:AbstractFloat} <: AbstractSpherical2DGrid_HEALPix
     [2] Spherical2DGrid_HEALPix([T::Type,] r::Real, k::Int64)
@@ -80,7 +80,7 @@ end
 areas(grid::Spherical2DGrid_HEALPix) = length(grid) .* grid.area
 
 function coord2idx(grid::Spherical2DGrid_HEALPix, theta::Real, phi::Real)
-    x, y, z = vec(GlobalCartesianPosition(GlobalSphericalPosition(1.0, theta, phi)))
+    x, y, z = _get(GlobalCartesianPosition(GlobalSphericalPosition(1.0, theta, phi)))
     idxs, _ = knn(grid.tree, [x, y, z], 1, true)
     return idxs[1]
 end
@@ -101,5 +101,5 @@ Base.show(io::IO, ::MIME"text/plain", grid::AbstractSpherical2DGrid_HEALPix) =
             " area:    $(grid.area)")
 
 
-#::. exports
+#::. EXPORTS
 export Spherical2DGrid_HEALPix
