@@ -13,7 +13,8 @@ equation (14) in Chamberlain (1963).
 **Rerences**
 
 - Chamberlain, 1963, "Planetary coronae and atmospheric evaporation"
-- Cook et al. 2013, "New upper limits on numerous atmospheric species in the native lunar atmosphere"
+- Cook et al. 2013, "New upper limits on numerous atmospheric species in the native lunar
+  atmosphere"
 """
 function projection_CHAMBERLAIN1963(n1::Real, r1::Real, r2::Real, T::Real, m::Real; M::Real=LUNAR_MASS)
     pot_energy_1 = GRAVITATIONAL_CONSTANT * M * m / (BOLTZMANN_CONSTANT * T * r1)

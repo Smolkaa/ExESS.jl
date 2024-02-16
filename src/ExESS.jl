@@ -21,7 +21,7 @@ include(joinpath(@__DIR__, "base", "utils.jl"))
 
 #::. DRIVERS
 include(joinpath(@__DIR__, "drivers", "maxwellian.jl"))
-# include(joinpath(@__DIR__, "drivers", "thermal_sorption.jl"))
+include(joinpath(@__DIR__, "drivers", "thermal_sorption.jl"))
 # include(joinpath(@__DIR__, "drivers", "solar_wind.jl"))
 
 
@@ -41,7 +41,8 @@ include(joinpath(@__DIR__, "trajectories", "scale_height.jl"))
 
 
 #::. MOON
-include(joinpath(@__DIR__, "moon", "lunar_surface_temperatures.jl"))
+# include(joinpath(@__DIR__, "moon", "lunar_surface_temperatures.jl"))
+include(joinpath(@__DIR__, "moon", "lunar_surface_temperatures_HURLEY2015.jl"))
 
 
 #::. MISC

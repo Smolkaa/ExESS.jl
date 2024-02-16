@@ -1,4 +1,4 @@
-#::. constants
+#::. CONSTANTS
 const AVOGADRO_CONSTANT         = 6.02214086e23     # [mol-1]
 const BOLTZMANN_CONSTANT        = 1.38065e-23       # [J K-1]
 const ELEMENTARY_CHARGE         = 1.602176634e-19   # [C]

@@ -23,6 +23,12 @@ Statistics.mean(S::Type{<:AbstractFloat}, d::AbstractDistribution) = S(mean(d))
 
 
 """
+    [1] mode([S::Type{<:AbstractFloat}], d::AbstractDistribution)
+"""
+mode(S::Type{<:AbstractFloat}, d::AbstractDistribution) = S(mode(d))
+
+
+"""
     [1] pdf([S::Type{<:AbstractFloat}], d::AbstractDistribution, x)
 """
 pdf(S::Type{<:AbstractFloat}, d::AbstractDistribution, args...) = S(pdf(d, args...))

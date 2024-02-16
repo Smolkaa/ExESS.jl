@@ -1,4 +1,6 @@
+############################################################################################
 #::. FUNCTIONS
+############################################################################################
 """
     [1] lunar_surface_temperatures_BUTLER1997(theta::Real, phi::Real)
     [2] lunar_surface_temperatures_BUTLER1997(thetas::AbstractVector, phis::AbstractVector; matrix=true)
@@ -212,8 +214,13 @@ lunar_surface_temperatures_diviner_avg(grid::AbstractGrid) = lunar_surface_tempe
     [4] lunar_surface_temperatures_HURLEY2015(XS::Vector{GlobalSphericalPosition})
     [5] lunar_surface_temperatures_HURLEY2015(grid::Abstract2DGrid)
 
-Calcuphies the lunar surface temperatures based on the analytic formula given in Hurley et
+Calculates the lunar surface temperatures based on the analytic formula given in Hurley et
 al. 2015. All angular arguments are in radians.
+
+**Reference(s)**
+
+- Hurley et al. (2015), "An analytic function of lunar surface temperature for exospheric
+  modeling", DOI: 10.1016/j.icarus.2014.08.043
 """
 function lunar_surface_temperatures_HURLEY2015(theta::S, phi::S) where {S<:AbstractFloat}
     @assert -pi <= theta <= pi "Longitude must be in [-pi, pi]!"
@@ -245,7 +252,9 @@ function lunar_surface_temperatures_HURLEY2015(grid::AbstractGrid)
 end
 
 
+############################################################################################
 #::. EXPORTS
+############################################################################################
 export 
     lunar_surface_temperatures_diviner, 
     lunar_surface_temperatures_diviner_avg, 
