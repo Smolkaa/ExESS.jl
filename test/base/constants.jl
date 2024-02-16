@@ -16,11 +16,6 @@
     @test isdefined(ExESS, :AMU_OH)
     @test isdefined(ExESS, :AMU_H2O)
 
-    @test isdefined(ExESS, :LUNAR_RADIUS)
-    @test isdefined(ExESS, :LUNAR_MASS)
-    @test isdefined(ExESS, :LUNAR_DAY)
-    @test isdefined(ExESS, :LUNAR_g0)
-
     @test isdefined(ExESS, :MERCURY_MASS)
     @test isdefined(ExESS, :MERCURY_RADIUS)
 

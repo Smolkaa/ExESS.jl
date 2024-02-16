@@ -32,6 +32,9 @@ end
 
     # moon
     @testset verbose=true "MOON ----------------------------" begin
+
+        include(joinpath(@__DIR__, "moon", "constants.jl"))
+        
     end
 
     # trajectories

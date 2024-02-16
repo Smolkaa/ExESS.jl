@@ -41,7 +41,9 @@ include(joinpath(@__DIR__, "trajectories", "scale_height.jl"))
 
 
 #::. MOON
-# include(joinpath(@__DIR__, "moon", "lunar_surface_temperatures.jl"))
+include(joinpath(@__DIR__, "moon", "constants.jl"))
+include(joinpath(@__DIR__, "moon", "lunar_surface_temperatures_DIVINER.jl"))
+include(joinpath(@__DIR__, "moon", "lunar_surface_temperatures_BUTLER1997.jl"))
 include(joinpath(@__DIR__, "moon", "lunar_surface_temperatures_HURLEY2015.jl"))
 
 

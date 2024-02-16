@@ -19,12 +19,6 @@ const AMU_OH = AMU_H + AMU_O        # [u]
 const AMU_H2O = 2 * AMU_H + AMU_O   # [u]
 
 
-const LUNAR_MASS     = 7.24767309e22   # [kg]
-const LUNAR_RADIUS   = 1737400e0       # [m]
-const LUNAR_DAY      = 3600*24*295e-1  # [s]
-const LUNAR_g0       = GRAVITATIONAL_CONSTANT * LUNAR_MASS / LUNAR_RADIUS^2 # [m s-2]
-
-
 const MERCURY_MASS   = 3.3010e23 # [kg]
 const MERCURY_RADIUS = 2439.7e3 # [m]
 
@@ -40,8 +34,6 @@ export
 
     AMU_H, AMU_He, AMU_O, AMU_Ne, AMU_Ar, AMU_H2, AMU_OH, AMU_H2O,
 
-    LUNAR_DAY, LUNAR_MASS, LUNAR_RADIUS, LUNAR_g0,
-
     MERCURY_MASS, MERCURY_RADIUS,
 
     CERES_MASS, CERES_RADIUS
@@ -50,22 +42,6 @@ export
 
 
 #::. docstrings for constants
-"""
-Mass of the Moon in kg.
-
-https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html
-"""
-LUNAR_MASS
-
-"""
-Radius of the Moon in m (volumetric mean).
-
-https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html
-"""
-LUNAR_RADIUS
-
-
-
 """
 Mass of Mercury in kg. 
 
