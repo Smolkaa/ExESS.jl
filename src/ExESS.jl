@@ -22,7 +22,7 @@ include(joinpath(@__DIR__, "base", "utils.jl"))
 #::. DRIVERS
 include(joinpath(@__DIR__, "drivers", "maxwellian.jl"))
 include(joinpath(@__DIR__, "drivers", "thermal_sorption.jl"))
-# include(joinpath(@__DIR__, "drivers", "solar_wind.jl"))
+include(joinpath(@__DIR__, "drivers", "solar_wind.jl"))
 
 
 #::. GRIDS
@@ -39,13 +39,17 @@ include(joinpath(@__DIR__, "trajectories", "trajectory.jl"))
 include(joinpath(@__DIR__, "trajectories", "escape_velocity.jl"))
 include(joinpath(@__DIR__, "trajectories", "scale_height.jl"))
 
+#::. CERES
+include(joinpath(@__DIR__, "ceres", "constants.jl"))
+
+#::. MERCURY
+include(joinpath(@__DIR__, "mercury", "constants.jl"))
 
 #::. MOON
 include(joinpath(@__DIR__, "moon", "constants.jl"))
 include(joinpath(@__DIR__, "moon", "lunar_surface_temperatures_DIVINER.jl"))
 include(joinpath(@__DIR__, "moon", "lunar_surface_temperatures_BUTLER1997.jl"))
 include(joinpath(@__DIR__, "moon", "lunar_surface_temperatures_HURLEY2015.jl"))
-
 
 #::. MISC
 include(joinpath(@__DIR__, "misc", "projection_CHAMBERLAIN1963.jl"))

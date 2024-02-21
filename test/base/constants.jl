@@ -15,10 +15,4 @@
     @test isdefined(ExESS, :AMU_H2)
     @test isdefined(ExESS, :AMU_OH)
     @test isdefined(ExESS, :AMU_H2O)
-
-    @test isdefined(ExESS, :MERCURY_MASS)
-    @test isdefined(ExESS, :MERCURY_RADIUS)
-
-    @test isdefined(ExESS, :CERES_MASS)
-    @test isdefined(ExESS, :CERES_RADIUS)
 end

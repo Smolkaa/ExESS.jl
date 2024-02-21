@@ -89,7 +89,7 @@ function coord2idx(grid::AbstractSpherical2DGrid_HEALPix, r::Real, theta::Real, 
 end
 
 
-#::. extensions
+#::. EXTENSIONS
 Base.length(grid::AbstractSpherical2DGrid_HEALPix) = length(grid.coords)
 Base.size(grid::AbstractSpherical2DGrid_HEALPix) = (length(grid), )
 

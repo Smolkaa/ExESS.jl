@@ -32,6 +32,11 @@ Pkg.add("StaticArrays")
 * all internal functions (not exported) are prefixed with an underscore `_`
 * abstract types are prefixed with `Abstract` and are **not** exported
 
+* rules for changing the version number in `Project.toml`
+  - if the release is breaking, increment MAJOR
+  - if the release adds a new user-visible feature, increment MINOR
+  - otherwise (bug fixes, documentation improvements), increment PATCH
+
 
 ## ToDo's until next Version
 

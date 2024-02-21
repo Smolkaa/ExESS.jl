@@ -211,7 +211,7 @@ volumes(grid::AbstractCartesian3DGrid) = grid.volume .* ones(length(grid))
 volumes(grid::Cartesian3DGrid_Exponential) = repeat(grid.volumes, inner=grid.N_x*grid.N_y)
 
 
-#::. extensions
+#::. EXTENSIONS
 Base.length(grid::AbstractCartesian3DGrid) = grid.N_x * grid.N_y * grid.N_z
 
 Base.size(grid::AbstractCartesian3DGrid) = (grid.N_x, grid.N_y, grid.N_z)

@@ -425,7 +425,7 @@ surfacecoords(grid::Spherical3DGrid_Reduced) = grid.coords[1:sum(grid.N_theta)]
 surfacecoords(grid::Spherical3DGrid_Reduced_EqSim) = grid.coords[1:sum(grid.N_theta)]
 
 
-#::. extensions
+#::. EXTENSIONS
 Base.length(grid::AbstractSpherical3DGrid) = length(grid.coords)
 Base.size(grid::AbstractSpherical3DGrid) = (grid.N_r, grid.N_theta, grid.N_phi)
 

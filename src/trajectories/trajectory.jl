@@ -1,4 +1,6 @@
+############################################################################################
 #::. FUNCTIONS
+############################################################################################
 """
     [1] trajectory(x0::AbstractVector, v0::AbstractVector, ddx::Function; kwargs...)
     [2] trajectory(x0::AbstractPosition, v0::AbstractVelocity, ddx::Function; kwargs...)
@@ -68,7 +70,9 @@ function trajectory(x0::AbstractPosition, v0::AbstractVelocity, args...; kwargs.
 end
 
 
-#::. predefined accelleration functions
+############################################################################################
+#::. UTILITY FUNCTIONS
+############################################################################################
 """
     [1] ddx_gravity(x::NTuple{3}, [args...]; kwargs...)
     [1] ddx_gravity(x::AbstractVector, [args...]; kwargs...)
@@ -101,7 +105,9 @@ end
 ddx_gravity(x, args...; kwargs...) = ddx_gravity(x; kwargs...)
 
 
-#::. extensions
+############################################################################################
+#::. EXTENSIONS
+############################################################################################
 """
     [1] GlobalCartesianPosition(sol::ODESolution, t::Real)
     [2] GlobalCartesianPosition(sol::ODESolution, t::AbstractVector)
@@ -136,5 +142,7 @@ function GlobalCartesianVelocity(sol::ODESolution, t::AbstractVector)
 end
 
 
+############################################################################################
 #::. EXPORTS
+############################################################################################
 export trajectory, ddx_gravity

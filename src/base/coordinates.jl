@@ -366,13 +366,13 @@ Calculate the zenith angle (in [rad]) of the the cartesian vector `c`.
 **Notes**
 - the zenith angle is the same-sign `pi/2`-inversion of the elevation angle
 """
-zenith(v::Union{Tuple, AbstractVector}) = atan(sqrt(v[1]^2 + v[2]^2) / v[3])
-zenith(v::AbstractCartesianCoordinates) = atan(sqrt(v.x^2 + v.y^2) / v.z)
+zenith(c::Union{Tuple, AbstractVector}) = atan(sqrt(c[1]^2 + c[2]^2) / c[3])
+zenith(c::AbstractCartesianCoordinates) = atan(sqrt(c.x^2 + c.y^2) / c.z)
 zenith(S::Type{<:AbstractFloat}, args...) = S(zenith(args...))
 
 
 
-#::. extensions
+#::. EXTENSIONS
 Base.:+(a::AbstractCoordinate) = a
 Base.:+(a::T, b::Tuple) where {T<:AbstractCoordinate} = T(_get(a) .+ b ...)
 Base.:+(a::T, b::AbstractVector) where {T<:AbstractCoordinate} = T(vec(a) .+ b ...)

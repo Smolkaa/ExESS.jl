@@ -30,13 +30,20 @@ end
     @testset verbose=true "MISC ----------------------------" begin
     end
 
-    # moon
-    @testset verbose=true "MOON ----------------------------" begin
-
-        include(joinpath(@__DIR__, "moon", "constants.jl"))
-        
+    # ceres
+    @testset verbose=true "CERES ---------------------------" begin
+        include(joinpath(@__DIR__, "ceres", "constants.jl"))
     end
 
+    # mercury
+    @testset verbose=true "MERCURY -------------------------" begin
+        include(joinpath(@__DIR__, "mercury", "constants.jl"))
+    end
+
+    # moon
+    @testset verbose=true "MOON ----------------------------" begin
+        include(joinpath(@__DIR__, "moon", "constants.jl"))   
+    end
     # trajectories
     @testset verbose=true "TRAJECTORIES --------------------" begin
     end

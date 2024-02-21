@@ -65,7 +65,7 @@ end
 volumes(grid::AbstractSpherical2DGrid_Spiral) = zeros(typeof(grid.r), length(grid.coords))
 
 
-#::. extensions
+#::. EXTENSIONS
 Base.length(grid::AbstractSpherical2DGrid_Spiral) = grid.N
 Base.size(grid::AbstractSpherical2DGrid_Spiral) = (grid.N, )
 

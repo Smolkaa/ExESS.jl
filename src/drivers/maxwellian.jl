@@ -134,40 +134,55 @@ MBFluxVelocityDistribution(T::Integer, m::Integer) = MBFluxVelocityDistribution(
 
 ############################################################################################
 #::. FUNCTIONS
+
+# internal union for simplified type handling
+_TVLCV = Union{Tuple{Real, Real, Real}, AbstractVector{<:Real}, LocalCartesianVelocity}
 ############################################################################################
-cdf(::MBAzimuthDistribution{S}, l, u) where {S<:AbstractFloat} = S((u - l)/(2*pi))
-cdf(d::MBAzimuthDistribution, u) = cdf(d, -pi, u)
-cdf(::MBFluxAzimuthDistribution{S}, l, u) where {S<:AbstractFloat} = S((u - l)/(2*pi))
-cdf(d::MBFluxAzimuthDistribution, u) = cdf(d, -pi, u)
+function cdf(::MBAzimuthDistribution{S}, l::Real, u::Real) where {S<:AbstractFloat} 
+    return S((u - l)/(2*pi))
+end
+cdf(d::MBAzimuthDistribution, u::Real) = cdf(d, -pi, u)
 
-cdf(::MBElevationDistribution{S}, l, u) where {S<:AbstractFloat} = S(0.5 * (sin(u)-sin(l)))
-cdf(d::MBElevationDistribution, u) = cdf(d, -pi/2, u)
-cdf(::MBFluxElevationDistribution{S}, l, u) where {S<:AbstractFloat} = S(0.5 * (cos(2*l) - cos(2*u)))
-cdf(d::MBFluxElevationDistribution, u) = cdf(d, 0, u)
+function cdf(::MBFluxAzimuthDistribution{S}, l::Real, u::Real) where {S<:AbstractFloat} 
+    return S((u - l)/(2*pi))
+end
+cdf(d::MBFluxAzimuthDistribution, u::Real) = cdf(d, -pi, u)
 
-function cdf(d::MBSpeedDistribution{S}, l, u) where {S<:AbstractFloat}
+function cdf(::MBElevationDistribution{S}, l::Real, u::Real) where {S<:AbstractFloat} 
+    return S(0.5 * (sin(u)-sin(l)))
+end
+cdf(d::MBElevationDistribution, u::Real) = cdf(d, -pi/2, u)
+
+function cdf(::MBFluxElevationDistribution{S}, l::Real, u::Real) where {S<:AbstractFloat} 
+    return S(0.5 * (cos(2*l) - cos(2*u)))
+end
+cdf(d::MBFluxElevationDistribution, u::Real) = cdf(d, 0, u)
+
+function cdf(d::MBSpeedDistribution{S}, l::Real, u::Real) where {S<:AbstractFloat}
     if d.T*d.m == 0; return zero(S); end
     a = d.m / (2 * BOLTZMANN_CONSTANT * d.T)
     c1 = (sqrt(pi) * erf(sqrt(a) * l)) / (4 * a^(3/2)) - (l * exp(-a*l^2)) / (2*a)
     c2 = (sqrt(pi) * erf(sqrt(a) * u)) / (4 * a^(3/2)) - (u * exp(-a*u^2)) / (2*a)
     return S(4 * pi * (a/pi)^(3/2) * (c2 - c1))
 end
-cdf(d::MBSpeedDistribution, u) = cdf(d, 0, u)
-function cdf(d::MBFluxSpeedDistribution{S}, l, u) where {S<:AbstractFloat}
+cdf(d::MBSpeedDistribution, u::Real) = cdf(d, 0, u)
+function cdf(d::MBFluxSpeedDistribution{S}, l::Real, u::Real) where {S<:AbstractFloat}
     if d.T*d.m == 0; return zero(S); end
     a = d.m / (2 * BOLTZMANN_CONSTANT * d.T)
     c1 = (exp(-a*l^2) * (a*l^2 + 1)) / (2 * a^2)
     c2 = (exp(-a*u^2) * (a*u^2 + 1)) / (2 * a^2)
     return S(- 2 * a^2 * (c2 - c1))
 end
-cdf(d::MBFluxSpeedDistribution, u) = cdf(d, 0, u)
+cdf(d::MBFluxSpeedDistribution, u::Real) = cdf(d, 0, u)
 
-function cdf(d::MBVelocityDistribution{S}, l, u) where {S<:AbstractFloat}
+
+
+function cdf(d::MBVelocityDistribution{S}, l::_TVLCV, u::_TVLCV) where {S<:AbstractFloat}
     return S(cdf(MBSpeedDistribution(d.T, d.m), speed(l), speed(u)) *
              cdf(MBElevationDistribution(d.T, d.m), elevation(l), elevation(u)) *
              cdf(MBAzimuthDistribution(d.T, d.m), azimuth(l), azimuth(u)))
 end
-function cdf(d::MBFluxVelocityDistribution{S}, l, u) where {S<:AbstractFloat}
+function cdf(d::MBFluxVelocityDistribution{S}, l::_TVLCV, u::_TVLCV) where {S<:AbstractFloat}
     return S(cdf(MBFluxSpeedDistribution(d.T, d.m), speed(l), speed(u)) *
              cdf(MBFluxElevationDistribution(d.T, d.m), elevation(l), elevation(u)) *
              cdf(MBFluxAzimuthDistribution(d.T, d.m), azimuth(l), azimuth(u)))
@@ -181,6 +196,8 @@ end
 function Statistics.mean(d::MBFluxSpeedDistribution{S}) where {S<:AbstractFloat} 
     return S(sqrt(9 * pi * BOLTZMANN_CONSTANT * d.T / (8 * d.m)))
 end
+# TODO: add mean value calculation for the other distributions
+
 
 
 function mode(d::MBSpeedDistribution{S}) where {S<:AbstractFloat}
@@ -189,31 +206,33 @@ end
 function mode(d::MBFluxSpeedDistribution{S}) where {S<:AbstractFloat}
     return S(sqrt(3 * BOLTZMANN_CONSTANT * d.T / d.m))
 end
+# TODO: add mode value calculation for the other distributions
 
 
-pdf(::MBAzimuthDistribution{S}, x) where {S<:AbstractFloat} = S(1/(2*pi))
-pdf(::MBFluxAzimuthDistribution{S}, x) where {S<:AbstractFloat} = S(1/(2*pi))
+
+pdf(::MBAzimuthDistribution{S}, x::Real) where {S<:AbstractFloat} = S(1/(2*pi))
+pdf(::MBFluxAzimuthDistribution{S}, x::Real) where {S<:AbstractFloat} = S(1/(2*pi))
 
 pdf(::MBElevationDistribution{S}, x) where {S<:AbstractFloat} = S(0.5 * cos(x))
-pdf(::MBFluxElevationDistribution{S}, x) where {S<:AbstractFloat} = S(2 * sin(x) * cos(x))
+pdf(::MBFluxElevationDistribution{S}, x::Real) where {S<:AbstractFloat} = S(2*sin(x)*cos(x))
 
-function pdf(d::MBSpeedDistribution{S}, x) where {S<:AbstractFloat}
+function pdf(d::MBSpeedDistribution{S}, x::Real) where {S<:AbstractFloat}
     if d.T == 0; return zero(S); end
     a = d.m / (2 * BOLTZMANN_CONSTANT * d.T)
     return S((a/pi)^(3//2) * 4*x^2*pi * exp(- a*x^2))
 end
-function pdf(d::MBFluxSpeedDistribution{S}, x) where {S<:AbstractFloat}
+function pdf(d::MBFluxSpeedDistribution{S}, x::Real) where {S<:AbstractFloat}
     if d.T == 0; return zero(S); end
     a = d.m / (2 * BOLTZMANN_CONSTANT * d.T)
     return S(a^2 * x^3 * exp(- a*x^2))
 end
 
-function pdf(d::MBVelocityDistribution{S}, x) where {S<:AbstractFloat}
+function pdf(d::MBVelocityDistribution{S}, x::_TVLCV) where {S<:AbstractFloat}
     return S(pdf(MBSpeedDistribution(d.T, d.m), speed(x)) *
              pdf(MBElevationDistribution(d.T, d.m), elevation(x)) *
              pdf(MBAzimuthDistribution(d.T, d.m), azimuth(x)))
 end
-function pdf(d::MBFluxVelocityDistribution{S}, x) where {S<:AbstractFloat}
+function pdf(d::MBFluxVelocityDistribution{S}, x::_TVLCV) where {S<:AbstractFloat}
     return S(pdf(MBFluxSpeedDistribution(d.T, d.m), speed(x)) *
              pdf(MBFluxElevationDistribution(d.T, d.m), elevation(x)) *
              pdf(MBFluxAzimuthDistribution(d.T, d.m), azimuth(x)))
@@ -225,7 +244,7 @@ Base.rand(::MBAzimuthDistribution{S}) where {S<:AbstractFloat} = S(rand()*2pi - 
 Base.rand(::MBFluxAzimuthDistribution{S}) where {S<:AbstractFloat} = S(rand()*2pi - pi)
 
 Base.rand(::MBElevationDistribution{S}) where {S<:AbstractFloat} = S(asin(2*rand() - 1))
-Base.rand(::MBFluxElevationDistribution{S}) where {S<:AbstractFloat} = S(acos(sqrt(1 - rand())))
+Base.rand(::MBFluxElevationDistribution{S}) where {S<:AbstractFloat} = S(acos(sqrt(1-rand())))
 
 function Base.rand(d::MBSpeedDistribution{S}) where {S<:AbstractFloat}
     return S(norm(rand(MBVelocityDistribution(d.T, d.m))))
@@ -251,6 +270,7 @@ end
 function rms(d::MBFluxSpeedDistribution{S}) where {S<:AbstractFloat}
     return S(sqrt(4 * BOLTZMANN_CONSTANT * d.T / d.m))
 end
+# TODO: add rms value calculation for the other distributions
 
 
 

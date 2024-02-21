@@ -19,56 +19,9 @@ const AMU_OH = AMU_H + AMU_O        # [u]
 const AMU_H2O = 2 * AMU_H + AMU_O   # [u]
 
 
-const MERCURY_MASS   = 3.3010e23 # [kg]
-const MERCURY_RADIUS = 2439.7e3 # [m]
-
-
-const CERES_MASS    = 9.393e20 # [kg]
-const CERES_RADIUS  = 476e3    # [m]
-
-
 #::. EXPORTS
 export 
     AVOGADRO_CONSTANT, BOLTZMANN_CONSTANT, ELEMENTARY_CHARGE, GRAVITATIONAL_CONSTANT, 
     PLANCK_CONSTANT, STEFAN_BOLTZMANN_CONSTANT, UNIVERSAL_GAS_CONSTANT, 
 
-    AMU_H, AMU_He, AMU_O, AMU_Ne, AMU_Ar, AMU_H2, AMU_OH, AMU_H2O,
-
-    MERCURY_MASS, MERCURY_RADIUS,
-
-    CERES_MASS, CERES_RADIUS
-
-
-
-
-#::. docstrings for constants
-"""
-Mass of Mercury in kg. 
-
-https://nssdc.gsfc.nasa.gov/planetary/factsheet/mercuryfact.html
-"""
-MERCURY_MASS
-
-"""
-Radius of Mercury in m (volumetric mean). 
-
-https://nssdc.gsfc.nasa.gov/planetary/factsheet/mercuryfact.html
-"""
-MERCURY_RADIUS
-
-
-
-"""
-Mass of Ceres in kg.
-
-https://nssdc.gsfc.nasa.gov/planetary/factsheet/asteroidfact.html 
-"""
-CERES_MASS
-
-"""
-Radius of Ceres in m.
-
-* https://science.nasa.gov/dwarf-planets/ceres/facts/
-* https://nssdc.gsfc.nasa.gov/planetary/factsheet/asteroidfact.html (965 x 961 x 891 km)
-"""
-CERES_RADIUS
+    AMU_H, AMU_He, AMU_O, AMU_Ne, AMU_Ar, AMU_H2, AMU_OH, AMU_H2O
