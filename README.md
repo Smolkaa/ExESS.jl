@@ -1,6 +1,6 @@
 # ExESS.jl
 
-<img src='res/exess_logo.svg' alt="logo" align="right" width = "20%" height="20%">
+<img style="background-color:rgba(255, 255, 255, .1)" src='res/exess_logo.svg' alt="logo" align="right" width = "20%" height="20%">
 
 **Extraterrestrial Exosphere and Surface Simulations** 
 </br>
