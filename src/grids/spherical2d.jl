@@ -1,8 +1,12 @@
-#::. types
+############################################################################################
+#::. TYPES
+############################################################################################
 abstract type AbstractSpherical2DGrid <: AbstractSphericalGrid end
 
 
+############################################################################################
 #::. FUNCTIONS
+############################################################################################
 """
     [1] struct Spherical2DGrid{T<:AbstractFloat} <: AbstractSpherical2DGrid end
     [2] Spherical2DGrid([T::Type,] r::Real, N_theta::Integer, N_phi::Integer)
@@ -28,7 +32,7 @@ struct Spherical2DGrid{T<:AbstractFloat} <: AbstractSpherical2DGrid
     coords::Vector{GlobalSphericalPosition{T}}
     areas::Vector{T}
 end
-function Spherical2DGrid(T::Type, r::Real, N_theta::Integer, N_phi::Integer)
+function Spherical2DGrid(T::Type{<:AbstractFloat}, r::Real, N_theta::Integer, N_phi::Integer)
     theta = T.(repeat(range(1/N_theta-1, 1-1/N_theta, length=N_theta) * pi, inner=N_phi))
     phi = T.(repeat(range(1/N_phi-1, 1-1/N_phi, length=N_phi) * pi/2, outer=N_theta))
     dtheta, dphi = theta[N_phi+1] - theta[1], phi[2] - phi[1]
@@ -69,7 +73,7 @@ struct Spherical2DGrid_EqSim{T<:AbstractFloat} <: AbstractSpherical2DGrid
     coords::Vector{GlobalSphericalPosition{T}}
     areas::Vector{T}
 end
-function Spherical2DGrid_EqSim(T::Type, r::Real, N_theta::Integer, N_phi::Integer)
+function Spherical2DGrid_EqSim(T::Type{<:AbstractFloat}, r::Real, N_theta::Integer, N_phi::Integer)
     theta = T.(repeat(range(1/N_theta-1, 1-1/N_theta, length=N_theta) * pi, inner=N_phi))
     phi = T.(repeat(range(1/N_phi, 2-1/N_phi, length=N_phi) * pi/4, outer=N_theta))
     dtheta, dphi = theta[N_phi+1] - theta[1], phi[2] - phi[1]
@@ -111,7 +115,7 @@ struct Spherical2DGrid_Reduced{T<:AbstractFloat} <: AbstractSpherical2DGrid
     coords::Vector{GlobalSphericalPosition{T}}
     areas::Vector{T}
 end
-function Spherical2DGrid_Reduced(T::Type, r::Real, N_phi::Integer)
+function Spherical2DGrid_Reduced(T::Type{<:AbstractFloat}, r::Real, N_phi::Integer)
     dtheta_max = T(pi/N_phi)
     phi0 = T.(range(1/N_phi-1, 1-1/N_phi, length=N_phi) * pi/2)
     
@@ -167,7 +171,7 @@ struct Spherical2DGrid_Reduced_EqSim{T<:AbstractFloat} <: AbstractSpherical2DGri
     coords::Vector{GlobalSphericalPosition{T}}
     areas::Vector{T}
 end
-function Spherical2DGrid_Reduced_EqSim(T::Type, r::Real, N_phi::Integer)
+function Spherical2DGrid_Reduced_EqSim(T::Type{<:AbstractFloat}, r::Real, N_phi::Integer)
     dtheta_max = T(pi/2/N_phi)
     phi0 = T.(range(1/N_phi, 2-1/N_phi, length=N_phi) * pi/4)
     
@@ -197,7 +201,9 @@ function Spherical2DGrid_Reduced_EqSim(r::Integer, N_phi::Integer)
 end
 
 
-#::. utility functions
+############################################################################################
+#::. UTILITY FUNCTIONS
+############################################################################################
 function coord2idx(grid::Spherical2DGrid, theta::Real, phi::Real)
     theta = theta == -pi ? pi : theta
     phi = phi == -pi/2 ? -pi/2+eps(Float64) : phi
@@ -233,18 +239,20 @@ function coord2idx(grid::AbstractSpherical2DGrid, r::Real, theta::Real, phi::Rea
 end
 
 
-surfacecoords(grid::Spherical2DGrid) = coords(grid)
-surfacecoords(grid::Spherical2DGrid_EqSim) = coords(grid)
-surfacecoords(grid::Spherical2DGrid_Reduced) = coords(grid)
-surfacecoords(grid::Spherical2DGrid_Reduced_EqSim) = coords(grid)
+surfacecoords(grid::AbstractSpherical2DGrid) = coords(grid)
 
 
 volumes(grid::AbstractSpherical2DGrid) = zeros(typeof(grid.r), length(grid.coords))
 
 
+############################################################################################
 #::. EXTENSIONS
+############################################################################################
 Base.length(grid::AbstractSpherical2DGrid) = length(grid.coords)
+
+
 Base.size(grid::AbstractSpherical2DGrid) = (grid.N_theta, grid.N_phi)
+
 
 Base.show(io::IO, ::MIME"text/plain", grid::AbstractSpherical2DGrid) = 
     print(io, "$(typeof(grid)):\n"*
@@ -281,7 +289,9 @@ Base.show(io::IO, ::MIME"text/plain", grid::Spherical2DGrid_Reduced_EqSim) =
             "            max: $(max(grid.areas...))\n") 
 
             
+############################################################################################
 #::. EXPORTS
+############################################################################################
 export 
     Spherical2DGrid,
     Spherical2DGrid_EqSim, 

@@ -1,11 +1,15 @@
-#::. types & hierarchy
+############################################################################################
+#::. TYPES
+############################################################################################
 abstract type AbstractGrid end
 
 abstract type AbstractCartesianGrid <: AbstractGrid end
 abstract type AbstractSphericalGrid <: AbstractGrid end
 
 
+############################################################################################
 #::. FUNCTIONS
+############################################################################################
 (grid::AbstractGrid)(idx::Integer) = grid.coords[idx]
 
 """
@@ -17,6 +21,7 @@ base area of each grid element.
 areas(T::Type, grid::AbstractGrid) = T.(areas(grid))
 areas(grid::AbstractGrid) = grid.areas
 
+
 """
     [1] coords([T::Type,] grid::AbstractGrid)
 
@@ -24,6 +29,7 @@ Returns the coordinates of each grid element.
 """
 coords(T::Type, grid::AbstractGrid) = T.(coords(grid))
 coords(grid::AbstractGrid) = grid.coords
+
 
 """
     [1] coord2idx(grid::AbstractGrid, coord::AbstractPosition)
@@ -43,13 +49,14 @@ function coord2idx(grid::AbstractSphericalGrid, r::AbstractVector, theta::Abstra
     return [coord2idx(grid, r[i], theta[i], phi[i]) for i in eachindex(r)]
 end
 
+
 """
     [1] surfacecoords([T::Type,] grid::AbstractGrid)
 
 Returns only the coordinates of the surface (i.e. the base) of the discretized geometry.
 """
 surfacecoords(T::Type, grid::AbstractGrid) = T.(surfacecoords(grid))
-surfacecoords(grid::AbstractGrid) = grid.coords
+
 
 """    
     [1] volumes([T::Type,] grid::AbstractGrid)
@@ -61,5 +68,7 @@ volumes(T::Type, grid::AbstractGrid) = T.(volumes(grid))
 volumes(grid::AbstractGrid) = grid.volumes
 
 
+############################################################################################
 #::. EXPORTS
+############################################################################################
 export areas, coords, coord2idx, surfacecoords, volumes

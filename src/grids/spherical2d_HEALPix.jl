@@ -1,8 +1,12 @@
-#::. types
+############################################################################################
+#::. TYPES
+############################################################################################
 abstract type AbstractSpherical2DGrid_HEALPix <: AbstractSphericalGrid end
 
 
+############################################################################################
 #::. FUNCTIONS
+############################################################################################
 """
     [1] struct Spherical2DGrid_HEALPix{T<:AbstractFloat} <: AbstractSpherical2DGrid_HEALPix
     [2] Spherical2DGrid_HEALPix([T::Type,] r::Real, k::Int64)
@@ -12,7 +16,7 @@ a sphere of radius `r`. The spiral is created based on the HEALPix (Hierarchical
 isoLatitude Pixelisation) sequence and the Lambert cylindrical equal area projection. The 
 surface area `area` is a scalar value and assumes a prefectly equal distribution of points. 
 
-| Field    | Type                                 | Description                    |
+| Field    | Type; with `T<:AbstractFloat`        | Description                    |
 |:-------- |:------------------------------------ |:------------------------------ |
 | `r`      | `T`                                  | radius of global body (sphere) |
 | `k`      | `Int64`                              | number of rings                |
@@ -68,16 +72,23 @@ function Spherical2DGrid_HEALPix(T::Type, r::Real, k::Int64)
     x, y, z =  cos.(theta) .* cos.(phi), sin.(theta) .* cos.(phi), sin.(phi)
     tree = KDTree([x'; y'; z'])
 
-    return Spherical2DGrid_HEALPix(T(r), k, GlobalSphericalPosition.(T(r), T.(theta), T.(phi)), T(area), tree)
+    return Spherical2DGrid_HEALPix(T(r), k,
+                                   GlobalSphericalPosition.(T(r), T.(theta), T.(phi)), 
+                                   T(area), tree)
 end
 function Spherical2DGrid_HEALPix(r::Real, k::Int64)
-    if typeof(r) <: Integer; r = Float64(r); end
     return Spherical2DGrid_HEALPix(typeof(r), r, k)
+end
+function Spherical2DGrid_HEALPix(r::Integer, k::Int64)
+    return Spherical2DGrid_HEALPix(promote_type(typeof(r), Float64), r, k)
 end
 
 
-#::. utility functions
+############################################################################################
+#::. UTILITY FUNCTIONS
+############################################################################################
 areas(grid::Spherical2DGrid_HEALPix) = length(grid) .* grid.area
+
 
 function coord2idx(grid::Spherical2DGrid_HEALPix, theta::Real, phi::Real)
     x, y, z = _get(GlobalCartesianPosition(GlobalSphericalPosition(1.0, theta, phi)))
@@ -89,9 +100,17 @@ function coord2idx(grid::AbstractSpherical2DGrid_HEALPix, r::Real, theta::Real, 
 end
 
 
+surfacecoords(grid::AbstractSpherical2DGrid_HEALPix) = coords(grid)
+
+
+############################################################################################
 #::. EXTENSIONS
+############################################################################################
 Base.length(grid::AbstractSpherical2DGrid_HEALPix) = length(grid.coords)
+
+
 Base.size(grid::AbstractSpherical2DGrid_HEALPix) = (length(grid), )
+
 
 Base.show(io::IO, ::MIME"text/plain", grid::AbstractSpherical2DGrid_HEALPix) = 
     print(io, "$(typeof(grid)):\n"*
@@ -101,5 +120,7 @@ Base.show(io::IO, ::MIME"text/plain", grid::AbstractSpherical2DGrid_HEALPix) =
             " area:    $(grid.area)")
 
 
+############################################################################################
 #::. EXPORTS
+############################################################################################
 export Spherical2DGrid_HEALPix

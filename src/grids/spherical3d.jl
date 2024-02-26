@@ -1,28 +1,34 @@
-#::. types
+############################################################################################
+#::. TYPES
+############################################################################################
 abstract type AbstractSpherical3DGrid <: AbstractSphericalGrid end
 
 
+############################################################################################
 #::. FUNCTIONS
+############################################################################################
 """
     [1] struct Spherical3DGrid{T<:AbstractFloat} <: AbstractSpherical3DGrid
-    [2] Spherical3DGrid([T::Type{<:AbstractFloat}, ] r0::Real, h::AbstractVector, N_theta::Integer, N_phi::Integer)
-    [3] Spherical3DGrid([T::Type{<:AbstractFloat}, ] r::AbstractVector, N_theta::Integer, N_phi::Integer)
+    [2] Spherical3DGrid([T::Type{<:AbstractFloat}, ] r0::Real, h::AbstractVector, 
+                        N_theta::Integer, N_phi::Integer)
+    [3] Spherical3DGrid([T::Type{<:AbstractFloat}, ] r::AbstractVector, N_theta::Integer, 
+                        N_phi::Integer)
 
 Global structured volume grid (3D) of type `GlobalSphericalPosition{T}` over a sphere of
 radius `r0` with heights of the individual radial layers `h`. Alternatively, the radial 
 distances can directly be specified by `r` (`r = r0 .+ h`). Note that all heights have
 to be positive.
 
-| Field     | Type                                 | Description                               |
-|:--------- |:------------------------------------ |:----------------------------------------- |
-| `r0`      | `T`                                  | radius of global body (sphere)            |
-| `h`       | `Vector{T}`                          | heights above radial base `r0`            |
-| `N_r`     | `Int64`                              | number of elements in radial direction    |
-| `N_theta` | `Int64`                              | number of elements in azimuth direction   |
-| `N_phi`   | `Int64`                              | number of elements in elevation direction |
-| `coords`  | `Vector{GlobalSphericalPosition{T}}` | coordinates                               |
-| `areas`   | `Vector{T}`                          | surface area                              |
-| `volumes` | `Vector{T}`                          | volumes                                   |
+| Field     | Type; with `T<:AbstractFloat`        | Description                       |
+|:--------- |:------------------------------------ |:--------------------------------- |
+| `r0`      | `T`                                  | radius of global body (sphere)    |
+| `h`       | `Vector{T}`                          | heights above radial base `r0`    |
+| `N_r`     | `Int64`                              | # elements in radial direction    |
+| `N_theta` | `Int64`                              | # elements in azimuth direction   |
+| `N_phi`   | `Int64`                              | # elements in elevation direction |
+| `coords`  | `Vector{GlobalSphericalPosition{T}}` | coordinates                       |
+| `areas`   | `Vector{T}`                          | surface area                      |
+| `volumes` | `Vector{T}`                          | volumes                           |
 
 To ensure expected behavior, the grid object should generally be created with the outer
 constructors [2] or [3].
@@ -62,49 +68,46 @@ function Spherical3DGrid(T::Type{<:AbstractFloat}, r0::Real, h::AbstractVector,
     return Spherical3DGrid(T(r0), T.(h), N_r, N_theta, N_phi, 
         GlobalSphericalPosition.(r, theta, phi), T.(areas), T.(volumes))
 end
-function Spherical3DGrid(r0::AbstractFloat, h::AbstractVector, N_theta::Integer, 
-            N_phi::Integer)
+function Spherical3DGrid(r0::Real, h::AbstractVector, N_theta::Integer, N_phi::Integer)
     return Spherical3DGrid(typeof(r0), r0, h, N_theta, N_phi)
 end
-function Spherical3DGrid(r0::Integer, h::AbstractVector, N_theta::Integer, 
-            N_phi::Integer)
-    T = promote_type(typeof(r0), Float64)
-    return Spherical3DGrid(T, r0, h, N_theta, N_phi)
+function Spherical3DGrid(r0::Integer, h::AbstractVector, N_theta::Integer, N_phi::Integer)
+    return Spherical3DGrid(promote_type(typeof(r0), Float64), r0, h, N_theta, N_phi)
 end
-function Spherical3DGrid(T::Type{<:AbstractFloat}, r::AbstractVector, 
-            N_theta::Integer, N_phi::Integer)
+function Spherical3DGrid(T::Type{<:AbstractFloat}, r::AbstractVector, N_theta::Integer, 
+                         N_phi::Integer)
     r0, h = r[1], accumulate(+,diff(r))
     return Spherical3DGrid(T, r0, h, N_theta, N_phi)
 end
 function Spherical3DGrid(r::AbstractVector, N_theta::Integer, N_phi::Integer)
     return Spherical3DGrid(typeof(r[1]), r, N_theta, N_phi)
 end
-function Spherical3DGrid(r::AbstractVector{<:Integer}, N_theta::Integer, 
-            N_phi::Integer)
-    T = promote_type(typeof(r[1]), Float64)
-    return Spherical3DGrid(T, r, N_theta, N_phi)
+function Spherical3DGrid(r::AbstractVector{<:Integer}, N_theta::Integer, N_phi::Integer)
+    return Spherical3DGrid(promote_type(typeof(r[1]), Float64), r, N_theta, N_phi)
 end
 
 """
     [1] struct Spherical3DGrid_EqSim{T<:AbstractFloat} <: AbstractSpherical3DGrid end
-    [2] Spherical3DGrid_EqSim([T::Type{<:AbstractFloat}, ] r0::Real, h::AbstractVector, N_theta::Integer, N_phi::Integer)
-    [3] Spherical3DGrid_EqSim([T::Type{<:AbstractFloat}, ] r::AbstractVector, N_theta::Integer, N_phi::Integer)
+    [2] Spherical3DGrid_EqSim([T::Type{<:AbstractFloat}, ] r0::Real, h::AbstractVector, 
+                              N_theta::Integer, N_phi::Integer)
+    [3] Spherical3DGrid_EqSim([T::Type{<:AbstractFloat}, ] r::AbstractVector, 
+                              N_theta::Integer, N_phi::Integer)
 
 Global structured volume grid (3D) of type `GlobalSphericalPosition{T}` over a hemisphere of
 radius `r0` with heights of the individual radial layers `h`. Alternatively, the radial 
 distances can directly be specified by `r` (`r = r0 .+ h`). Note that all heights have
 to be positive.
 
-| Field     | Type                                 | Description                               |
-|:--------- |:------------------------------------ |:----------------------------------------- |
-| `r0`      | `T`                                  | radius of global body (sphere)            |
-| `h`       | `Vector{T}`                          | heights above radial base `r0`            |
-| `N_r`     | `Int64`                              | number of elements in radial direction    |
-| `N_theta` | `Int64`                              | number of elements in azimuth direction   |
-| `N_phi`   | `Int64`                              | number of elements in elevation direction |
-| `coords`  | `Vector{GlobalSphericalPosition{T}}` | coordinates                               |
-| `areas`   | `Vector{T}`                          | surface area                              |
-| `volumes` | `Vector{T}`                          | volumes                                   |
+| Field     | Type; with `T<:AbstractFloat`        | Description                       |
+|:--------- |:------------------------------------ |:--------------------------------- |
+| `r0`      | `T`                                  | radius of global body (sphere)    |
+| `h`       | `Vector{T}`                          | heights above radial base `r0`    |
+| `N_r`     | `Int64`                              | # elements in radial direction    |
+| `N_theta` | `Int64`                              | # elements in azimuth direction   |
+| `N_phi`   | `Int64`                              | # elements in elevation direction |
+| `coords`  | `Vector{GlobalSphericalPosition{T}}` | coordinates                       |
+| `areas`   | `Vector{T}`                          | surface area                      |
+| `volumes` | `Vector{T}`                          | volumes                           |
 
 To ensure expected behavior, the grid object should generally be created with the outer
 constructors [2] or [3].
@@ -128,7 +131,8 @@ function Spherical3DGrid_EqSim(T::Type{<:AbstractFloat}, r0::Real, h::AbstractVe
 
     # coordinates
     r = T.(repeat(r0 .+ vcat(0, h[1:end-1]), inner=N_theta*N_phi))
-    theta = T.(repeat(range(1/N_theta-1, 1-1/N_theta, length=N_theta) .* pi, inner=N_phi, outer=N_r))
+    theta = T.(repeat(
+        range(1/N_theta-1, 1-1/N_theta, length=N_theta) .* pi, inner=N_phi, outer=N_r))
     phi = T.(repeat(range(1/N_phi, 2-1/N_phi, length=N_phi) .* pi/4, outer=N_theta*N_r))
     
     # area and volume calculation
@@ -143,36 +147,34 @@ function Spherical3DGrid_EqSim(T::Type{<:AbstractFloat}, r0::Real, h::AbstractVe
     ]
 
     return Spherical3DGrid_EqSim(T(r0), T.(h), N_r, N_theta, N_phi, 
-        GlobalSphericalPosition.(r, theta, phi), T.(areas), T.(volumes))
+                                 GlobalSphericalPosition.(r, theta, phi), 
+                                 T.(areas), T.(volumes))
 end
-function Spherical3DGrid_EqSim(r0::AbstractFloat, h::AbstractVector, N_theta::Integer, 
-            N_phi::Integer)
+function Spherical3DGrid_EqSim(r0::Real, h::AbstractVector, N_theta::Integer, N_phi::Integer)
     return Spherical3DGrid_EqSim(typeof(r0), r0, h, N_theta, N_phi)
 end
-function Spherical3DGrid_EqSim(r0::Integer, h::AbstractVector, N_theta::Integer, 
-            N_phi::Integer)
-    T = promote_type(typeof(r0), Float64)
-    return Spherical3DGrid_EqSim(T, r0, h, N_theta, N_phi)
+function Spherical3DGrid_EqSim(r0::Integer, h::AbstractVector, N_theta::Integer, N_phi::Integer)
+    return Spherical3DGrid_EqSim(promote_type(typeof(r0), Float64), r0, h, N_theta, N_phi)
 end
-function Spherical3DGrid_EqSim(T::Type{<:AbstractFloat}, r::AbstractVector, 
-            N_theta::Integer, N_phi::Integer)
+function Spherical3DGrid_EqSim(T::Type{<:AbstractFloat}, r::AbstractVector, N_theta::Integer, 
+                               N_phi::Integer)
     r0, h = r[1], accumulate(+,diff(r))
     return Spherical3DGrid_EqSim(T, r0, h, N_theta, N_phi)
 end
 function Spherical3DGrid_EqSim(r::AbstractVector, N_theta::Integer, N_phi::Integer)
     return Spherical3DGrid_EqSim(typeof(r[1]), r, N_theta, N_phi)
 end
-function Spherical3DGrid_EqSim(r::AbstractVector{<:Integer}, N_theta::Integer, 
-            N_phi::Integer)
-    T = promote_type(typeof(r[1]), Float64)
-    return Spherical3DGrid_EqSim(T, r, N_theta, N_phi)
+function Spherical3DGrid_EqSim(r::AbstractVector{<:Integer}, N_theta::Integer, N_phi::Integer)
+    return Spherical3DGrid_EqSim(promote_type(typeof(r[1]), Float64), r, N_theta, N_phi)
 end
 
 
 """
     [1] struct Spherical3DGrid_Reduced{T<:AbstractFloat} <: AbstractSpherical3DGrid end
-    [2] Spherical3DGrid_Reduced([T::Type{<:AbstractFloat}, ] r0::Real, h::AbstractVector, N_phi::Integer)
-    [3] Spherical3DGrid_Reduced([T::Type{<:AbstractFloat}, ] r::AbstractVector, N_phi::Integer)
+    [2] Spherical3DGrid_Reduced([T::Type{<:AbstractFloat}, ] r0::Real, h::AbstractVector, 
+                                N_phi::Integer)
+    [3] Spherical3DGrid_Reduced([T::Type{<:AbstractFloat}, ] r::AbstractVector, 
+                                N_phi::Integer)
 
 Global structured volume grid (3D) of type `GlobalSphericalPosition{T}` over a sphere of
 radius `r0` with heights of the individual radial layers `h`. Alternatively, the radial 
@@ -180,16 +182,16 @@ distances can directly be specified by `r` (`r = r0 .+ h`). Note that all height
 to be positive. The grid is reduced in the azimuth direction to have approximately equal 
 `2*pi*r*cos(phi)/N_theta` grid element lengths.
 
-| Field     | Type                                 | Description                               |
-|:--------- |:------------------------------------ |:----------------------------------------- |
-| `r0`      | `T`                                  | radius of global body (sphere)            |
-| `h`       | `Vector{T}`                          | heights above radial base `r0`            |
-| `N_r`     | `Int64`                              | number of elements in radial direction    |
-| `N_theta` | `Int64`                              | number of elements in azimuth direction   |
-| `N_phi`   | `Int64`                              | number of elements in elevation direction |
-| `coords`  | `Vector{GlobalSphericalPosition{T}}` | coordinates                               |
-| `areas`   | `Vector{T}`                          | surface area                              |
-| `volumes` | `Vector{T}`                          | volumes                                   |
+| Field     | Type; with `T<:AbstractFloat`        | Description                       |
+|:--------- |:------------------------------------ |:--------------------------------- |
+| `r0`      | `T`                                  | radius of global body (sphere)    |
+| `h`       | `Vector{T}`                          | heights above radial base `r0`    |
+| `N_r`     | `Int64`                              | # elements in radial direction    |
+| `N_theta` | `Int64`                              | # elements in azimuth direction   |
+| `N_phi`   | `Int64`                              | # elements in elevation direction |
+| `coords`  | `Vector{GlobalSphericalPosition{T}}` | coordinates                       |
+| `areas`   | `Vector{T}`                          | surface area                      |
+| `volumes` | `Vector{T}`                          | volumes                           |
 
 To ensure expected behavior, the grid object should generally be created with the outer
 constructors [2] or [3].
@@ -213,7 +215,7 @@ function Spherical3DGrid_Reduced(T::Type{<:AbstractFloat}, r0::Real,
 
     # prepare coordiante calculation
     dtheta_max = T(pi/N_phi)
-    phi0 = range(1/N_phi-1, 1-1/N_phi, length=N_phi) * pi/2 |> Vector{T}
+    phi0 = T.(range(1/N_phi-1, 1-1/N_phi, length=N_phi) * pi/2)
 
     # coordinates
     r, theta, phi, N_theta = T[], T[], T[], Int64[]
@@ -223,7 +225,7 @@ function Spherical3DGrid_Reduced(T::Type{<:AbstractFloat}, r0::Real,
         push!(phi, repeat([p0], n_theta)...)
         push!(N_theta, n_theta)
     end
-    r = repeat(r0 .+ vcat(0, h[1:end-1]), inner=sum(N_theta)) |> Vector{T}
+    r = T.(repeat(r0 .+ vcat(0, h[1:end-1]), inner=sum(N_theta)))
     theta = repeat(theta, outer=N_r)
     phi = repeat(phi, outer=N_r)
     
@@ -249,14 +251,14 @@ function Spherical3DGrid_Reduced(T::Type{<:AbstractFloat}, r0::Real,
     end
     
     return Spherical3DGrid_Reduced(T(r0), T.(h), N_r, N_theta, N_phi, 
-        GlobalSphericalPosition.(r, theta, phi), T.(areas), T.(volumes))
+                                   GlobalSphericalPosition.(r, theta, phi), 
+                                   T.(areas), T.(volumes))
 end
-function Spherical3DGrid_Reduced(r0::AbstractFloat, h::AbstractVector, N_phi::Integer)
+function Spherical3DGrid_Reduced(r0::Real, h::AbstractVector, N_phi::Integer)
     return Spherical3DGrid_Reduced(typeof(r0), r0, h, N_phi)
 end
 function Spherical3DGrid_Reduced(r0::Integer, h::AbstractVector, N_phi::Integer)
-    T = promote_type(typeof(r0), Float64)
-    return Spherical3DGrid_Reduced(T, r0, h, N_phi)
+    return Spherical3DGrid_Reduced(promote_type(typeof(r0), Float64), r0, h, N_phi)
 end
 function Spherical3DGrid_Reduced(T::Type{<:AbstractFloat}, r::AbstractVector, N_phi::Integer)
     r0, h = r[1], accumulate(+,diff(r))
@@ -266,8 +268,7 @@ function Spherical3DGrid_Reduced(r::AbstractVector, N_phi::Integer)
     return Spherical3DGrid_Reduced(typeof(r[1]), r, N_phi)
 end
 function Spherical3DGrid_Reduced(r::AbstractVector{<:Integer}, N_phi::Integer)
-    T = promote_type(typeof(r[1]), Float64)
-    return Spherical3DGrid_Reduced(T, r, N_phi)
+    return Spherical3DGrid_Reduced(promote_type(typeof(r[1]), Float64), r, N_phi)
 end
 
 
@@ -284,16 +285,16 @@ distances can directly be specified by `r` (`r = r0 .+ h`). Note that all height
 to be positive. The grid is reduced in the azimuth direction to have approximately equal 
 `2*pi*r*cos(phi)/N_theta` grid element lengths.
 
-| Field     | Type                                 | Description                               |
-|:--------- |:------------------------------------ |:----------------------------------------- |
-| `r0`      | `T`                                  | radius of global body (sphere)            |
-| `h`       | `Vector{T}`                          | heights above radial base `r0`            |
-| `N_r`     | `Int64`                              | number of elements in radial direction    |
-| `N_theta` | `Int64`                              | number of elements in azimuth direction   |
-| `N_phi`   | `Int64`                              | number of elements in elevation direction |
-| `coords`  | `Vector{GlobalSphericalPosition{T}}` | coordinates                               |
-| `areas`   | `Vector{T}`                          | surface area                              |
-| `volumes` | `Vector{T}`                          | volumes                                   |
+| Field     | Type; with `T<:AbstractFloat`        | Description                       |
+|:--------- |:------------------------------------ |:--------------------------------- |
+| `r0`      | `T`                                  | radius of global body (sphere)    |
+| `h`       | `Vector{T}`                          | heights above radial base `r0`    |
+| `N_r`     | `Int64`                              | # elements in radial direction    |
+| `N_theta` | `Int64`                              | # elements in azimuth direction   |
+| `N_phi`   | `Int64`                              | # elements in elevation direction |
+| `coords`  | `Vector{GlobalSphericalPosition{T}}` | coordinates                       |
+| `areas`   | `Vector{T}`                          | surface area                      |
+| `volumes` | `Vector{T}`                          | volumes                           |
 
 To ensure expected behavior, the grid object should generally be created with the outer
 constructors [2] or [3].
@@ -353,14 +354,14 @@ function Spherical3DGrid_Reduced_EqSim(T::Type{<:AbstractFloat}, r0::Real,
     end
     
     return Spherical3DGrid_Reduced_EqSim(T(r0), T.(h), N_r, N_theta, N_phi, 
-        GlobalSphericalPosition.(r, theta, phi), T.(areas), T.(volumes))
+                                         GlobalSphericalPosition.(r, theta, phi), 
+                                         T.(areas), T.(volumes))
 end
-function Spherical3DGrid_Reduced_EqSim(r0::AbstractFloat, h::AbstractVector, N_phi::Integer)
+function Spherical3DGrid_Reduced_EqSim(r0::Real, h::AbstractVector, N_phi::Integer)
     return Spherical3DGrid_Reduced_EqSim(typeof(r0), r0, h, N_phi)
 end
 function Spherical3DGrid_Reduced_EqSim(r0::Integer, h::AbstractVector, N_phi::Integer)
-    T = promote_type(typeof(r0), Float64)
-    return Spherical3DGrid_Reduced_EqSim(T, r0, h, N_phi)
+    return Spherical3DGrid_Reduced_EqSim(promote_type(typeof(r0), Float64), r0, h, N_phi)
 end
 function Spherical3DGrid_Reduced_EqSim(T::Type{<:AbstractFloat}, r::AbstractVector, 
             N_phi::Integer)
@@ -371,12 +372,13 @@ function Spherical3DGrid_Reduced_EqSim(r::AbstractVector, N_phi::Integer)
     return Spherical3DGrid_Reduced_EqSim(typeof(r[1]), r, N_phi)
 end
 function Spherical3DGrid_Reduced_EqSim(r::AbstractVector{<:Integer}, N_phi::Integer)
-    T = promote_type(typeof(r[1]), Float64)
-    return Spherical3DGrid_Reduced_EqSim(T, r, N_phi)
+    return Spherical3DGrid_Reduced_EqSim(promote_type(typeof(r[1]), Float64), r, N_phi)
 end
 
 
-#::. utility functions
+############################################################################################
+#::. UTILITY FUNCTIONS
+############################################################################################
 function coord2idx(grid::Spherical3DGrid, r::Real, theta::Real, phi::Real)
     if !(grid.r0 <= r <= grid.r0 + grid.h[end]); return 0; end
 
@@ -420,14 +422,20 @@ function coord2idx(grid::Spherical3DGrid_Reduced_EqSim, r::Real, theta::Real, ph
     return (idxr-1) * sum(grid.N_theta) + idxtheta + accumulate(+, grid.N_theta[1:idxphi])[end-1]
 end
 
+
 surfacecoords(grid::AbstractSpherical3DGrid) = grid.coords[1:grid.N_theta*grid.N_phi]
 surfacecoords(grid::Spherical3DGrid_Reduced) = grid.coords[1:sum(grid.N_theta)]
 surfacecoords(grid::Spherical3DGrid_Reduced_EqSim) = grid.coords[1:sum(grid.N_theta)]
 
 
+############################################################################################
 #::. EXTENSIONS
+############################################################################################
 Base.length(grid::AbstractSpherical3DGrid) = length(grid.coords)
+
+
 Base.size(grid::AbstractSpherical3DGrid) = (grid.N_r, grid.N_theta, grid.N_phi)
+
 
 Base.show(io::IO, ::MIME"text/plain", grid::AbstractSpherical3DGrid) = 
     print(io, "$(typeof(grid)):\n"*
@@ -461,7 +469,9 @@ Base.show(io::IO, ::MIME"text/plain", grid::Spherical3DGrid_Reduced) =
             "            max: $(max(grid.volumes...))\n")
 
 
+############################################################################################
 #::. EXPORTS
+############################################################################################
 export 
     Spherical3DGrid,
     Spherical3DGrid_EqSim,
