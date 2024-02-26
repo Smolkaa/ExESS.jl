@@ -24,6 +24,7 @@ end
 
     # grids
     @testset verbose=true "GRIDS ---------------------------" begin
+        include(joinpath(@__DIR__, "grids", "spherical2d.jl"))
     end
 
     # misc

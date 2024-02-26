@@ -151,7 +151,8 @@ end
 
 Global structured grid of surface coordinates (2D) of type `GlobalSphericalPosition{T}` over
 the upper hemisphere with radius `r`, assuming equatorial symmetry. The grid is reduced in
-the azimuth direction to have approximately equal `2*pi*r*cos(phi)/N_theta` grid element lengths.
+the azimuth direction to have approximately equal `2*pi*r*cos(phi)/N_theta` grid element 
+lengths.
 
 | Field     | Type; with `T<:AbstractFloat`        | Description                       |
 |:--------- |:------------------------------------ |:--------------------------------- |
