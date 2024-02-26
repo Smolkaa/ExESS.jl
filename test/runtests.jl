@@ -18,8 +18,8 @@ end
 
     # drivers
     @testset verbose=true "DRIVERS -------------------------" begin
-        
         include(joinpath(@__DIR__, "drivers", "maxwellian.jl"))
+        include(joinpath(@__DIR__, "drivers", "surface_distributions.jl"))
     end
 
     # grids
