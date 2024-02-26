@@ -5,95 +5,101 @@ abstract type AbstractSpherical2DGrid <: AbstractSphericalGrid end
 #::. FUNCTIONS
 """
     [1] struct Spherical2DGrid{T<:AbstractFloat} <: AbstractSpherical2DGrid end
-    [2] Spherical2DGrid([T::Type,] r::Real, N_theta::Int64, N_phi::Int64)
+    [2] Spherical2DGrid([T::Type,] r::Real, N_theta::Integer, N_phi::Integer)
 
 Global structured grid of surface coordinates (2D) of type `GlobalSphericalPosition{T}` over
 a sphere of radius `r`.
 
-| Field     | Type                                 | Description                               |
-|:--------- |:------------------------------------ |:----------------------------------------- |
-| `r`       | `T`                                  | radius of global body (sphere)            |
-| `N_theta` | `Int64`                              | number of elements in azimuth direction   |
-| `N_phi`   | `Int64`                              | number of elements in elevation direction |
-| `coords`  | `Vector{GlobalSphericalPosition{T}}` | coordinates                               |
-| `areas`   | `Vector{T}`                          | surface area                              |
+| Field     | Type; with `T<:AbstractFloat`        | Description                       |
+|:--------- |:------------------------------------ |:--------------------------------- |
+| `r`       | `T`                                  | radius of global body (sphere)    |
+| `N_theta` | `Int64`                              | # elements in azimuth direction   |
+| `N_phi`   | `Int64`                              | # elements in elevation direction |
+| `coords`  | `Vector{GlobalSphericalPosition{T}}` | coordinates                       |
+| `areas`   | `Vector{T}`                          | surface area                      |
 
 To ensure expected behavior, the grid object should generally be created with the outer
 constructor [2].
 """
 struct Spherical2DGrid{T<:AbstractFloat} <: AbstractSpherical2DGrid
     r::T
-    N_theta::Int64
-    N_phi::Int64
+    N_theta::Integer
+    N_phi::Integer
     coords::Vector{GlobalSphericalPosition{T}}
     areas::Vector{T}
 end
-function Spherical2DGrid(T::Type, r::Real, N_theta::Int64, N_phi::Int64)
-    theta = repeat(range(1/N_theta-1, 1-1/N_theta, length=N_theta) * pi, inner=N_phi) |> Vector{T}
-    phi = repeat(range(1/N_phi-1, 1-1/N_phi, length=N_phi) * pi/2, outer=N_theta) |> Vector{T}
+function Spherical2DGrid(T::Type, r::Real, N_theta::Integer, N_phi::Integer)
+    theta = T.(repeat(range(1/N_theta-1, 1-1/N_theta, length=N_theta) * pi, inner=N_phi))
+    phi = T.(repeat(range(1/N_phi-1, 1-1/N_phi, length=N_phi) * pi/2, outer=N_theta))
     dtheta, dphi = theta[N_phi+1] - theta[1], phi[2] - phi[1]
     areas = [r^2 * dtheta * (sin(p+dphi/2) - sin(p-dphi/2)) for p in phi]
-    return Spherical2DGrid{T}(T(r), N_theta, N_phi, GlobalSphericalPosition.(T(r), theta, phi), areas)
+    return Spherical2DGrid{T}(T(r), N_theta, N_phi, 
+                              GlobalSphericalPosition.(T(r), theta, phi), areas)
 end
-function Spherical2DGrid(r::Real, N_theta::Int64, N_phi::Int64)
-    if typeof(r) <: Integer; r = Float64(r); end
+function Spherical2DGrid(r::Real, N_theta::Integer, N_phi::Integer)
     return Spherical2DGrid(typeof(r), r, N_theta, N_phi)
+end
+function Spherical2DGrid(r::Integer, N_theta::Integer, N_phi::Integer)
+    return Spherical2DGrid(promote_type(typeof(r), Float64), r, N_theta, N_phi)
 end
 
 
 """
     [1] struct Spherical2DGrid_EqSim{T<:AbstractFloat} <: AbstractSpherical2DGrid end
-    [2] Spherical2DGrid_EqSim([T::Type,] r::Real, N_theta::Int64, N_phi::Int64)
+    [2] Spherical2DGrid_EqSim([T::Type,] r::Real, N_theta::Integer, N_phi::Integer)
 
 Global structured grid of surface coordinates (2D) of type `GlobalSphericalPosition{T}` over
 the upper hemisphere with radius `r`, assuming equatorial symmetry.
 
-| Field     | Type                                 | Description                               |
-|:--------- |:------------------------------------ |:----------------------------------------- |
-| `r`       | `T`                                  | radius of global body (sphere)            |
-| `N_theta` | `Int64`                              | number of elements in azimuth direction   |
-| `N_phi`   | `Int64`                              | number of elements in elevation direction |
-| `coords`  | `Vector{GlobalSphericalPosition{T}}` | coordinates                               |
-| `areas`   | `Vector{T}`                          | surface area                              |
+| Field     | Type; with `T<:AbstractFloat`        | Description                       |
+|:--------- |:------------------------------------ |:--------------------------------- |
+| `r`       | `T`                                  | radius of global body (sphere)    |
+| `N_theta` | `Int64`                              | # elements in azimuth direction   |
+| `N_phi`   | `Int64`                              | # elements in elevation direction |
+| `coords`  | `Vector{GlobalSphericalPosition{T}}` | coordinates                       |
+| `areas`   | `Vector{T}`                          | surface area                      |
 
 To ensure expected behavior, the grid object should generally be created with the outer
 constructor [2].
 """
 struct Spherical2DGrid_EqSim{T<:AbstractFloat} <: AbstractSpherical2DGrid
     r::T
-    N_theta::Int64
-    N_phi::Int64
+    N_theta::Integer
+    N_phi::Integer
     coords::Vector{GlobalSphericalPosition{T}}
     areas::Vector{T}
 end
-function Spherical2DGrid_EqSim(T::Type, r::Real, N_theta::Int64, N_phi::Int64)
-    theta = repeat(range(1/N_theta-1, 1-1/N_theta, length=N_theta) * pi, inner=N_phi) |> Vector{T}
-    phi = repeat(range(1/N_phi, 2-1/N_phi, length=N_phi) * pi/4, outer=N_theta) |> Vector{T}
+function Spherical2DGrid_EqSim(T::Type, r::Real, N_theta::Integer, N_phi::Integer)
+    theta = T.(repeat(range(1/N_theta-1, 1-1/N_theta, length=N_theta) * pi, inner=N_phi))
+    phi = T.(repeat(range(1/N_phi, 2-1/N_phi, length=N_phi) * pi/4, outer=N_theta))
     dtheta, dphi = theta[N_phi+1] - theta[1], phi[2] - phi[1]
     areas = [r^2 * dtheta * (sin(p+dphi/2) - sin(p-dphi/2)) for p in phi]
-    return Spherical2DGrid_EqSim{T}(T(r), N_theta, N_phi, GlobalSphericalPosition.(T(r), theta, phi), areas)
+    return Spherical2DGrid_EqSim{T}(T(r), N_theta, N_phi, 
+                                    GlobalSphericalPosition.(T(r), theta, phi), areas)
 end
-function Spherical2DGrid_EqSim(r::Real, N_theta::Int64, N_phi::Int64)
-    if typeof(r) <: Integer; r = Float64(r); end
+function Spherical2DGrid_EqSim(r::Real, N_theta::Integer, N_phi::Integer)
     return Spherical2DGrid_EqSim(typeof(r), r, N_theta, N_phi)
+end
+function Spherical2DGrid_EqSim(r::Integer, N_theta::Integer, N_phi::Integer)
+    return Spherical2DGrid_EqSim(promote_type(typeof(r), Float64), r, N_theta, N_phi)
 end
 
 
 """
     [1] struct Spherical2DGrid_Reduced{T<:AbstractFloat} <: AbstractSpherical2DGrid end
-    [2] Spherical2DGrid_Reduced([T::Type,] r::Real, N_phi::Int64)
+    [2] Spherical2DGrid_Reduced([T::Type,] r::Real, N_phi::Integer)
 
 Global structured grid of surface coordinates (2D) of type `GlobalSphericalPosition{T}` over
 the sphere radius `r`. The grid is reduced in the azimuth direction to have approximately 
 equal `2*pi*r*cos(phi)/N_theta` grid element lengths.
 
-| Field     | Type                                 | Description                               |
-|:--------- |:------------------------------------ |:----------------------------------------- |
-| `r`       | `T`                                  | radius of global body (sphere)            |
-| `N_theta` | `Vector{Int64}`                      | number of elements in azimuth direction   |
-| `N_phi`   | `Int64`                              | number of elements in elevation direction |
-| `coords`  | `Vector{GlobalSphericalPosition{T}}` | coordinates                               |
-| `areas`   | `Vector{T}`                          | surface area                              |
+| Field     | Type; with `T<:AbstractFloat`        | Description                       |
+|:--------- |:------------------------------------ |:--------------------------------- |
+| `r`       | `T`                                  | radius of global body (sphere)    |
+| `N_theta` | `Vector{Int64}`                      | # elements in azimuth direction   |
+| `N_phi`   | `Int64`                              | # elements in elevation direction |
+| `coords`  | `Vector{GlobalSphericalPosition{T}}` | coordinates                       |
+| `areas`   | `Vector{T}`                          | surface area                      |
 
 To ensure expected behavior, the grid object should generally be created with the outer
 constructor [2].
@@ -101,13 +107,13 @@ constructor [2].
 struct Spherical2DGrid_Reduced{T<:AbstractFloat} <: AbstractSpherical2DGrid
     r::T
     N_theta::Vector{Int64}
-    N_phi::Int64
+    N_phi::Integer
     coords::Vector{GlobalSphericalPosition{T}}
     areas::Vector{T}
 end
-function Spherical2DGrid_Reduced(T::Type, r::Real, N_phi::Int64)
+function Spherical2DGrid_Reduced(T::Type, r::Real, N_phi::Integer)
     dtheta_max = T(pi/N_phi)
-    phi0 = range(1/N_phi-1, 1-1/N_phi, length=N_phi) * pi/2 |> Vector{T}
+    phi0 = T.(range(1/N_phi-1, 1-1/N_phi, length=N_phi) * pi/2)
     
     theta, phi, N_theta = T[], T[], Int64[]
     for p0 in phi0
@@ -124,29 +130,32 @@ function Spherical2DGrid_Reduced(T::Type, r::Real, N_phi::Int64)
         push!(areas, repeat([r^2 * dtheta * (sin(phi0[i]+dphi/2) - sin(phi0[i]-dphi/2))], N_theta[i])...)
     end
 
-    return Spherical2DGrid_Reduced(T(r), N_theta, N_phi, GlobalSphericalPosition.(T(r), theta, phi), areas)
+    return Spherical2DGrid_Reduced(T(r), N_theta, N_phi, 
+                                   GlobalSphericalPosition.(T(r), theta, phi), areas)
 end
-function Spherical2DGrid_Reduced(r::Real, N_phi::Int64) 
-    if typeof(r) <: Integer; r = Float64(r); end
+function Spherical2DGrid_Reduced(r::Real, N_phi::Integer)
     return Spherical2DGrid_Reduced(typeof(r), r, N_phi)
+end
+function Spherical2DGrid_Reduced(r::Integer, N_phi::Integer) 
+    return Spherical2DGrid_Reduced(promote_type(typeof(r), Float64), r, N_phi)
 end
 
 
 """
     [1] struct Spherical2DGrid_Reduced_EqSim{T<:AbstractFloat} <: AbstractSpherical2DGrid end
-    [2] Spherical2DGrid_Reduced_EqSim([T::Type,] r::Real, N_phi::Int64)
+    [2] Spherical2DGrid_Reduced_EqSim([T::Type,] r::Real, N_phi::Integer)
 
 Global structured grid of surface coordinates (2D) of type `GlobalSphericalPosition{T}` over
 the upper hemisphere with radius `r`, assuming equatorial symmetry. The grid is reduced in
 the azimuth direction to have approximately equal `2*pi*r*cos(phi)/N_theta` grid element lengths.
 
-| Field     | Type                                 | Description                               |
-|:--------- |:------------------------------------ |:----------------------------------------- |
-| `r`       | `T`                                  | radius of global body (sphere)            |
-| `N_theta` | `Vector{Int64}`                      | number of elements in azimuth direction   |
-| `N_phi`   | `Int64`                              | number of elements in elevation direction |
-| `coords`  | `Vector{GlobalSphericalPosition{T}}` | coordinates                               |
-| `areas`   | `Vector{T}`                          | surface area                              |
+| Field     | Type; with `T<:AbstractFloat`        | Description                       |
+|:--------- |:------------------------------------ |:--------------------------------- |
+| `r`       | `T`                                  | radius of global body (sphere)    |
+| `N_theta` | `Vector{Int64}`                      | # elements in azimuth direction   |
+| `N_phi`   | `Int64`                              | # elements in elevation direction |
+| `coords`  | `Vector{GlobalSphericalPosition{T}}` | coordinates                       |
+| `areas`   | `Vector{T}`                          | surface area                      |
 
 To ensure expected behavior, the grid object should generally be created with the outer
 constructor [2].
@@ -154,13 +163,13 @@ constructor [2].
 struct Spherical2DGrid_Reduced_EqSim{T<:AbstractFloat} <: AbstractSpherical2DGrid
     r::T
     N_theta::Vector{Int64}
-    N_phi::Int64
+    N_phi::Integer
     coords::Vector{GlobalSphericalPosition{T}}
     areas::Vector{T}
 end
-function Spherical2DGrid_Reduced_EqSim(T::Type, r::Real, N_phi::Int64)
+function Spherical2DGrid_Reduced_EqSim(T::Type, r::Real, N_phi::Integer)
     dtheta_max = T(pi/2/N_phi)
-    phi0 = range(1/N_phi, 2-1/N_phi, length=N_phi) * pi/4 |> Vector{T}
+    phi0 = T.(range(1/N_phi, 2-1/N_phi, length=N_phi) * pi/4)
     
     theta, phi, N_theta = T[], T[], Int64[]
     for p0 in phi0
@@ -177,11 +186,14 @@ function Spherical2DGrid_Reduced_EqSim(T::Type, r::Real, N_phi::Int64)
         push!(areas, repeat([r^2 * dtheta * (sin(phi0[i]+dphi/2) - sin(phi0[i]-dphi/2))], N_theta[i])...)
     end
 
-    return Spherical2DGrid_Reduced_EqSim(T(r), N_theta, N_phi, GlobalSphericalPosition.(T(r), theta, phi), areas)
+    return Spherical2DGrid_Reduced_EqSim(T(r), N_theta, N_phi, 
+                                         GlobalSphericalPosition.(T(r), theta, phi), areas)
 end
-function Spherical2DGrid_Reduced_EqSim(r::Real, N_phi::Int64) 
-    if typeof(r) <: Integer; r = Float64(r); end
+function Spherical2DGrid_Reduced_EqSim(r::Real, N_phi::Integer) 
     return Spherical2DGrid_Reduced_EqSim(typeof(r), r, N_phi)
+end
+function Spherical2DGrid_Reduced_EqSim(r::Integer, N_phi::Integer)
+    return Spherical2DGrid_Reduced_EqSim(promote_type(typeof(r), Float64), r, N_phi)
 end
 
 
@@ -219,6 +231,13 @@ end
 function coord2idx(grid::AbstractSpherical2DGrid, r::Real, theta::Real, phi::Real)
     return coord2idx(grid, theta, phi)
 end
+
+
+surfacecoords(grid::Spherical2DGrid) = coords(grid)
+surfacecoords(grid::Spherical2DGrid_EqSim) = coords(grid)
+surfacecoords(grid::Spherical2DGrid_Reduced) = coords(grid)
+surfacecoords(grid::Spherical2DGrid_Reduced_EqSim) = coords(grid)
+
 
 volumes(grid::AbstractSpherical2DGrid) = zeros(typeof(grid.r), length(grid.coords))
 
