@@ -41,7 +41,7 @@ end
 pdf(d::SWSurfaceDistribution, x::_TVGSP) = pdf(d, _get(x))
 
 
-function Base.rand(d::SWSurfaceDistribution) where {S<:AbstractFloat} 
+function Base.rand(d::SWSurfaceDistribution{S}) where {S<:AbstractFloat} 
     return (d.r, asin(2*rand(S)-1), asin(2*rand(S)-1))
 end
 
