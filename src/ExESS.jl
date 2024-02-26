@@ -21,8 +21,8 @@ include(joinpath(@__DIR__, "base", "utils.jl"))
 
 #::. DRIVERS
 include(joinpath(@__DIR__, "drivers", "maxwellian.jl"))
+include(joinpath(@__DIR__, "drivers", "surface_distributions.jl"))
 include(joinpath(@__DIR__, "drivers", "thermal_sorption.jl"))
-include(joinpath(@__DIR__, "drivers", "solar_wind.jl"))
 
 
 #::. GRIDS
