@@ -1,6 +1,6 @@
 # ExESS.jl
 
-<img style="background-color:rgba(255, 255, 255, .1)" src='res/exess_logo.svg' alt="logo" align="right" width = "20%" height="20%">
+<img src='res/exess_logo.svg' alt="logo" align="right" width = "20%" height="20%">
 
 **Extraterrestrial Exosphere and Surface Simulations** 
 </br>
@@ -12,7 +12,7 @@ frequent changes. For questions, please contact the A. Smolka via email.
 
 
 
-## Installation & Usage
+## Installation
 
 Please refer to the [official guide](https://julialang.org/downloads/platform/) to 
 installing Julia on your machine. The `ExESS.jl` package can be installed using Julia's 
