@@ -14,7 +14,9 @@ frequent changes. For questions, please contact the A. Smolka via email.
 
 ## Installation & Usage
 
-Please refer to the [official guide](https://julialang.org/downloads/platform/) to installing Julia on your machine. The `ExESS.jl` package can be installed using Julia's package-manager `Pkg`:
+Please refer to the [official guide](https://julialang.org/downloads/platform/) to 
+installing Julia on your machine. The `ExESS.jl` package can be installed using Julia's 
+package-manager `Pkg`:
 ```julia
 using Pkg
 Pkg.add("https://github.com/Smolkaa/ExESS.jl.git")
