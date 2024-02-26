@@ -48,11 +48,17 @@
         @test size(grid_reduced_eqsim)[1] isa AbstractVector
 
         # test completeness
+        RTOL = t <: Float16 ? 1e-1 : 1e-2 # adjust relative tolerance
         if !isinf(sum(areas(grid)))
-            RTOL = t <: Float16 ? 1e-1 : 1e-2 # adjust relative tolerance
             @test isapprox(sum(areas(grid)), 4*pi*r^2, rtol=RTOL)
+        end
+        if !isinf(sum(areas(grid_eqsim)))
             @test isapprox(sum(areas(grid_eqsim)), 2*pi*r^2, rtol=RTOL)
+        end
+        if !isinf(sum(areas(grid_reduced)))
             @test isapprox(sum(areas(grid_reduced)), 4*pi*r^2, rtol=RTOL)
+        end
+        if !isinf(sum(areas(grid_reduced_eqsim)))
             @test isapprox(sum(areas(grid_reduced_eqsim)), 2*pi*r^2, rtol=RTOL)
         end
     end
