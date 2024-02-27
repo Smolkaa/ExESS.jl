@@ -38,9 +38,9 @@ coords(grid::AbstractGrid) = grid.coords
 
 Calculates the index of the grid element containing the given coordinates.
 """
-coord2idx(grid::AbstractGrid, coord::AbstractPosition) = coord2idx(grid, tup(coord)...)
+coord2idx(grid::AbstractGrid, coord::AbstractPosition) = coord2idx(grid, _get(coord)...)
 function coord2idx(grid::AbstractSphericalGrid, coord::AbstractGlobalPosition) #TODO: Do not use AbstractGloablPosition union type
-    return coord2idx(grid, tup(GlobalSphericalPosition(coord))...)
+    return coord2idx(grid, _get(GlobalSphericalPosition(coord))...)
 end
 function coord2idx(grid::AbstractSphericalGrid, coords::Vector{AbstractPosition})
     return [coord2idx(grid, coord) for coord in coords]
