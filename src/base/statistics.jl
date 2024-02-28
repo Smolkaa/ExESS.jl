@@ -54,14 +54,17 @@ pdf(S::Type{<:AbstractFloat}, d::AbstractDistribution, args...) = S(pdf(d, args.
 """
 # ExESS.jl -- `Base.rand` Extension
 
-    [1] rand([S::Type{<:AbstractFloat}], d::AbstractDistribution)
+    [1] rand([S::Type{<:AbstractFloat}], d::AbstractDistribution, [N::Integer])
 
 Generates a random value from the distribution `d`. Additionally accepts a type `S` to cast
-the result to a specific floating point type.
+the result to a specific floating point type, and an integer `N` to generate `N` random
+samples automatically.
 
-Note that the format of the random sample depends on the distribution type.
+Note that the out format of the random sample depends on the distribution type.
 """
-Base.rand(S::Type, d::AbstractDistribution) = S(rand(d))
+Base.rand(S::Type{<:AbstractFloat}, d::AbstractDistribution) = S(rand(d))
+Base.rand(d::AbstractDistribution, N::Integer) = [rand(d) for _ in 1:N]
+Base.rand(S::Type{<:AbstractFloat}, d::AbstractDistribution, N::Integer) = S.(rand(d, N))
 
 
 """

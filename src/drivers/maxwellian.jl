@@ -257,10 +257,12 @@ function Base.rand(d::MBVelocityDistribution{S}) where {S<:AbstractFloat}
     a = sqrt(BOLTZMANN_CONSTANT * d.T / d.m)
     return S.((a*randn(), a*randn(), a*randn()))
 end
+Base.rand(S::Type{<:AbstractFloat}, d::MBVelocityDistribution) = S.(rand(d))
 function Base.rand(d::MBFluxVelocityDistribution{S}) where {S<:AbstractFloat}
     a = sqrt(BOLTZMANN_CONSTANT * d.T / d.m)
     return S.(( a*randn(), a*randn(), a * sqrt(-2*log(1-rand())) ))
 end
+Base.rand(S::Type{<:AbstractFloat}, d::MBFluxVelocityDistribution) = S.(rand(d))
 
 
 
