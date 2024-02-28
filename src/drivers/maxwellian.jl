@@ -261,7 +261,7 @@ Base.rand(S::Type{<:AbstractFloat}, d::MBVelocityDistribution) = S.(rand(d))
 Base.rand(S::Type{<:LocalCartesianVelocity}, d::MBVelocityDistribution) = S(rand(d))
 # Base.rand(S::Type{<:AbstractFloat}, d::MBVelocityDistribution, N::Integer) = [rand(S, d) for _ in 1:N]
 function Base.rand(S::Type{<:AbstractFloat}, d::MBVelocityDistribution, N::Integer) 
-    SAMPLES = Vector{NTuple{S, 3}}(undef, N)
+    SAMPLES = Vector{NTuple{3, S}}(undef, N)
     for i in 1:N
         SAMPLES[i] = rand(S, d)
     end
