@@ -259,7 +259,14 @@ function Base.rand(d::MBVelocityDistribution{S}) where {S<:AbstractFloat}
 end
 Base.rand(S::Type{<:AbstractFloat}, d::MBVelocityDistribution) = S.(rand(d))
 Base.rand(S::Type{<:LocalCartesianVelocity}, d::MBVelocityDistribution) = S(rand(d))
-Base.rand(S::Type{<:AbstractFloat}, d::MBVelocityDistribution, N::Integer) = [rand(S, d) for _ in 1:N]
+# Base.rand(S::Type{<:AbstractFloat}, d::MBVelocityDistribution, N::Integer) = [rand(S, d) for _ in 1:N]
+function Base.rand(S::Type{<:AbstractFloat}, d::MBVelocityDistribution, N::Integer) 
+    SAMPLES = Vector{NTuple{S, 3}}(undef, N)
+    for i in 1:N
+        SAMPLES[i] = rand(S, d)
+    end
+    return SAMPLES
+end
 Base.rand(S::Type{<:LocalCartesianVelocity}, d::MBVelocityDistribution, N::Integer) = S.(rand(d, N))
 function Base.rand(d::MBFluxVelocityDistribution{S}) where {S<:AbstractFloat}
     a = sqrt(BOLTZMANN_CONSTANT * d.T / d.m)
