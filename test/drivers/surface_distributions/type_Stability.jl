@@ -28,9 +28,6 @@
         # test all surface distributions
         for d in [EqualSurfaceDistribution(r), SolarSurfaceDistribution(r)]
 
-            # Base.rand
-            @test Base.rand(d) isa Tuple{t_out_1, t_out_1, t_out_1}
-
             # cdf
             @test cdf(d, l_t, u_v)  isa t_out_1
             @test cdf(d, l_v, u_s)  isa t_out_1
@@ -46,6 +43,14 @@
             @test pdf(t4, d, u_t)   isa t4
             @test pdf(t4, d, u_v)   isa t4
             @test pdf(t4, d, u_s)   isa t4
+
+            # rand
+            @test rand(d) isa Tuple{t_out_1, t_out_1, t_out_1}
+            @test rand(d, 10) isa Vector{Tuple{t_out_1, t_out_1, t_out_1}}
+            @test rand(t4, d) isa Tuple{t4, t4, t4}
+            @test rand(t4, d, 10) isa Vector{Tuple{t4, t4, t4}}
+            @test rand(GlobalSphericalPosition, d) isa GlobalSphericalPosition
+            @test rand(GlobalSphericalPosition, d, 10) isa Vector{GlobalSphericalPosition{t_out_1}}
 
         end
     end

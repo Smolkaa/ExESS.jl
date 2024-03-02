@@ -32,6 +32,7 @@ SolarSurfaceDistribution(r::BigInt) = SolarSurfaceDistribution(BigFloat(r))
 
 # internal union for simplified type handling
 _TVGSP = Union{Tuple{Real, Real, Real}, AbstractVector{<:Real}, GlobalSphericalPosition}
+_SDs = Union{EqualSurfaceDistribution, SolarSurfaceDistribution}
 ############################################################################################
 function cdf(::EqualSurfaceDistribution{S}, l::Tuple{Real, Real, Real}, 
              u::Tuple{Real, Real, Real}) where {S<:AbstractFloat}
@@ -75,6 +76,16 @@ end
 function Base.rand(d::SolarSurfaceDistribution{S}) where {S<:AbstractFloat} 
     return (d.r, asin(2*rand(S)-1), asin(2*rand(S)-1))
 end
+
+# overwriting additional `Base.rand` methods for multivariate surface distributions `_SDs`
+Base.rand(S::Type{<:AbstractFloat}, d::_SDs) = S.(rand(d))
+Base.rand(S::Type{<:GlobalSphericalPosition}, d::_SDs) = S(rand(d))
+function Base.rand(S::Type{<:AbstractFloat}, d::_SDs, N::Integer) # perormance improvment
+    SAMPLES = Vector{NTuple{3, S}}(undef, N)
+    for i in 1:N; SAMPLES[i] = rand(S, d); end
+    return SAMPLES
+end
+Base.rand(S::Type{<:GlobalSphericalPosition}, d::_SDs, N::Integer) = S.(rand(d, N))
 
 
 ############################################################################################

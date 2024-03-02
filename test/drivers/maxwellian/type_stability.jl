@@ -45,36 +45,42 @@
             MBFluxVelocityDistribution(in1, in2),]
 
             # test for type stability of constructor
-            @test typeof(d.T) == t_out_2
-            @test typeof(d.m) == t_out_2
+            @test d.T isa t_out_2
+            @test d.m isa t_out_2
 
             # split tests for different input types
             if d isa Union{MBVelocityDistribution, MBFluxVelocityDistribution}
-                @test typeof(Base.rand(d))     == Tuple{t_out_2, t_out_2, t_out_2}
-
-                @test typeof(cdf(d, tp3, v4))  == t_out_2
-                @test typeof(cdf(d, v3, vl4))  == t_out_2
-                @test typeof(cdf(d, vl3, tp4)) == t_out_2
-                @test typeof(cdf(t5, d, tp3, v4))  == t5
-                @test typeof(cdf(t5, d, v3, vl4))  == t5
-                @test typeof(cdf(t5, d, vl3, tp4)) == t5
+                @test cdf(d, tp3, v4)  isa t_out_2
+                @test cdf(d, v3, vl4)  isa t_out_2
+                @test cdf(d, vl3, tp4) isa t_out_2
+                @test cdf(t5, d, tp3, v4)  isa t5
+                @test cdf(t5, d, v3, vl4)  isa t5
+                @test cdf(t5, d, vl3, tp4) isa t5
                 
-                @test typeof(pdf(d, tp3)) == t_out_2
-                @test typeof(pdf(d, v3))  == t_out_2
-                @test typeof(pdf(d, vl3)) == t_out_2
-                @test typeof(pdf(t5, d, tp3)) == t5
-                @test typeof(pdf(t5, d, v3))  == t5
-                @test typeof(pdf(t5, d, vl3)) == t5
+                @test pdf(d, tp3) isa t_out_2
+                @test pdf(d, v3)  isa t_out_2
+                @test pdf(d, vl3) isa t_out_2
+                @test pdf(t5, d, tp3) isa t5
+                @test pdf(t5, d, v3)  isa t5
+                @test pdf(t5, d, vl3) isa t5
 
+                @test rand(d)     isa Tuple{t_out_2, t_out_2, t_out_2}
+                @test rand(d, 10) isa Vector{Tuple{t_out_2, t_out_2, t_out_2}}
+                @test rand(t5, d)     isa Tuple{t5, t5, t5}
+                @test rand(t5, d, 10) isa Vector{Tuple{t5, t5, t5}}
+                @test rand(LocalCartesianVelocity, d) isa LocalCartesianVelocity
+                @test rand(LocalCartesianVelocity, d, 10) isa Vector{LocalCartesianVelocity{t_out_2}}
             else
-                @test typeof(Base.rand(d)) == t_out_2
+                @test cdf(d, in3, in4) isa t_out_2
+                @test cdf(t5, d, in3, in4) isa t5
 
-                @test typeof(cdf(d, in3, in4)) == t_out_2
-                @test typeof(cdf(t5, d, in3, in4)) == t5
+                @test pdf(d, in3) isa t_out_2
+                @test pdf(t5, d, in3) isa t5
 
-                @test typeof(pdf(d, in3)) == t_out_2
-                @test typeof(pdf(t5, d, in3)) == t5
-
+                @test rand(d)     isa t_out_2
+                @test rand(d, 10) isa Vector{t_out_2}
+                @test rand(t5, d)     isa t5
+                @test rand(t5, d, 10) isa Vector{t5}
             end
         end
     end
