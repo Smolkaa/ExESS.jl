@@ -1,5 +1,8 @@
 ############################################################################################
 #::. FUNCTIONS
+
+# internal union for simplified type handling
+_TVGSP = Union{Tuple{Real, Real, Real}, AbstractVector{<:Real}, GlobalSphericalPosition}
 ############################################################################################
 """
     [1] lunar_surface_temperatures_DIVINER([S::Type{<:AbstractFloat}], theta0::Real)
@@ -8,9 +11,13 @@
     [3] lunar_surface_temperatures_DIVINER([S::Type{<:AbstractFloat}], theta0::Real, 
                                            thetas::AbstractVector, phis::AbstractVector)
     [4] lunar_surface_temperatures_DIVINER([S::Type{<:AbstractFloat}], theta0::Real, 
-                                           xs::GlobalSphericalPosition) 
+                                           x::Union{Tuple{Real, Real, Real}, 
+                                                    AbstractVector{<:Real}, 
+                                                    GlobalSphericalPosition}) 
     [5] lunar_surface_temperatures_DIVINER([S::Type{<:AbstractFloat}], theta0::Real, 
-                                           XS::Vector{GlobalSphericalPosition}) 
+                                           XS::Vector{Union{Tuple{Real, Real, Real}, 
+                                                            AbstractVector{<:Real}, 
+                                                            GlobalSphericalPosition}}) 
     [6] lunar_surface_temperatures_DIVINER([S::Type{<:AbstractFloat}], theta0::Real, 
                                            grid::AbstractGrid)
 
@@ -101,12 +108,16 @@ function lunar_surface_temperatures_DIVINER(theta0::Integer, thetas::AbstractVec
     S = promote_type(typeof(theta0), typeof(thetas[1]), typeof(phis[1]), Float64)
     return lunar_surface_temperatures_DIVINER(S(theta0), S.(thetas), S.(phis))
 end
-function lunar_surface_temperatures_DIVINER(theta0::Real, xs::GlobalSphericalPosition) 
-    return lunar_surface_temperatures_DIVINER(theta0, xs.theta, xs.phi)
+function lunar_surface_temperatures_DIVINER(theta0::Real, x::_TVGSP) 
+    return lunar_surface_temperatures_DIVINER(theta0, _gettheta(x), _getphi(x))
+end
+function lunar_surface_temperatures_DIVINER(theta0::Real, X::Vector{_TVGSP})
+    thetas, phis = [_gettheta(x) for x in X], [_getphi(x) for x in X]
+    return lunar_surface_temperatures_DIVINER(theta0, thetas, phis)
 end
 function lunar_surface_temperatures_DIVINER(theta0::Real, 
-                                            XS::Vector{GlobalSphericalPosition{S}}) where {S}
-    thetas, phis = [xs.theta for xs in XS], [xs.phi for xs in XS]
+                                            X::Vector{GlobalSphericalPosition{S}}) where {S}
+    thetas, phis = [_gettheta(x) for x in X], [_getphi(x) for x in X]
     return lunar_surface_temperatures_DIVINER(theta0, thetas, phis)
 end
 function lunar_surface_temperatures_DIVINER(theta0::Real, grid::AbstractGrid)
@@ -125,9 +136,13 @@ end
     [3] lunar_surface_temperatures_DIVINER_avg([S::Type{<:AbstractFloat}], 
                                                thetas::AbstractVector, phis::AbstractVector)
     [4] lunar_surface_temperatures_DIVINER_avg([S::Type{<:AbstractFloat}], 
-                                               xs::GlobalSphericalPosition)
+                                               x::Union{Tuple{Real, Real, Real}, 
+                                                        AbstractVector{<:Real}, 
+                                                        GlobalSphericalPosition})
     [5] lunar_surface_temperatures_DIVINER_avg([S::Type{<:AbstractFloat}], 
-                                               XS::Vector{GlobalSphericalPosition})
+                                               XS::Vector{Union{Tuple{Real, Real, Real}, 
+                                                                AbstractVector{<:Real}, 
+                                                                GlobalSphericalPosition}})
     [6] lunar_surface_temperatures_DIVINER_avg([S::Type{<:AbstractFloat}], 
                                                grid::AbstractGrid)
 
@@ -195,11 +210,15 @@ function lunar_surface_temperatures_DIVINER_avg(thetas::AbstractVector{<:Integer
     S = promote_type(typeof(thetas[1]), typeof(phis[1]), Float64)
     return lunar_surface_temperatures_DIVINER_avg(S.(thetas), S.(phis); kwargs...)
 end
-function lunar_surface_temperatures_DIVINER_avg(xs::GlobalSphericalPosition) 
-    return lunar_surface_temperatures_DIVINER_avg(xs.theta, xs.phi)
+function lunar_surface_temperatures_DIVINER_avg(x::_TVGSP) 
+    return lunar_surface_temperatures_DIVINER_avg(_gettheta(x), _getphi(x))
 end
-function lunar_surface_temperatures_DIVINER_avg(XS::Vector{GlobalSphericalPosition{S}}) where {S}
-    thetas, phis = [xs.theta for xs in XS], [xs.phi for xs in XS]
+function lunar_surface_temperatures_DIVINER_avg(X::Vector{_TVGSP})
+    thetas, phis = [_gettheta(x) for x in X], [_getphi(x) for x in X]
+    return lunar_surface_temperatures_DIVINER_avg(thetas, phis)
+end
+function lunar_surface_temperatures_DIVINER_avg(X::Vector{GlobalSphericalPosition{S}}) where {S}
+    thetas, phis = [_gettheta(x) for x in X], [_getphi(x) for x in X]
     return lunar_surface_temperatures_DIVINER_avg(thetas, phis)
 end
 function lunar_surface_temperatures_DIVINER_avg(grid::AbstractGrid) 
