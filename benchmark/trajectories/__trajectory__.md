@@ -1,6 +1,6 @@
 # Benchmark: `trajectory` 
 
-Last updated: 2024-03-09T21:10:20.701
+Last updated: 2024-03-14T14:35:16.930
 
 **Julia Version Information**
 
@@ -21,12 +21,12 @@ Platform Info:
 ## Preprocessing
 
 ```julia
-x0_gsp = rand(SolarSurfaceDistribution(LUNAR_RADIUS))
+x0_gsp = rand(GlobalSphericalPosition, SolarSurfaceDistribution(LUNAR_RADIUS))
 x0_gcp = GlobalCartesianPosition(x0_gsp)
 x0_t = ExESS._get(x0_gcp)
 x0_v = vec(x0_gcp)
 
-v0_lcv = rand(MBFluxVelocityDistribution(100 + rand()*300, amu2kg(rand()*20)))
+v0_lcv = rand(LocalCartesianVelocity, MBFluxVelocityDistribution(100 + rand()*300, amu2kg(rand()*20)))
 v0_gcv = GlobalCartesianVelocity(x0_gcp, v0_lcv)
 v0_t = ExESS._get(v0_gcv)
 v0_v = vec(v0_gcv)
@@ -40,10 +40,10 @@ v0_v = vec(v0_gcv)
 trajectory(x0_t, v0_t, ddx_gravity)
 ```
 
-- Minium time: 56979.0 ns
-- Median time: 62296.0 ns
-- Memory estimate: 79648 bytes
-- Allocs estimate: 1164
+- Minium time: 67406.0 ns
+- Median time: 84421.0 ns
+- Memory estimate: 75456 bytes
+- Allocs estimate: 1114
 
 ### Function: `trajectory` - Tuples w/ `reltol=1e-8`
 
@@ -51,10 +51,10 @@ trajectory(x0_t, v0_t, ddx_gravity)
 trajectory(x0_t, v0_t, ddx_gravity; reltol=1e-8)
 ```
 
-- Minium time: 84599.0 ns
-- Median time: 111414.0 ns
-- Memory estimate: 140272 bytes
-- Allocs estimate: 1863
+- Minium time: 95024.0 ns
+- Median time: 123746.0 ns
+- Memory estimate: 130352 bytes
+- Allocs estimate: 1747
 
 ### Function: `trajectory` - Vectors
 
@@ -62,10 +62,10 @@ trajectory(x0_t, v0_t, ddx_gravity; reltol=1e-8)
 trajectory(x0_v, v0_v, ddx_gravity)
 ```
 
-- Minium time: 58859.0 ns
-- Median time: 107375.0 ns
-- Memory estimate: 79872 bytes
-- Allocs estimate: 1174
+- Minium time: 68071.0 ns
+- Median time: 89100.5 ns
+- Memory estimate: 75680 bytes
+- Allocs estimate: 1124
 
 ### Function: `trajectory` - Custom Types
 
@@ -73,10 +73,10 @@ trajectory(x0_v, v0_v, ddx_gravity)
 trajectory(x0_gcp, v0_gcv, ddx_gravity)
 ```
 
-- Minium time: 98356.0 ns
-- Median time: 106940.0 ns
-- Memory estimate: 79648 bytes
-- Allocs estimate: 1164
+- Minium time: 75894.0 ns
+- Median time: 93847.0 ns
+- Memory estimate: 75456 bytes
+- Allocs estimate: 1114
 
 ### Function: `trajectory` - Custom Types w/ conversion
 
@@ -84,8 +84,8 @@ trajectory(x0_gcp, v0_gcv, ddx_gravity)
 trajectory(x0_gsp, v0_lcv, ddx_gravity)
 ```
 
-- Minium time: 99263.0 ns
-- Median time: 110141.5 ns
-- Memory estimate: 79648 bytes
-- Allocs estimate: 1164
+- Minium time: 75327.0 ns
+- Median time: 93114.0 ns
+- Memory estimate: 75456 bytes
+- Allocs estimate: 1114
 
