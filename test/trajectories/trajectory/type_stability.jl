@@ -85,3 +85,5 @@
         @test LocalCartesianVelocity(traj, rand(t_rand)) isa LocalCartesianVelocity{t_out_rand}
     end
 end
+
+nothing
