@@ -61,11 +61,13 @@ end
 function trajectory(x0::AbstractVector, v0::AbstractVector, args...; kwargs...)
     return trajectory(_get(x0), _get(v0), args...; kwargs...)
 end
-function trajectory(x0::GlobalCartesianPosition, v0::GlobalCartesianVelocity, args...; kwargs...)
+function trajectory(x0::GlobalCartesianPosition, v0::GlobalCartesianVelocity, args...; 
+                    kwargs...)
     return trajectory(_get(x0), _get(v0), args...; kwargs...)
 end
 function trajectory(x0::AbstractPosition, v0::AbstractVelocity, args...; kwargs...)
-    return trajectory(GlobalCartesianPosition(x0), GlobalCartesianVelocity(x0, v0), args...; kwargs...)
+    return trajectory(GlobalCartesianPosition(x0), GlobalCartesianVelocity(x0, v0), args...; 
+                      kwargs...)
 end
 
 
@@ -166,7 +168,8 @@ constructor assumes the solution object to be from a `SecondOrderODEProblem`, wh
 components of the solution vector are ordered as `[vx, vy, vz, x, y, z]`.
 """
 function LocalCartesianVelocity(sol::ODESolution, t::Real) 
-    return LocalCartesianVelocity(GlobalCartesianPosition(sol, t), GlobalCartesianVelocity(sol, t))
+    return LocalCartesianVelocity(GlobalCartesianPosition(sol, t), 
+                                  GlobalCartesianVelocity(sol, t))
 end
 function LocalCartesianVelocity(sol::ODESolution, t::AbstractVector) 
     return [LocalCartesianVelocity(sol, tt) for tt in t]
