@@ -1,6 +1,8 @@
 #::. FUNCTIONS
 """
-    [1] projection_CHAMBERLAIN1963(n1::Real, r1::Real, r2::Real, T::Real, m::Real; M::Real=LUNAR_MASS)
+    [1] projection_CHAMBERLAIN1963(n1::Real, r1::Real, r2::Real, T::Real, m::Real; 
+                                   M::Real=LUNAR_MASS, bal::Bool=true, sat::Bool=true, 
+                                   esc::Bool=true)
 
 Calculates the number density of particles of mass `m` at radial distance `r2` given the 
 number density `n1` at radial distance `r1`, assuming constant temperature `T`.
@@ -10,13 +12,25 @@ in the generalized form of the isothermal barometric law. The calculation is bas
 equation (14) in Chamberlain (1963).
 
 
+**Key-Word Arguments**
+
+| Field    | Default Value  | Unit       | Description                          |
+|:-------- | --------------:|:---------- |:------------------------------------ |
+| `M`      | `LUNAR_MASS`   | (kg)       | mass of central object               |
+| `bal`    | `true`         |            | include ballistic particles          |
+| `sat`    | `true`         |            | include satellite particles          |
+| `esc`    | `true`         |            | include escaping particles           |
+
+
 **Rerences**
 
 - Chamberlain, 1963, "Planetary coronae and atmospheric evaporation"
 - Cook et al. 2013, "New upper limits on numerous atmospheric species in the native lunar
   atmosphere"
 """
-function projection_CHAMBERLAIN1963(n1::Real, r1::Real, r2::Real, T::Real, m::Real; M::Real=LUNAR_MASS)
+function projection_CHAMBERLAIN1963(n1::Real, r1::Real, r2::Real, T::Real, m::Real; 
+                                    M::Real=LUNAR_MASS, bal::Bool=true, sat::Bool=true, 
+                                    esc::Bool=true)
     pot_energy_1 = GRAVITATIONAL_CONSTANT * M * m / (BOLTZMANN_CONSTANT * T * r1)
     pot_energy_2 = GRAVITATIONAL_CONSTANT * M * m / (BOLTZMANN_CONSTANT * T * r2)
     
@@ -28,15 +42,15 @@ function projection_CHAMBERLAIN1963(n1::Real, r1::Real, r2::Real, T::Real, m::Re
     f = sqrt(pot_energy_2^2 - pot_energy_1^2) / pot_energy_2
 
     # partition functions (ballistic, satellite, escape)
-    par_bal = 2/sqrt(pi) * (gi - f*exp(-L)*giL)
-    par_sat = 2/sqrt(pi) * (f*exp(-L)*giL)
-    par_esc = 1/sqrt(pi) * (g - gi - f*exp(-L)*(g - giL))
-    par = par_bal + par_sat + par_esc
+    par = 0
+    if bal; par += 2/sqrt(pi) * (gi - f*exp(-L)*giL); end
+    if sat; par += 2/sqrt(pi) * (f*exp(-L)*giL); end
+    if esc; par += 1/sqrt(pi) * (g - gi - f*exp(-L)*(g - giL)); end
 
     return n1 * exp(-(pot_energy_1 - pot_energy_2)) * par
 end
 
 
-
 #::. EXPORTS
-export projection_CHAMBERLAIN1963
+export 
+    projection_CHAMBERLAIN1963
