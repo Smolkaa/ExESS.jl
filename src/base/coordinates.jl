@@ -435,11 +435,12 @@ Base.size(::T) where {T<:AbstractCoordinate} = (3,)
 Base.vec(a::T) where {T<:AbstractCartesianCoordinates} = [a.x, a.y, a.z]
 Base.vec(a::T) where {T<:AbstractSphericalCoordinates} = [a.r, a.theta, a.phi]
 
-LinearAlgebra.norm(a::T) where {T<:AbstractCartesianCoordinates} = sqrt(a.x^2 + a.y^2 + a.z^2)
-LinearAlgebra.norm(x::GlobalSphericalPosition) = x.r
-
 
 LinearAlgebra.dot(a::T, b::S) where {T<:AbstractCoordinate, S<:AbstractCoordinate} = a * b
+
+
+LinearAlgebra.norm(a::T) where {T<:AbstractCartesianCoordinates} = sqrt(a.x^2 + a.y^2 + a.z^2)
+LinearAlgebra.norm(x::GlobalSphericalPosition) = x.r
 
 
 #::. EXPORTS
