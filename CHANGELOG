@@ -1,13 +1,26 @@
-# ExESS -- Changelog
+# ExESS -- CHANGELOG
 
-## v1.0.0 (Feb. ??, 2024) - Current
+## v0.1.6 (current)
 
-- initial copy of the repository from private GitLab to public GitHub
-  + repository structure update >> new folders under `src`
-  + reworking of `README.md` to fit the new structure
-- changing of distribution integration (**breaking change**)
-  + main statistical functionality in new `\base` script: `statistics.jl`
-  + individual distributions now have their own script, e.g. `maxwellian.jl`
-  + every distribution gets its own type, for example `MBAzimuthDistribution` for the
-    distribution of the azimuth angle of the three-dimensional Maxwell-Boltzmann velocity
-    distribution
+- fixed Chamberlain projection (wrong order of radius arguments)
+- updated Chamberlain projection function call (breaking)
+  + the call does no longer include the known density `n1`
+  + central body mass `M` moven from `kwargs` to `args`
+  + type stability
+  + behaviour tests and comparison to literature
+
+
+## v0.1.5 (2024/03/25)
+
+- added type stability tests for trajectory calculations
+- fixed trajectory benchmarking
+- added behaviour tests for trajectories
+- edit Chamberlain projection to include selectable partitions
+- general housekeeping
+
+## v0.1.3 (2024/02/28)
+
+- added support for vectorized `Base.rand` calls of custom distributions
+- edited multivariate maxwellians to be more efficient (fewer allocations) when using
+  type casts in vectorized calls
+- minor formatting updates

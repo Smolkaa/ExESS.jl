@@ -137,6 +137,7 @@ MBFluxVelocityDistribution(T::Integer, m::Integer) = MBFluxVelocityDistribution(
 
 # internal union for simplified type handling
 _TVLCV = Union{Tuple{Real, Real, Real}, AbstractVector{<:Real}, LocalCartesianVelocity}
+_VDs = Union{MBVelocityDistribution, MBFluxVelocityDistribution}
 ############################################################################################
 function cdf(::MBAzimuthDistribution{S}, l::Real, u::Real) where {S<:AbstractFloat} 
     return S((u - l)/(2*pi))
@@ -261,6 +262,16 @@ function Base.rand(d::MBFluxVelocityDistribution{S}) where {S<:AbstractFloat}
     a = sqrt(BOLTZMANN_CONSTANT * d.T / d.m)
     return S.(( a*randn(), a*randn(), a * sqrt(-2*log(1-rand())) ))
 end
+
+# overwriting additional `Base.rand` methods for multivariate maxwellians
+Base.rand(S::Type{<:AbstractFloat}, d::_VDs) = S.(rand(d))
+Base.rand(S::Type{<:LocalCartesianVelocity}, d::_VDs) = S(rand(d))
+function Base.rand(S::Type{<:AbstractFloat}, d::_VDs, N::Integer) # perormance improvment
+    SAMPLES = Vector{NTuple{3, S}}(undef, N)
+    for i in 1:N; SAMPLES[i] = rand(S, d); end
+    return SAMPLES
+end
+Base.rand(S::Type{<:LocalCartesianVelocity}, d::_VDs, N::Integer) = S.(rand(d, N))
 
 
 

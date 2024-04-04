@@ -1,12 +1,24 @@
 ############################################################################################
 #::. FUNCTIONS
+
+# internal union for simplified type handling
+_TVGSP = Union{Tuple{Real, Real, Real}, AbstractVector{<:Real}, GlobalSphericalPosition}
 ############################################################################################
 """
-    [1] lunar_surface_temperatures_HURLEY2015(theta::Real, phi::Real)
-    [2] lunar_surface_temperatures_HURLEY2015(thetas::AbstractVector, phis::AbstractVector)
-    [3] lunar_surface_temperatures_HURLEY2015(xs::GlobalSphericalPosition)
-    [4] lunar_surface_temperatures_HURLEY2015(XS::Vector{GlobalSphericalPosition})
-    [5] lunar_surface_temperatures_HURLEY2015(grid::AbstractGrid)
+    [1] lunar_surface_temperatures_HURLEY2015([S::Type{<:AbstractFloat}], theta::Real, 
+                                              phi::Real)
+    [2] lunar_surface_temperatures_HURLEY2015([S::Type{<:AbstractFloat}], 
+                                              thetas::AbstractVector, phis::AbstractVector)
+    [3] lunar_surface_temperatures_HURLEY2015([S::Type{<:AbstractFloat}], 
+                                              x::Union{Tuple{Real, Real, Real}, 
+                                                       AbstractVector{<:Real}, 
+                                                       GlobalSphericalPosition})
+    [4] lunar_surface_temperatures_HURLEY2015([S::Type{<:AbstractFloat}], 
+                                              X::Vector{Union{Tuple{Real, Real, Real}, 
+                                                              AbstractVector{<:Real}, 
+                                                              GlobalSphericalPosition}})
+    [5] lunar_surface_temperatures_HURLEY2015([S::Type{<:AbstractFloat}], 
+                                              grid::AbstractGrid)
 
 Calculates the lunar surface temperatures based on the analytic formula given in Hurley et
 al. 2015. The input parameters are in spherical, sub-solar coordinates, with the longitude
@@ -34,19 +46,25 @@ function lunar_surface_temperatures_HURLEY2015(theta::Real, phi::Real)
     return lunar_surface_temperatures_HURLEY2015(promote(theta, phi)...)
 end
 function lunar_surface_temperatures_HURLEY2015(theta::Integer, phi::Integer) 
-    return lunar_surface_temperatures_HURLEY2015(promote(theta, phi, 1.0)[1:2]...)
+    return lunar_surface_temperatures_HURLEY2015(float(theta), phi)
 end
 function lunar_surface_temperatures_HURLEY2015(thetas::AbstractVector, phis::AbstractVector)
     return lunar_surface_temperatures_HURLEY2015.(thetas, phis)
 end
-function lunar_surface_temperatures_HURLEY2015(xs::GlobalSphericalPosition)
-    return lunar_surface_temperatures_HURLEY2015(xs.theta, xs.phi)
+function lunar_surface_temperatures_HURLEY2015(x::_TVGSP)
+    return lunar_surface_temperatures_HURLEY2015(_gettheta(x), _getphi(x))
 end
-function lunar_surface_temperatures_HURLEY2015(XS::Vector{GlobalSphericalPosition{S}}) where {S}
-    return lunar_surface_temperatures_HURLEY2015.(XS)
+function lunar_surface_temperatures_HURLEY2015(X::Vector{_TVGSP})
+    return lunar_surface_temperatures_HURLEY2015.(X)
+end
+function lunar_surface_temperatures_HURLEY2015(X::Vector{GlobalSphericalPosition{S}}) where {S}
+    return lunar_surface_temperatures_HURLEY2015.(X)
 end
 function lunar_surface_temperatures_HURLEY2015(grid::AbstractGrid)
     return lunar_surface_temperatures_HURLEY2015(surfacecoords(grid))
+end
+function lunar_surface_temperatures_HURLEY2015(S::Type{<:AbstractFloat}, args...)
+    return S.(lunar_surface_temperatures_HURLEY2015(args...))
 end
 
 

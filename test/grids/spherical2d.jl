@@ -4,3 +4,5 @@
     include(joinpath(@__DIR__, "spherical2d", "behaviour.jl")) 
 
 end
+
+nothing

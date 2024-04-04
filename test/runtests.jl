@@ -29,6 +29,7 @@ end
 
     # misc
     @testset verbose=true "MISC ----------------------------" begin
+        include(joinpath(@__DIR__, "misc", "projection_CHAMBERLAIN1963.jl"))
     end
 
     # ceres
@@ -47,6 +48,7 @@ end
     end
     # trajectories
     @testset verbose=true "TRAJECTORIES --------------------" begin
+        include(joinpath(@__DIR__, "trajectories", "trajectory.jl"))
     end
 
 end
