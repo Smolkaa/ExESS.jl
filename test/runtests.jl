@@ -29,6 +29,7 @@ end
 
     # misc
     @testset verbose=true "MISC ----------------------------" begin
+        include(joinpath(@__DIR__, "misc", "projection_CHAMBERLAIN1963.jl"))
     end
 
     # ceres

@@ -7,31 +7,29 @@
 #							 at 1.0, so there is a slight jump. This aparently is carried
 #							 over, as two separate projections are also not equal to one big
 #							 projection, no matter the distances.
-# TODO: Type stability is missing here.
+# 
+# Note:	The potential energies are converted to Float64 to prevent them from becoming a 
+#		`BigFloat` type, as this generally causes problems with the gamma functions.
 ############################################################################################
 """
-    [1] projection_CHAMBERLAIN1963(r1::Real, r2::Real, T::Real, m::Real; 
-                                   M::Real=LUNAR_MASS, bal::Bool=true, sat::Bool=true, 
-                                   esc::Bool=true)
+    [1] projection_CHAMBERLAIN1963([S::Type{<:AbstractFloat},] r1::Real, r2::Real, M::Real, 
+								   m::Real, T::Real; kwargs...)
 
 Calculates the projection fraction for a particles of mass `m` at radial distance `r2`,
-assuming a known value given at radial distance `r1`. The entire projection is based on an
-isothermal derivation assuming constant temperature `T`.
+assuming a known value given at radial distance `r1` of the central body with mass `M`. The 
+entire projection is based on an isothermal derivation assuming constant temperature `T`.
 
 Assumes hydrostatic equilibrium and perfect-gas law with isotropic gas pressure, resulting
 in the generalized form of the isothermal barometric law. The calculation is based on the 
 equation (14) in Chamberlain (1963).
 
-
 **Key-Word Arguments**
 
 | Field    | Default Value  | Unit       | Description                          |
 |:-------- | --------------:|:---------- |:------------------------------------ |
-| `M`      | `LUNAR_MASS`   | (kg)       | mass of central object               |
 | `bal`    | `true`         | ()         | include ballistic particles          |
 | `sat`    | `true`         | ()         | include satellite particles          |
 | `esc`    | `true`         | ()         | include escaping particles           |
-
 
 **Rerences**
 
@@ -39,12 +37,11 @@ equation (14) in Chamberlain (1963).
 - Cook et al. 2013, "New upper limits on numerous atmospheric species in the native lunar
   atmosphere"
 """
-function projection_CHAMBERLAIN1963(r1::Real, r2::Real, T::Real, m::Real; 
-                                    M::Real=LUNAR_MASS, bal::Bool=true, sat::Bool=true, 
-                                    esc::Bool=true)
+function projection_CHAMBERLAIN1963(r1::S, r2::S, M::S, m::S, T::S; bal::Bool=true, 
+								    sat::Bool=true, esc::Bool=true) where {S<:AbstractFloat}
     if r1 < r2
-		pot_energy_1 = GRAVITATIONAL_CONSTANT * M * m / (BOLTZMANN_CONSTANT * T * r1)
-		pot_energy_2 = GRAVITATIONAL_CONSTANT * M * m / (BOLTZMANN_CONSTANT * T * r2)
+		pot_energy_1 = Float64(GRAVITATIONAL_CONSTANT * M * m / (BOLTZMANN_CONSTANT * T * r1))
+		pot_energy_2 = Float64(GRAVITATIONAL_CONSTANT * M * m / (BOLTZMANN_CONSTANT * T * r2))
 		
 		# pre-calculations
 		L = pot_energy_2^2 / (pot_energy_1 + pot_energy_2)
@@ -60,12 +57,11 @@ function projection_CHAMBERLAIN1963(r1::Real, r2::Real, T::Real, m::Real;
 		if esc; par += 1/sqrt(pi) * (g - gi - f*exp(-L)*(g - giL)); end
 	
 		# return projection
-		# return par
-		return exp(-(pot_energy_1 - pot_energy_2)) * par
+		return S(exp(-(pot_energy_1 - pot_energy_2)) * par)
 
 	elseif r1 > r2
-		pot_energy_1 = GRAVITATIONAL_CONSTANT * M * m / (BOLTZMANN_CONSTANT * T * r2)
-		pot_energy_2 = GRAVITATIONAL_CONSTANT * M * m / (BOLTZMANN_CONSTANT * T * r1)
+		pot_energy_1 = Float64(GRAVITATIONAL_CONSTANT * M * m / (BOLTZMANN_CONSTANT * T * r2))
+		pot_energy_2 = Float64(GRAVITATIONAL_CONSTANT * M * m / (BOLTZMANN_CONSTANT * T * r1))
 		
 		# pre-calculations
 		L = pot_energy_2^2 / (pot_energy_1 + pot_energy_2)
@@ -81,11 +77,21 @@ function projection_CHAMBERLAIN1963(r1::Real, r2::Real, T::Real, m::Real;
 		if esc; par += 1/sqrt(pi) * (g - gi - f*exp(-L)*(g - giL)); end
 	
 		# return projection
-		return exp(pot_energy_1 - pot_energy_2) / par
+		return S(exp(pot_energy_1 - pot_energy_2) / par)
 	end
-
-	return 1
+	return S(1)
 end
+function projection_CHAMBERLAIN1963(r1::Real, r2::Real, M::Real, m::Real, T::Real; kwargs...)
+	return projection_CHAMBERLAIN1963(promote(r1, r2, M, m, T)...; kwargs...)
+end
+function projection_CHAMBERLAIN1963(r1::Integer, r2::Integer, M::Integer, m::Integer, 
+									T::Integer; kwargs...)
+	return projection_CHAMBERLAIN1963(float(r1),float(r2),float(M),float(m),float(T);kwargs...)
+end
+function projection_CHAMBERLAIN1963(S::Type{<:AbstractFloat}, args...; kwargs...)
+	return S(projection_CHAMBERLAIN1963(args...; kwargs...))
+end
+
 
 
 ############################################################################################
