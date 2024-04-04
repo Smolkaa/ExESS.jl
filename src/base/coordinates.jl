@@ -321,9 +321,9 @@ _getphi(a::Union{Tuple, AbstractVector}) = a[3]
 
 
 """
-    [1] azimuth([S::Type{<:AbstractFloat}], v::Tuple)
-    [2] azimuth([S::Type{<:AbstractFloat}], v::AbstractVector)
-    [3] azimuth([S::Type{<:AbstractFloat}], v::AbstractCartesianCoordinates)
+    [1] azimuth([S::Type{<:AbstractFloat}], c::Tuple)
+    [2] azimuth([S::Type{<:AbstractFloat}], c::AbstractVector)
+    [3] azimuth([S::Type{<:AbstractFloat}], c::AbstractCartesianCoordinates)
 
 Calculate the azimuth angle (in [rad]) of the cartesian vector `c`.
 """
@@ -333,9 +333,9 @@ azimuth(S::Type{<:AbstractFloat}, args...) = S(azimuth(args...))
 
 
 """
-    [1] elevation([S::Type{<:AbstractFloat}], v::Tuple)
-    [2] elevation([S::Type{<:AbstractFloat}], v::AbstractVector)
-    [3] elevation([S::Type{<:AbstractFloat}], v::AbstractCartesianCoordinates)
+    [1] elevation([S::Type{<:AbstractFloat}], c::Tuple)
+    [2] elevation([S::Type{<:AbstractFloat}], c::AbstractVector)
+    [3] elevation([S::Type{<:AbstractFloat}], c::AbstractCartesianCoordinates)
 
 Calculate the elevation angle (in [rad]) of the cartesian vector `c`.
 """
@@ -357,9 +357,9 @@ speed(S::Type{<:AbstractFloat}, args...) = S(speed(args...))
 
 
 """
-    [1] zenith([S::Type{<:Real}], v::Tuple)
-    [2] zenith([S::Type{<:Real}], v::AbstractVector)
-    [3] zenith([S::Type{<:Real}], v::AbstractCartesianCoordinates)
+    [1] zenith([S::Type{<:Real}], c::Tuple)
+    [2] zenith([S::Type{<:Real}], c::AbstractVector)
+    [3] zenith([S::Type{<:Real}], c::AbstractCartesianCoordinates)
 
 Calculate the zenith angle (in [rad]) of the the cartesian vector `c`.
 
