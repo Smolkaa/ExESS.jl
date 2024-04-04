@@ -1,5 +1,15 @@
 # ExESS -- CHANGELOG
 
+## v0.1.6 (current)
+
+- fixed Chamberlain projection (wrong order of radius arguments)
+- updated Chamberlain projection function call (breaking)
+  + the call does no longer include the known density `n1`
+  + central body mass `M` moven from `kwargs` to `args`
+  + type stability
+  + behaviour tests and comparison to literature
+
+
 ## v0.1.5 (2024/03/25)
 
 - added type stability tests for trajectory calculations
