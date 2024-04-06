@@ -1,6 +1,11 @@
 # ExESS -- CHANGELOG
 
-## v0.1.6 (current)
+## v0.1.7 (current)
+
+- added docstrings to `base\constants.jl` with the appropriate mention of the sources
+
+
+## v0.1.6 (2024/04/04)
 
 - fixed Chamberlain projection (wrong order of radius arguments)
 - updated Chamberlain projection function call (breaking)
