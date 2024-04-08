@@ -73,7 +73,7 @@ Average atomic mass of hydrogen in (u).
 Value taken from [Prohaska et al.](https://doi.org/10.1515/pac-2019-0603).
 The value used is the average of the reported interval `[1.00784, 1.00811]` in (u).
 """
-const AMU_H = (1.00784 +  1.00811) / 2 # (u)
+const AMU_H = (1.00784 + 1.00811) / 2 # (u)
 
 
 """
