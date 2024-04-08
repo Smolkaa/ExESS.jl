@@ -2,10 +2,8 @@
 
     # Page 911 - partition function of bound orbits
     # Testing the sum of the ballistic and satellite partition functions
-    # 
-    # Note that the base radius `R0` is divided by ten to avoid R < R0.
-    R0, m, M, T = LUNAR_RADIUS/10, amu2kg(100*rand()), LUNAR_MASS, 400*rand()
-    LMB = GRAVITATIONAL_CONSTANT * M * m / (BOLTZMANN_CONSTANT * T * R0)
+    m, M, T, LMB = amu2kg(100*rand()), LUNAR_MASS, 400*rand(), 15 + 10*rand()
+    R0 = GRAVITATIONAL_CONSTANT * M * m / (BOLTZMANN_CONSTANT * T * LMB)
 
     lmb = vcat(0.1:0.1:1.0, 1.5:0.5:5.0, 6.0:1.0:15.0)
     P = [
