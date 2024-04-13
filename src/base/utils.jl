@@ -1,4 +1,6 @@
+############################################################################################
 #::. FUNCTIONS
+############################################################################################
 """
     [1] amu2kg(amu::Real)
 
@@ -62,15 +64,34 @@ Returns the sign of `x` with the custom definition `sgn(0) = 1`.
 sgn(x::Real) = x != 0 ? sign(x) : typeof(x)(1) 
 
 
-#::. extension
+############################################################################################
+#::. EXTENSIONS
+############################################################################################
+"""
+    [1] Base.isapprox(t1::Tuple, t2::Tuple; kwargs...)
+
+Extension of `Base.isapprox` function to work with tuples. Mostly internal use inside of
+the test suite of the `ExESS` package.
+"""
 Base.isapprox(t1::Tuple, t2::Tuple; kwargs...) = isapprox([t1...], [t2...]; kwargs...)
 
 
+"""
+    [1] Base.promote_rule(::Type{Vector{BigInt}}, ::Type{Vector{T}}) where {T<:Integer}
+    [2] Base.promote_rule(::Type{Vector{BigInt}}, ::Type{Vector{T}}) where {T<:Real}
+    [3] Base.promote_rule(::Type{Vector{T}}, ::Type{Vector{BigInt}}) where {T<:Integer}
+    [4] Base.promote_rule(::Type{Vector{T}}, ::Type{Vector{BigInt}}) where {T<:Real}
+
+Promotion rules for `Vector{BigInt}` and `Vector{BigFloat}`. Mostly internal use inside of
+the test suite of the `ExESS` package.
+"""
 Base.promote_rule(::Type{Vector{BigInt}}, ::Type{Vector{T}}) where {T<:Integer} = Vector{BigInt}
 Base.promote_rule(::Type{Vector{BigInt}}, ::Type{Vector{T}}) where {T<:Real} = Vector{BigFloat}
 Base.promote_rule(::Type{Vector{T}}, ::Type{Vector{BigInt}}) where {T<:Integer} = Vector{BigInt}
 Base.promote_rule(::Type{Vector{T}}, ::Type{Vector{BigInt}}) where {T<:Real} = Vector{BigFloat}
 
 
+############################################################################################
 #::. EXPORTS
+############################################################################################
 export amu2kg, eV2J, J2eV, limit_acos, lng2LT, LT2lng, sgn
