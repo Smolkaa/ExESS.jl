@@ -1,10 +1,12 @@
 # ExESS -- CHANGELOG
 
-## v0.1.7 (current)
+## v0.1.7 (2024/04/16)
 
 - updated `base\constants.jl` to include the latest values for the physical constants
   CODATA 2018 database
 - added docstrings to `base\constants.jl` with the appropriate mention of the sources
+- added kilo joule per mole to electronvolt conversion to `base\utils.jl`
+  + `kJpmol2eV` and `eV2kJpmol` functions
 
 
 ## v0.1.6 (2024/04/04)
