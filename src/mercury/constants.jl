@@ -2,15 +2,15 @@
 #::. CONSTANTS
 ############################################################################################
 """
-Mass of Mercury in kg. 
+Mass of Mercury in kg.
 
 https://nssdc.gsfc.nasa.gov/planetary/factsheet/mercuryfact.html
 """
-const MERCURY_MASS   = 3.3010e23 # [kg]
+const MERCURY_MASS = 3.3010e23 # [kg]
 
 
 """
-Radius of Mercury in m (volumetric mean). 
+Radius of Mercury in m (volumetric mean).
 
 https://nssdc.gsfc.nasa.gov/planetary/factsheet/mercuryfact.html
 """
