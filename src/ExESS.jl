@@ -10,7 +10,7 @@ using DifferentialEquations: ODESolution, SecondOrderODEProblem, solve, terminat
 using Interpolations: BSpline, Flat, interpolate, Linear, linear_interpolation
 using LinearAlgebra
 using NearestNeighbors: KDTree, knn
-using SpecialFunctions: gamma, gamma_inc, erf, erfinv
+using SpecialFunctions
 using StaticArrays: SA
 using Statistics
 
