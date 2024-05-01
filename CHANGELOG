@@ -1,5 +1,9 @@
 # ExESS -- CHANGELOG
 
+## v0.1.8 (2024/XX/YY)
+
+- _(internal)_ added utility function to handle `erfinv` calls with `Float16` types
+
 ## v0.1.7 (2024/04/16)
 
 - updated `base\constants.jl` to include the latest values for the physical constants

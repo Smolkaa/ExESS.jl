@@ -86,8 +86,6 @@ sgn(x::Real) = x != 0 ? sign(x) : typeof(x)(1)
 #::. EXTENSIONS
 ############################################################################################
 """
-    [1] Base.isapprox(t1::Tuple, t2::Tuple; kwargs...)
-
 Extension of `Base.isapprox` function to work with tuples. Mostly internal use inside of
 the test suite of the `ExESS` package.
 """
@@ -95,11 +93,6 @@ Base.isapprox(t1::Tuple, t2::Tuple; kwargs...) = isapprox([t1...], [t2...]; kwar
 
 
 """
-    [1] Base.promote_rule(::Type{Vector{BigInt}}, ::Type{Vector{T}}) where {T<:Integer}
-    [2] Base.promote_rule(::Type{Vector{BigInt}}, ::Type{Vector{T}}) where {T<:Real}
-    [3] Base.promote_rule(::Type{Vector{T}}, ::Type{Vector{BigInt}}) where {T<:Integer}
-    [4] Base.promote_rule(::Type{Vector{T}}, ::Type{Vector{BigInt}}) where {T<:Real}
-
 Promotion rules for `Vector{BigInt}` and `Vector{BigFloat}`. Mostly internal use inside of
 the test suite of the `ExESS` package.
 """
@@ -107,6 +100,12 @@ Base.promote_rule(::Type{Vector{BigInt}}, ::Type{Vector{T}}) where {T<:Integer} 
 Base.promote_rule(::Type{Vector{BigInt}}, ::Type{Vector{T}}) where {T<:Real} = Vector{BigFloat}
 Base.promote_rule(::Type{Vector{T}}, ::Type{Vector{BigInt}}) where {T<:Integer} = Vector{BigInt}
 Base.promote_rule(::Type{Vector{T}}, ::Type{Vector{BigInt}}) where {T<:Real} = Vector{BigFloat}
+
+
+"""
+Custom extension of the `erfinv` function for `Float16` type inputs.
+"""
+SpecialFunctions.erfinv(x::Float16) = Float16(erfinv(Float32(x)))
 
 
 ############################################################################################
