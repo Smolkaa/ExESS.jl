@@ -5,7 +5,7 @@
     [1] MBAzimuthDistribution{S<:AbstractFloat}
     [2] MBAzimuthDistribution(T::Real, m::Real)
 
-Custom struct defining a (3D) Maxwell-Boltzmann azimuth angle distribution. Uses the 
+Custom struct defining a (3D) Maxwell-Boltzmann azimuth angle distribution. Uses the
 temperature `T` in K and the mass `m` in kg as inputs.
 
 The lower and upper bounds of the distribution are `-pi` and `pi`, respectively.
@@ -21,7 +21,7 @@ MBAzimuthDistribution(T::Integer, m::Integer) = MBAzimuthDistribution(promote(T,
     [1] MBFluxAzimuthDistribution{S<:AbstractFloat}
     [2] MBFluxAzimuthDistribution(T::Real, m::Real)
 
-Custom struct defining a (3D) Maxwell-Boltzmann flux azimuth angle distribution. Uses the 
+Custom struct defining a (3D) Maxwell-Boltzmann flux azimuth angle distribution. Uses the
 temperature `T` in K and the mass `m` in kg as inputs.
 
 The lower and upper bounds of the distribution are `-pi` and `pi`, respectively.
@@ -37,7 +37,7 @@ MBFluxAzimuthDistribution(T::Integer, m::Integer) = MBFluxAzimuthDistribution(pr
     [1] MBElevationDistribution{S<:AbstractFloat}
     [2] MBElevationDistribution(T::Real, m::Real)
 
-Custom struct defining a (3D) Maxwell-Boltzmann elevation angle distribution. Uses the 
+Custom struct defining a (3D) Maxwell-Boltzmann elevation angle distribution. Uses the
 temperature `T` in K and the mass `m` in kg as inputs.
 
 The lower and upper bounds of the distribution are `-pi/2` and `pi/2`, respectively.
@@ -53,7 +53,7 @@ MBElevationDistribution(T::Integer, m::Integer) = MBElevationDistribution(promot
     [1] MBFluxElevationDistribution{S<:AbstractFloat}
     [2] MBFluxElevationDistribution(T::Real, m::Real)
 
-Custom struct defining a (3D) Maxwell-Boltzmann flux elevation angle distribution. Uses the 
+Custom struct defining a (3D) Maxwell-Boltzmann flux elevation angle distribution. Uses the
 temperature `T` in K and the mass `m` in kg as inputs.
 
 The lower and upper bounds of the distribution are `0` and `pi/2`, respectively.
@@ -85,7 +85,7 @@ MBSpeedDistribution(T::Integer, m::Integer) = MBSpeedDistribution(promote(T, m, 
     [1] MBFluxSpeedDistribution{S<:AbstractFloat}
     [2] MBFluxSpeedDistribution(T::Real, m::Real)
 
-Custom struct defining a (3D) Maxwell-Boltzmann flux speed distribution. Uses the 
+Custom struct defining a (3D) Maxwell-Boltzmann flux speed distribution. Uses the
 temperature `T` in K and the mass `m` in kg as inputs.
 
 The lower and upper bounds of the distribution are `0` and `Inf`, respectively.
@@ -104,7 +104,7 @@ MBFluxSpeedDistribution(T::Integer, m::Integer) = MBFluxSpeedDistribution(promot
 Custom struct defining a (3D) Maxwell-Boltzmann velocity distribution. Uses the temperature
 `T` in K and the mass `m` in kg as inputs.
 
-The lower and upper bounds of the distribution are `(-Inf, -Inf, -Inf)` and 
+The lower and upper bounds of the distribution are `(-Inf, -Inf, -Inf)` and
 `(Inf, Inf, Inf)`, respectively.
 
 **Defined Methods**: `rand`, `cdf`, `pdf`
@@ -118,10 +118,10 @@ MBVelocityDistribution(T::Integer, m::Integer) = MBVelocityDistribution(promote(
     [1] MBFluxVelocityDistribution{S<:AbstractFloat}
     [2] MBFluxVelocityDistribution(T::Real, m::Real)
 
-Custom struct defining a (3D) Maxwell-Boltzmann flux velocity distribution. Uses the 
+Custom struct defining a (3D) Maxwell-Boltzmann flux velocity distribution. Uses the
 temperature `T` in K and the mass `m` in kg as inputs.
 
-The lower and upper bounds of the distribution are `(-Inf, -Inf, -Inf)` and 
+The lower and upper bounds of the distribution are `(-Inf, -Inf, -Inf)` and
 `(Inf, Inf, Inf)`, respectively.
 
 **Defined Methods**: `rand`, `cdf`, `pdf`
@@ -139,22 +139,22 @@ MBFluxVelocityDistribution(T::Integer, m::Integer) = MBFluxVelocityDistribution(
 _TVLCV = Union{Tuple{Real, Real, Real}, AbstractVector{<:Real}, LocalCartesianVelocity}
 _VDs = Union{MBVelocityDistribution, MBFluxVelocityDistribution}
 ############################################################################################
-function cdf(::MBAzimuthDistribution{S}, l::Real, u::Real) where {S<:AbstractFloat} 
+function cdf(::MBAzimuthDistribution{S}, l::Real, u::Real) where {S<:AbstractFloat}
     return S((u - l)/(2*pi))
 end
 cdf(d::MBAzimuthDistribution, u::Real) = cdf(d, -pi, u)
 
-function cdf(::MBFluxAzimuthDistribution{S}, l::Real, u::Real) where {S<:AbstractFloat} 
+function cdf(::MBFluxAzimuthDistribution{S}, l::Real, u::Real) where {S<:AbstractFloat}
     return S((u - l)/(2*pi))
 end
 cdf(d::MBFluxAzimuthDistribution, u::Real) = cdf(d, -pi, u)
 
-function cdf(::MBElevationDistribution{S}, l::Real, u::Real) where {S<:AbstractFloat} 
+function cdf(::MBElevationDistribution{S}, l::Real, u::Real) where {S<:AbstractFloat}
     return S(0.5 * (sin(u)-sin(l)))
 end
 cdf(d::MBElevationDistribution, u::Real) = cdf(d, -pi/2, u)
 
-function cdf(::MBFluxElevationDistribution{S}, l::Real, u::Real) where {S<:AbstractFloat} 
+function cdf(::MBFluxElevationDistribution{S}, l::Real, u::Real) where {S<:AbstractFloat}
     return S(0.5 * (cos(2*l) - cos(2*u)))
 end
 cdf(d::MBFluxElevationDistribution, u::Real) = cdf(d, 0, u)
@@ -191,10 +191,10 @@ end
 
 
 
-function Statistics.mean(d::MBSpeedDistribution{S}) where {S<:AbstractFloat} 
+function Statistics.mean(d::MBSpeedDistribution{S}) where {S<:AbstractFloat}
     return S(sqrt(8 * BOLTZMANN_CONSTANT * d.T / (pi * d.m)))
 end
-function Statistics.mean(d::MBFluxSpeedDistribution{S}) where {S<:AbstractFloat} 
+function Statistics.mean(d::MBFluxSpeedDistribution{S}) where {S<:AbstractFloat}
     return S(sqrt(9 * pi * BOLTZMANN_CONSTANT * d.T / (8 * d.m)))
 end
 # TODO: add mean value calculation for the other distributions
@@ -288,13 +288,13 @@ end
 ############################################################################################
 #::. EXPORTS
 ############################################################################################
-export 
-    MBAzimuthDistribution, 
-    MBElevationDistribution, 
-    MBSpeedDistribution, 
+export
+    MBAzimuthDistribution,
+    MBElevationDistribution,
+    MBSpeedDistribution,
     MBVelocityDistribution,
 
-    MBFluxAzimuthDistribution, 
-    MBFluxElevationDistribution, 
-    MBFluxSpeedDistribution, 
+    MBFluxAzimuthDistribution,
+    MBFluxElevationDistribution,
+    MBFluxSpeedDistribution,
     MBFluxVelocityDistribution
