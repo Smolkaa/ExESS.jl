@@ -2,6 +2,14 @@
 #::. CONSTANTS
 ############################################################################################
 """
+Length of a day on Mercury in seconds.
+
+https://nssdc.gsfc.nasa.gov/planetary/factsheet/mercuryfact.html
+"""
+const MERCURY_DAY = 4222.6 * 3600 # [s]
+
+
+"""
 Mass of Mercury in kg.
 
 https://nssdc.gsfc.nasa.gov/planetary/factsheet/mercuryfact.html
