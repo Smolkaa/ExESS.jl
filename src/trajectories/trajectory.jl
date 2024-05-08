@@ -68,7 +68,7 @@ function trajectory(x0::AbstractPosition, v0::AbstractVelocity, args...; kwargs.
     return trajectory(GlobalCartesianPosition(x0), GlobalCartesianVelocity(x0, v0), args...;
                       kwargs...)
 end
-SA
+
 
 ############################################################################################
 #::. UTILITY FUNCTIONS
