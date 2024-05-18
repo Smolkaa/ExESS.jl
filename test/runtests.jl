@@ -6,7 +6,7 @@ end
 
 #::. begin ExESS package test
 @testset verbose=true "ExESS =============================" begin
-        
+
     # base
     @testset verbose=true "BASE ----------------------------" begin
 
@@ -44,11 +44,12 @@ end
 
     # moon
     @testset verbose=true "MOON ----------------------------" begin
-        include(joinpath(@__DIR__, "moon", "constants.jl"))   
+        include(joinpath(@__DIR__, "moon", "constants.jl"))
     end
     # trajectories
     @testset verbose=true "TRAJECTORIES --------------------" begin
         include(joinpath(@__DIR__, "trajectories", "trajectory.jl"))
+        include(joinpath(@__DIR__, "trajectories", "scale_height.jl"))
     end
 
 end
