@@ -18,10 +18,10 @@
 
         # prepare inputs
         r = t1 <: Integer ? t1(rand(1:100)) : t1(rand() * 100)
-        l_t = t2 <: Integer ? t2.((1, rand(-1:1), rand(-1:1))) : 
+        l_t = t2 <: Integer ? t2.((1, rand(-1:1), rand(-1:1))) :
                               t2.((1, rand() * pi - pi/2, rand() * pi - pi/2))
-        u_t = t3 <: Integer ? t3.((1, rand(-1:1), rand(-1:1))) : 
-                              t3.((1, rand() * pi - pi/2, rand() * pi - pi/2))        
+        u_t = t3 <: Integer ? t3.((1, rand(-1:1), rand(-1:1))) :
+                              t3.((1, rand() * pi - pi/2, rand() * pi - pi/2))
         l_v, u_v = [l_t[1], l_t[2], l_t[3]], [u_t[1], u_t[2], u_t[3]]
         l_s, u_s = GlobalSphericalPosition(l_t), GlobalSphericalPosition(u_t)
 

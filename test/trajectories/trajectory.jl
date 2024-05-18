@@ -1,3 +1,5 @@
+print("TESTING: trajectories > trajectory.jl")
+
 @testset verbose=true "trajectory.jl .............." begin
 
     include(joinpath(@__DIR__, "trajectory", "type_stability.jl"))
@@ -5,4 +7,5 @@
 
 end
 
+print("\rTESTING: trajectories > trajectory.jl - DONE")
 nothing

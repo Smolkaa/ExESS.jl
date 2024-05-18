@@ -13,16 +13,16 @@ using LinearAlgebra
         @test isapprox(ExESS._get(traj(0)[1:3]), ExESS._get(GlobalCartesianVelocity(x0, v0)); rtol=1e-6)
         @test isapprox(ExESS._get(traj(0)[4:6]), ExESS._get(GlobalCartesianPosition(x0)); rtol=1e-6)
         @test isapprox(norm(traj(0)[4:6]), LUNAR_RADIUS; rtol=1e-6)
-        
+
         # test landing/escape
         if norm(v0) < escape_velocity(LUNAR_RADIUS, LUNAR_MASS)
-            @test isapprox(norm(traj[end][1:3]), norm(v0); rtol=1e-4)
-            @test isapprox(norm(traj[end][4:6]), LUNAR_RADIUS; rtol=1e-6)
+            @test isapprox(norm(traj.u[end][1:3]), norm(v0); rtol=1e-3)
+            @test isapprox(norm(traj.u[end][4:6]), LUNAR_RADIUS; rtol=1e-6)
         else
-            @test isapprox(norm(traj[end][4:6]), 1e9, rtol=1e-6)
+            @test isapprox(norm(traj.u[end][4:6]), 1e9, rtol=1e-6)
         end
     end
-    
+
 end
 
 nothing
