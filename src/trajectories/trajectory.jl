@@ -74,8 +74,7 @@ end
 ############################################################################################
 """
     [1] ddx_gravity(x::NTuple{3}, [args...]; kwargs...)
-    [1] ddx_gravity(x::AbstractVector, [args...]; kwargs...)
-
+    [2] ddx_gravity(x::AbstractVector, [args...]; kwargs...)
 
 Acceleration function for gravity.  Assumes a global cartesian coordinate system, which is
 centered at the center of the central object. 
