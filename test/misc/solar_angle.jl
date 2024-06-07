@@ -1,6 +1,5 @@
 @testset verbose=true "solar_angle.jl" begin
 
-
     #::. type-stability
     types = [Int32, Int64, BigInt, Float16, Float32, Float64, BigFloat]
     for t1 in types, t2 in types
