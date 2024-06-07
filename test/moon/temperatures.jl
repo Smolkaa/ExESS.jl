@@ -1,8 +1,10 @@
+print("TESTING: moon > temperatures.jl")
+
 @testset "temperatures.jl" begin
 
     #::. type stability
     types = [Int16, Int32, Int64, BigInt, Float16, Float32, Float64, BigFloat]
-    for t1 in types, t2 in types        
+    for t1 in types, t2 in types
         t3 = rand(types) # not inside third loop for performance issues
 
         # prepare inputs
@@ -86,4 +88,5 @@
     @test_throws AssertionError lunar_surface_temperatures_HURLEY2015((rand()*2-1)*pi, - pi/2 - rand())
 end
 
+println("\rTESTING: moon > temperatures.jl - DONE")
 nothing

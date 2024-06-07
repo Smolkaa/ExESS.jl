@@ -1,3 +1,5 @@
+print("TESTING: base > utils.jl")
+
 @testset verbose=true "utils.jl ......................" begin
 
     #::. type stability
@@ -25,7 +27,7 @@
             @test amu2kg(type(1))       isa type
             @test eV2J(type(1))         isa type  # could break for Float16 ?
             @test eV2kJpmol(type(1))    isa type
-            @test J2eV(type(1))         isa type  # could break for Float16 ? 
+            @test J2eV(type(1))         isa type  # could break for Float16 ?
             @test kJpmol2eV(type(1))    isa type
             @test limit_acos(type(1))   isa type
             @test lng2LT(type(1))       isa type
@@ -61,4 +63,5 @@
     @test all(r -> (sgn(r) == -1), -rand(1000))
 end
 
+println("\rTESTING: base > utils.jl - DONE")
 nothing

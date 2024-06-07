@@ -1,3 +1,5 @@
+print("TESTING: base > coordinates.jl")
+
 @testset verbose=true "coordinates.jl ................" begin
 
     include(joinpath(@__DIR__, "coordinates", "type_stability_constructors.jl"))
@@ -11,4 +13,5 @@
     # TODO: utility tests (incl. type stability) >> azimuth, elevation, speed, _get, etc.
 end
 
+println("\rTESTING: base > coordinates.jl - DONE")
 nothing

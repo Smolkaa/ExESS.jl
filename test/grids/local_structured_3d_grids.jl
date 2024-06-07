@@ -1,4 +1,5 @@
 # TODO: REWORK TESTS >> GRID TYPES OUTSIDE OF TYPE-LOOP
+# TODO: HOUSEKEEPING:
 
 @testset "local_structured_3d_grids.jl" begin
 
@@ -21,7 +22,7 @@
         @test typeof(grid) <: LocalStructured3DGrid{t}
         @test length(grid) == N_x*N_y*N_z == length(coords(grid))
         @test size(grid) == (N_x, N_y, N_z)
-        
+
         # surface coords test
         scoords = surfacecoords(grid)
         for sc in scoords; @test isapprox(sc.z, z1 + (z2-z1)/N_z/2); end
@@ -43,7 +44,7 @@
         end
         @test coord2idx(grid, x1-1, y1, z1) == 0
 
-        
+
         #=====================================================================#
         #::. LocalStructured3DGrid_Exponential
         #=====================================================================#
@@ -53,7 +54,7 @@
         @test typeof(grid) <: LocalStructured3DGrid_Exponential{t}
         @test length(grid) == N_x*N_y*N_z == length(coords(grid))
         @test size(grid) == (N_x, N_y, N_z)
-        
+
         # surface coords test
         scoords = surfacecoords(grid)
         zmin = min([vec(coord)[3] for coord in coords(grid)]...)

@@ -1,3 +1,5 @@
+print("TESTING: grids > global_structured_3d_grids.jl")
+
 @testset "global_structured_3d_grids.jl" begin
 
     ########################################################################################
@@ -41,7 +43,7 @@
     r, h = Float64.(rand(2) .* 1000)
     grid = GlobalStructured3DGrid(r, [h], rand(10:20,2)...)
     Nsurface = length(surfacecoords(grid))
-    
+
     @test isapprox(sum(areas(grid)[1:Nsurface]), 4 * pi * r^2; rtol=1e-4)
     @test isapprox(sum(volumes(grid)), 4/3 * pi * ((r+h)^3 - r^3); rtol=1e-4)
 
@@ -58,7 +60,7 @@
     Xssurf = surfacecoords(grid)
     for xs in Xssurf; @test xs.r == r; end
 
-    
+
     ########################################################################################
     # GlobalStructured3DGrid_EqSim                                                         #
     ########################################################################################
@@ -100,7 +102,7 @@
     r, h = Float64.(rand(2) .* 1000)
     grid = GlobalStructured3DGrid_EqSim(r, [h], rand(10:20,2)...)
     Nsurface = length(surfacecoords(grid))
-    
+
     @test isapprox(sum(areas(grid)[1:Nsurface]), 2 * pi * r^2; rtol=1e-4)
     @test isapprox(sum(volumes(grid)), 2/3 * pi * ((r+h)^3 - r^3); rtol=1e-4)
 
@@ -158,7 +160,7 @@
     r, h = Float64.(rand(2) .* 1000)
     grid = GlobalStructured3DGrid_Reduced(r, [h], rand(10:20))
     Nsurface = length(surfacecoords(grid))
-    
+
     @test isapprox(sum(areas(grid)[1:Nsurface]), 4 * pi * r^2; rtol=1e-4)
     @test isapprox(sum(volumes(grid)), 4/3 * pi * ((r+h)^3 - r^3); rtol=1e-4)
 
@@ -217,7 +219,7 @@
     r, h = Float64.(rand(2) .* 1000)
     grid = GlobalStructured3DGrid_Reduced_EqSim(r, [h], rand(10:20))
     Nsurface = length(surfacecoords(grid))
-    
+
     @test isapprox(sum(areas(grid)[1:Nsurface]), 2 * pi * r^2; rtol=1e-4)
     @test isapprox(sum(volumes(grid)), 4/3 * pi * ((r+h)^3 - r^3) / 2; rtol=1e-4)
 
@@ -236,4 +238,5 @@
 
 end
 
+println("\rTESTING: grids > global_structured_3d_grids.jl - DONE")
 nothing

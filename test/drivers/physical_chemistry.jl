@@ -1,3 +1,5 @@
+print("TESTING: derivers > physical_chemistry.jl")
+
 @testset verbose=true "physical_chemistry.jl ........." begin
 
     #::. type-stability
@@ -38,8 +40,7 @@
     #::. behaviour
 
 
-
-
 end
 
+println("\rTESTING: drivers > physical_chemistry.jl - DONE")
 nothing
