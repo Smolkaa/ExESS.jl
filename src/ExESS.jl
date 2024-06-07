@@ -5,7 +5,7 @@ module ExESS
 #::. LOADING PACKAGES
 ############################################################################################
 using DelimitedFiles: readdlm
-using DifferentialEquations: ODESolution, SecondOrderODEProblem, solve, terminate!, Tsit5, 
+using DifferentialEquations: ODESolution, SecondOrderODEProblem, solve, terminate!, Tsit5,
                              VectorContinuousCallback
 using Interpolations: BSpline, Flat, interpolate, Linear, linear_interpolation
 using LinearAlgebra
@@ -26,6 +26,7 @@ include(joinpath(@__DIR__, "base", "utils.jl"))
 
 # drivers
 include(joinpath(@__DIR__, "drivers", "maxwellian.jl"))
+include(joinpath(@__DIR__, "drivers", "physical_chemistry.jl"))
 include(joinpath(@__DIR__, "drivers", "surface_distributions.jl"))
 include(joinpath(@__DIR__, "drivers", "thermal_sorption.jl"))
 

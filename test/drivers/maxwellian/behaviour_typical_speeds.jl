@@ -29,6 +29,6 @@
     el_mb = abs.([rand(MBElevationDistribution(T, m)) for _ in 1:100_000])
     el_mbf = [rand(MBFluxElevationDistribution(T, m)) for _ in 1:100_000]
     @test isapprox(el_mb_mean, mean(el_mb); rtol=1e-2)
-    @test isapprox(el_mbf_mean, mean(el_mbf); rtol=1e-2)   
+    @test isapprox(el_mbf_mean, mean(el_mbf); rtol=1e-2)
 
 end

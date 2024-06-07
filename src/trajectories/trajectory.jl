@@ -32,8 +32,8 @@ function trajectory(x0::NTuple{3, T}, v0::NTuple{3, T}, ddx::Function=ddx_gravit
         alg=Tsit5(), rmin::Real=LUNAR_RADIUS, rmax::Real=1e9, tspan::Tuple=(0f0,1f10),
         kwargs...) where {T<:AbstractFloat}
 
-    x0 = SA{T}[x0 ./ norm(x0) .* (rmin + 0.1) ...] # normalize starting position to surface
-    v0 = SA[v0...]
+    x0 = SA{T}[collect(x0 ./ norm(x0) .* (rmin + 0.1))...] # normalize starting position to surface
+    v0 = SA[collect(v0)...]
 
     function _f(du, u, p, t); return SA[ddx(u, du)...]; end
     prob = SecondOrderODEProblem(_f, v0, x0, tspan)

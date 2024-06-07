@@ -3,6 +3,8 @@
 ## v0.1.8 (2024/XX/YY)
 
 - _(internal)_ added utility function to handle `erfinv` calls with `Float16` types
+- fixed: `mode` included in exported methods
+- added `CERES_DAY` and `MERCURY_DAY` constants
 
 ## v0.1.7 (2024/04/16)
 
