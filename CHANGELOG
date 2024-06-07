@@ -1,16 +1,23 @@
 # ExESS -- CHANGELOG
 
-## v0.1.8 (2024/XX/YY)
+## v0.1.9 (2024/XX/XX)
 
-- _(internal)_ added utility function to handle `erfinv` calls with `Float16` types
+## v0.1.8 (2024/06/07)
+
+- added `physical_chemistry.jl` script to `/drivers`
+  - includes `arrhenius` and `diffusion_time` functions
 - fixed: `mode` included in exported methods
 - added `CERES_DAY` and `MERCURY_DAY` constants
+- added more and edited existing tests
+- _(internal)_ added utility function to handle `erfinv` calls with `Float16` types
+- fixed depreciations inside of the `trajectory` calculation
+- several housekeeping changes and bugfixes
 
 ## v0.1.7 (2024/04/16)
 
 - updated `base\constants.jl` to include the latest values for the physical constants
   CODATA 2018 database
-- added docstrings to `base\constants.jl` with the appropriate mention of the sources
+- added docstrings to `base\constants.jl` with the appropriate mention of the **sources**
 - added kilo joule per mole to electronvolt conversion to `base\utils.jl`
   + `kJpmol2eV` and `eV2kJpmol` functions
 
