@@ -36,6 +36,8 @@ based on a diffusion coefficient `D0` in (m2/s), temperature `T` in (K), and dif
 energy `E` in (J). The function returns the time scale in (s). The calculation is based on
 the Arrhenius law. See the function `arrhenius` for more information.
 
+The optional type parameter `S` is changing the output type of the function.
+
 **References**
 
 * Grumpe, A., Wöhler, C., Berezhnoy, A. A., & Shevchenko, V. V. (2019).
