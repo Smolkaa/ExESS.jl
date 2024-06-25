@@ -35,6 +35,8 @@ const LUNAR_ORBITAL_PERIOD = LUNAR_REVOLUTION_PERIOD
 
 """
 Length of a day on the Moon, with respect to the Sun (also: synodic period), in (s).
+
+https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html
 """
 const LUNAR_DAY = 3600 * 24 * 29.5305903 # [s]
 

@@ -73,7 +73,7 @@ angle is rotating with the positive latitude. In terms of global velocities, the
 systems are identical to the ones described above. The subsolar reference frame, including
 the main axes from the global cartesian system, is shown in the figure below:
 
-![global_cartesian_subsolar_cs.png]
+![global_cartesian_subsolar_cs.png](img/global_cartesian_subsolar_cs.png)
 
 Local coordinate systems have, as their name suggests, their origin at a specific point in
 three-dimensional space. From this origin, the local cartesian system can be constructed as
