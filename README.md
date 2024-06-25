@@ -26,17 +26,13 @@ Afterwards, the package can be loaded, as usual, using the `using` command:
 using ExESS
 ```
 
-
-## Notes
-
-* all internal functions (not exported) are prefixed with an underscore `_`
-
-
 ## Documentation
 
 <details>
 
-<summary>Custom Coordinates</summary>
+<summary><b>1. Custom Coordinates</b></summary>
+
+---
 
 The `ExESS.jl` package provides a set of custom types and functions to work with different types of coordinates. While the library can also be used with Julia types like `Tuple`, the custom types provide a more streamlined way to work with coordinates, and, more importantly, coordinate transformation.
 
@@ -93,5 +89,7 @@ gcv_subsol = GlobalCartesianVelocity(100, 0, 0) # global velocity
 Please note that these custom coordinates can be used differently depending on the application, 
 though all the integrated functionality of this library assumes, where
 necessary, the coordinate system as described above.
+
+---
 
 </details>
