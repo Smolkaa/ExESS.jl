@@ -1,4 +1,6 @@
+############################################################################################
 #::. STRUCTS
+############################################################################################
 abstract type AbstractCoordinate end
 abstract type AbstractPosition{T<:AbstractFloat} <: AbstractCoordinate end
 abstract type AbstractVelocity{T<:AbstractFloat} <: AbstractCoordinate end
@@ -76,11 +78,13 @@ function GlobalSphericalVelocity(r::Integer, theta::Integer, phi::Integer)
 end
 
 
-#::. (useful) unions
+############################################################################################
+#::. INTERNAL UNIONS
+############################################################################################
 const AbstractGlobalCoordinate = Union{
-    GlobalCartesianPosition, 
-    GlobalSphericalPosition, 
-    GlobalCartesianVelocity, 
+    GlobalCartesianPosition,
+    GlobalSphericalPosition,
+    GlobalCartesianVelocity,
     GlobalSphericalVelocity,}
 const AbstractLocalCoordinate = Union{LocalCartesianPosition, LocalCartesianVelocity}
 
@@ -91,14 +95,16 @@ const AbstractLocalPosition = Union{LocalCartesianPosition}
 const AbstractLocalVelocity = Union{LocalCartesianVelocity}
 
 const AbstractCartesianCoordinates = Union{
-    GlobalCartesianPosition, 
-    LocalCartesianPosition, 
-    GlobalCartesianVelocity, 
+    GlobalCartesianPosition,
+    LocalCartesianPosition,
+    GlobalCartesianVelocity,
     LocalCartesianVelocity,}
 const AbstractSphericalCoordinates = Union{GlobalSphericalPosition, GlobalSphericalVelocity}
 
 
+############################################################################################
 #::. FUNCTIONS
+############################################################################################
 """
     [1] GlobalCartesianPosition(x::Real, y::Real, z::Real)
     [2] GlobalCartesianPosition(X::Tuple)
@@ -110,7 +116,7 @@ Converts tuples, vector or other position type into `GlobalCartesianPosition` [2
 
 In a planetary context, global cartesian coordinates are defined as follows:
 - the x-axis points towards the Sun (from the central body's center to the subsolar point)
-- the y-axis points towards the positive longitude (east) 
+- the y-axis points towards the positive longitude (east)
 - the z-axis points towards the positive latitude (north), completing the coordinate system
 """
 GlobalCartesianPosition(X::Tuple) = GlobalCartesianPosition(X...)
@@ -295,7 +301,9 @@ end
 
 
 
-#::. utility
+############################################################################################
+#::. UTILITY FUNCTIONS
+############################################################################################
 _get(a::T) where {T<:AbstractCartesianCoordinates} = (a.x, a.y, a.z)
 _get(a::T) where {T<:AbstractSphericalCoordinates} = (a.r, a.theta, a.phi)
 _get(a::Tuple) = a
@@ -372,7 +380,9 @@ zenith(S::Type{<:AbstractFloat}, args...) = S(zenith(args...))
 
 
 
+############################################################################################
 #::. EXTENSIONS
+############################################################################################
 Base.:+(a::AbstractCoordinate) = a
 Base.:+(a::T, b::Tuple) where {T<:AbstractCoordinate} = T(_get(a) .+ b ...)
 Base.:+(a::T, b::AbstractVector) where {T<:AbstractCoordinate} = T(vec(a) .+ b ...)
@@ -443,13 +453,15 @@ LinearAlgebra.norm(a::T) where {T<:AbstractCartesianCoordinates} = sqrt(a.x^2 + 
 LinearAlgebra.norm(x::GlobalSphericalPosition) = x.r
 
 
+############################################################################################
 #::. EXPORTS
-export 
-    GlobalCartesianPosition, 
-    LocalCartesianPosition, 
-    GlobalSphericalPosition, 
-    GlobalCartesianVelocity, 
-    LocalCartesianVelocity, 
+############################################################################################
+export
+    GlobalCartesianPosition,
+    LocalCartesianPosition,
+    GlobalSphericalPosition,
+    GlobalCartesianVelocity,
+    LocalCartesianVelocity,
     GlobalSphericalVelocity,
 
     azimuth, elevation, speed, zenith
