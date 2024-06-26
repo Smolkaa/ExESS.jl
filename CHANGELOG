@@ -1,8 +1,11 @@
 # ExESS -- CHANGELOG
 
-## v0.1.9 (2024/XX/XX)
+## v0.1.8b (2024/06/26)
 
 - edited and added more constants to `moon/constants.jl`
+- added more icons/logos for subsystems, to be used in the GitHub Wiki
+  - `res/exess-coords-logo` for custom coordinates
+- housekeeping of scripts and tests
 
 ## v0.1.8 (2024/06/07)
 
