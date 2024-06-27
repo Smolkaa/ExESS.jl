@@ -34,7 +34,7 @@ const ELEMENTARY_CHARGE = 1.602176634e-19 # (C)
 Gravitational constant in (m3 kg-1 s-2).
 Value taken from the [NIST CODATA database](https://physics.nist.gov/cuu/Constants/).
 
-**Note**: The constant has a documented uncertainty of `0.000 15e-11` in (m3 kg-1 s-2).
+**Note**: The constant has a documented uncertainty of `0.00015e-11` in (m3 kg-1 s-2).
 """
 const GRAVITATIONAL_CONSTANT = 6.67430e-11 # (m3 kg-1 s-2)
 
@@ -69,7 +69,7 @@ const UNIVERSAL_GAS_CONSTANT = 8.314462618 # (J K-1 mol-1)
 """
     AMU_H::Float64 = 1.007975
 
-Average atomic mass of hydrogen in (u). 
+Average atomic mass of hydrogen in (u).
 Value taken from [Prohaska et al.](https://doi.org/10.1515/pac-2019-0603).
 The value used is the average of the reported interval `[1.00784, 1.00811]` in (u).
 """
@@ -126,7 +126,7 @@ const AMU_H2 = 2 * AMU_H # (u)
 """
     AMU_OH::Float64
 
-Average molecular mass of hydroxyl radical in (u). 
+Average molecular mass of hydroxyl radical in (u).
 The value is an alias for `AMU_H + AMU_O`.
 """
 const AMU_OH = AMU_H + AMU_O # (u)
@@ -144,8 +144,8 @@ const AMU_H2O = 2 * AMU_H + AMU_O # (u)
 ############################################################################################
 #::. EXPORTS
 ############################################################################################
-export 
-    AVOGADRO_CONSTANT, BOLTZMANN_CONSTANT, ELEMENTARY_CHARGE, GRAVITATIONAL_CONSTANT, 
-    PLANCK_CONSTANT, STEFAN_BOLTZMANN_CONSTANT, UNIVERSAL_GAS_CONSTANT, 
+export
+    AVOGADRO_CONSTANT, BOLTZMANN_CONSTANT, ELEMENTARY_CHARGE, GRAVITATIONAL_CONSTANT,
+    PLANCK_CONSTANT, STEFAN_BOLTZMANN_CONSTANT, UNIVERSAL_GAS_CONSTANT,
 
     AMU_H, AMU_He, AMU_O, AMU_Ne, AMU_Ar, AMU_H2, AMU_OH, AMU_H2O
