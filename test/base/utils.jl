@@ -1,6 +1,5 @@
-print("TESTING: base > utils.jl")
-
 @testset verbose=true "utils.jl ......................" begin
+    print("TESTING: base > utils.jl")
 
     #::. type stability
     types = [Int16, Int32, Int64, BigInt, Float16, Float32, Float64, BigFloat]
@@ -57,11 +56,31 @@ print("TESTING: base > utils.jl")
     @test isapprox(LT2lng(24),  pi,   rtol=1e-6)
     @test all(r -> isapprox(LT2lng(lng2LT(r)), r, rtol=1e-6), rand(1000) .* 2pi .- pi)
 
+    #::. pclamp
+    function _test_pclamp()
+        x, l, u = rand(3)
+        u += l
+        if l < x < u
+            return isapprox(x, pclamp(x, l, u); atol=1e-6)
+        elseif x < l
+            while x < l; x += u - l; end
+            return isapprox(x, pclamp(x, l, u); atol=1e-6)
+        else
+            while x > u; x -= u - l; end
+            return isapprox(x, pclamp(x, l, u); atol=1e-6)
+        end
+    end
+    @test all(_ -> _test_pclamp(), 1:1000) # test proper clamping
+    @test all(x -> pclamp(x...) == pclamp(x[1], x[3], x[2]), [rand(3) for _ in 1:1000]) # symmetry
+
     #::. sgn
     @test sgn(0) == 1
     @test all(r -> (sgn(r) == 1), rand(1000))
     @test all(r -> (sgn(r) == -1), -rand(1000))
+
+
+
+    println("\rTESTING: base > utils.jl - DONE")
 end
 
-println("\rTESTING: base > utils.jl - DONE")
 nothing

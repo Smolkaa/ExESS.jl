@@ -121,4 +121,4 @@ SpecialFunctions.erfinv(x::Float16) = Float16(erfinv(Float32(x)))
 ############################################################################################
 #::. EXPORTS
 ############################################################################################
-export amu2kg, eV2J, eV2kJpmol, J2eV, kJpmol2eV, limit_acos, lng2LT, LT2lng, sgn
+export amu2kg, eV2J, eV2kJpmol, J2eV, kJpmol2eV, limit_acos, lng2LT, LT2lng, pclamp, sgn
