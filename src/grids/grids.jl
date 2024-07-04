@@ -33,19 +33,24 @@ coords(grid::AbstractGrid) = grid.coords
 
 """
     [1] coord2idx(grid::AbstractGrid, coord::AbstractPosition)
-    [2] coord2idx(grid::AbstractSphericalGrid, r::AbstractVector, theta::AbstractVector, phi::AbstractVector)
+    [2] coord2idx(grid::AbstractSphericalGrid, r::AbstractVector, theta::AbstractVector,
+                  phi::AbstractVector)
     [2] coord2idx(grid::AbstractSphericalGrid, coords::Vector{AbstractPosition})
 
 Calculates the index of the grid element containing the given coordinates.
 """
-coord2idx(grid::AbstractGrid, coord::AbstractPosition) = coord2idx(grid, _get(coord)...)
-function coord2idx(grid::AbstractSphericalGrid, coord::AbstractGlobalPosition) #TODO: Do not use AbstractGloablPosition union type
+function coord2idx(grid::AbstractGrid, coord::AbstractPosition)::Int64
+    return coord2idx(grid, _get(coord)...)
+end
+function coord2idx(grid::AbstractSphericalGrid, coord::AbstractGlobalPosition)::Int64
+    #TODO: Do not use AbstractGloablPosition union type
     return coord2idx(grid, _get(GlobalSphericalPosition(coord))...)
 end
-function coord2idx(grid::AbstractSphericalGrid, coords::Vector{AbstractPosition})
+function coord2idx(grid::AbstractSphericalGrid, coords::Vector{AbstractPosition})::Int64
     return [coord2idx(grid, coord) for coord in coords]
 end
-function coord2idx(grid::AbstractSphericalGrid, r::AbstractVector, theta::AbstractVector, phi::AbstractVector)
+function coord2idx(grid::AbstractSphericalGrid, r::AbstractVector, theta::AbstractVector,
+                   phi::AbstractVector)::Int64
     return [coord2idx(grid, r[i], theta[i], phi[i]) for i in eachindex(r)]
 end
 
@@ -58,7 +63,7 @@ Returns only the coordinates of the surface (i.e. the base) of the discretized g
 surfacecoords(T::Type, grid::AbstractGrid) = T.(surfacecoords(grid))
 
 
-"""    
+"""
     [1] volumes([T::Type,] grid::AbstractGrid)
 
 For 2D grids, returns a vector of `zeros(T)` for each grid element. For 3D grids, returns the

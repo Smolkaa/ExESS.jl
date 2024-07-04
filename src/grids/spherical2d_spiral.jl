@@ -14,7 +14,7 @@ abstract type AbstractSpherical2DGrid_Spiral <: AbstractSphericalGrid end
 Global spiral grid of surface coordinates (2D) of type `GlobalSphericalPosition{T}` over
 a sphere of radius `r`. The spiral is created based on the Fibonnaci sequence and the
 Lambert cylindrical equal area projection. The surface area `area` is a scalar value and
-assumes a prefectly equal distribution of points. 
+assumes a prefectly equal distribution of points.
 
 | Field    | Type; with `T<:AbstractFloat`        | Description                    |
 |:-------- |:------------------------------------ |:------------------------------ |
@@ -46,8 +46,8 @@ function Spherical2DGrid_Spiral(T::Type{<:AbstractFloat}, r::Real, N::Integer)
     x, y, z =  cos.(theta) .* cos.(phi), sin.(theta) .* cos.(phi), sin.(phi)
     tree = KDTree([x'; y'; z'])
 
-    return Spherical2DGrid_Spiral(T(r), N, 
-                                  GlobalSphericalPosition.(T(r), T.(theta), T.(phi)), 
+    return Spherical2DGrid_Spiral(T(r), N,
+                                  GlobalSphericalPosition.(T(r), T.(theta), T.(phi)),
                                   T(area), tree)
 end
 function Spherical2DGrid_Spiral(r::Real, N::Integer)
@@ -64,12 +64,12 @@ end
 areas(grid::AbstractSpherical2DGrid_Spiral) = repeat([grid.area], grid.N)
 
 
-function coord2idx(grid::Spherical2DGrid_Spiral, theta::Real, phi::Real)
+function coord2idx(grid::Spherical2DGrid_Spiral, theta::Real, phi::Real)::Int64
     x, y, z = _get(GlobalCartesianPosition(GlobalSphericalPosition(1.0, theta, phi)))
     idxs, _ = knn(grid.tree, [x, y, z], 1, true)
     return idxs[1]
 end
-function coord2idx(grid::AbstractSpherical2DGrid_Spiral, r::Real, theta::Real, phi::Real) 
+function coord2idx(grid::AbstractSpherical2DGrid_Spiral, r::Real, theta::Real, phi::Real)::Int64
     return coord2idx(grid, theta, phi)
 end
 
@@ -89,7 +89,7 @@ Base.length(grid::AbstractSpherical2DGrid_Spiral) = grid.N
 Base.size(grid::AbstractSpherical2DGrid_Spiral) = (grid.N, )
 
 
-Base.show(io::IO, ::MIME"text/plain", grid::AbstractSpherical2DGrid_Spiral) = 
+Base.show(io::IO, ::MIME"text/plain", grid::AbstractSpherical2DGrid_Spiral) =
     print(io, "$(typeof(grid)):\n"*
             " r:       $(grid.r)\n"*
             " N:       $(grid.N)\n"*

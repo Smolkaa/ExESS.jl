@@ -13,8 +13,8 @@ abstract type AbstractSpherical2DGrid_HEALPix <: AbstractSphericalGrid end
 
 Global grid of surface coordinates (2D) of type `Spherical2DGrid_HEALPix{T}` over
 a sphere of radius `r`. The spiral is created based on the HEALPix (Hierarchical Equal Area
-isoLatitude Pixelisation) sequence and the Lambert cylindrical equal area projection. The 
-surface area `area` is a scalar value and assumes a prefectly equal distribution of points. 
+isoLatitude Pixelisation) sequence and the Lambert cylindrical equal area projection. The
+surface area `area` is a scalar value and assumes a prefectly equal distribution of points.
 
 | Field    | Type; with `T<:AbstractFloat`        | Description                    |
 |:-------- |:------------------------------------ |:------------------------------ |
@@ -42,7 +42,7 @@ struct Spherical2DGrid_HEALPix{T<:AbstractFloat} <: AbstractSpherical2DGrid_HEAL
 end
 function Spherical2DGrid_HEALPix(T::Type, r::Real, k::Int64)
     theta, phi = T[], T[]
-    
+
     # polar region (k rings)
     for i in 1:k, j in 1:4*i
         push!(theta, (pi/(2*i)) * (j-0.5) - pi)
@@ -73,7 +73,7 @@ function Spherical2DGrid_HEALPix(T::Type, r::Real, k::Int64)
     tree = KDTree([x'; y'; z'])
 
     return Spherical2DGrid_HEALPix(T(r), k,
-                                   GlobalSphericalPosition.(T(r), T.(theta), T.(phi)), 
+                                   GlobalSphericalPosition.(T(r), T.(theta), T.(phi)),
                                    T(area), tree)
 end
 function Spherical2DGrid_HEALPix(r::Real, k::Int64)
@@ -90,12 +90,12 @@ end
 areas(grid::Spherical2DGrid_HEALPix) = length(grid) .* grid.area
 
 
-function coord2idx(grid::Spherical2DGrid_HEALPix, theta::Real, phi::Real)
+function coord2idx(grid::Spherical2DGrid_HEALPix, theta::Real, phi::Real)::Int64
     x, y, z = _get(GlobalCartesianPosition(GlobalSphericalPosition(1.0, theta, phi)))
     idxs, _ = knn(grid.tree, [x, y, z], 1, true)
     return idxs[1]
 end
-function coord2idx(grid::AbstractSpherical2DGrid_HEALPix, r::Real, theta::Real, phi::Real) 
+function coord2idx(grid::AbstractSpherical2DGrid_HEALPix, r::Real, theta::Real, phi::Real)::Int64
     return coord2idx(grid, theta, phi)
 end
 
@@ -112,7 +112,7 @@ Base.length(grid::AbstractSpherical2DGrid_HEALPix) = length(grid.coords)
 Base.size(grid::AbstractSpherical2DGrid_HEALPix) = (length(grid), )
 
 
-Base.show(io::IO, ::MIME"text/plain", grid::AbstractSpherical2DGrid_HEALPix) = 
+Base.show(io::IO, ::MIME"text/plain", grid::AbstractSpherical2DGrid_HEALPix) =
     print(io, "$(typeof(grid)):\n"*
             " r:       $(grid.r)\n"*
             " N:       $(length(grid))\t(k=$(grid.k))\n"*
