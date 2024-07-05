@@ -37,6 +37,12 @@ coords(grid::AbstractGrid) = grid.coords
 Maps the values of `x` at the coordinates defined on `grid_from` to the coordinates defined
 on `grid_to`. The output is a vector of the same length as `grid_to` with the values of `x`.
 The function **does not** interpolate the values of `x` between the grid elements.
+
+**Notes**
+
+- There may be unexpected behaviour if the grids are of different dimensions, i.e. a 2D grid
+  mapped to a 3D grid, or vice versa. The function does not assume any mathematical or
+  physical meaning to the mapping or reduction of an additional dimension.
 """
 function mapgrid(x::AbstractVector, grid_from::AbstractGrid, grid_to::AbstractGrid)
     coords_to = coords(grid_to)

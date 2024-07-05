@@ -9,6 +9,7 @@
 - adjusted `coord2idx` functions for grids
   + using the new `pclamp` function to correctly handle overvflowing coordinates
   + added output type `Int64` to the function signature
+- added `mapgrid` function that maps values defined on one grid to another
   
  
 ## v0.1.8b (2024/06/26)
