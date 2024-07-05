@@ -32,25 +32,39 @@ coords(grid::AbstractGrid) = grid.coords
 
 
 """
+    [1] mapgrid(x::AbstractVector, grid_from::AbstractGrid, grid_to::AbstractGrid)
+
+Maps the values of `x` at the coordinates defined on `grid_from` to the coordinates defined
+on `grid_to`. The output is a vector of the same length as `grid_to` with the values of `x`.
+The function **does not** interpolate the values of `x` between the grid elements.
+"""
+function mapgrid(x::AbstractVector, grid_from::AbstractGrid, grid_to::AbstractGrid)
+    coords_to = coords(grid_to)
+    idx_from = coord2idx(grid_from, coords_to)
+    return x[idx_from]
+end
+
+
+"""
     [1] coord2idx(grid::AbstractGrid, coord::AbstractPosition)
-    [2] coord2idx(grid::AbstractSphericalGrid, r::AbstractVector, theta::AbstractVector,
+    [2] coord2idx(grid::AbstractGrid, coords::Vector{T}) where {T <: AbstractPosition}
+    [3] coord2idx(grid::AbstractSphericalGrid, r::AbstractVector, theta::AbstractVector,
                   phi::AbstractVector)
-    [2] coord2idx(grid::AbstractSphericalGrid, coords::Vector{AbstractPosition})
 
 Calculates the index of the grid element containing the given coordinates.
 """
 function coord2idx(grid::AbstractGrid, coord::AbstractPosition)::Int64
     return coord2idx(grid, _get(coord)...)
 end
-function coord2idx(grid::AbstractSphericalGrid, coord::AbstractGlobalPosition)::Int64
-    #TODO: Do not use AbstractGloablPosition union type
-    return coord2idx(grid, _get(GlobalSphericalPosition(coord))...)
-end
-function coord2idx(grid::AbstractSphericalGrid, coords::Vector{AbstractPosition})::Int64
+function coord2idx(grid::AbstractGrid, coords::Vector{T}) where {T <: AbstractPosition}
     return [coord2idx(grid, coord) for coord in coords]
 end
+function coord2idx(grid::AbstractSphericalGrid, coord::AbstractGlobalPosition)::Int64
+    #TODO: Do not use AbstractGloablPosition union type, but why?
+    return coord2idx(grid, _get(GlobalSphericalPosition(coord))...)
+end
 function coord2idx(grid::AbstractSphericalGrid, r::AbstractVector, theta::AbstractVector,
-                   phi::AbstractVector)::Int64
+                   phi::AbstractVector)
     return [coord2idx(grid, r[i], theta[i], phi[i]) for i in eachindex(r)]
 end
 
@@ -76,4 +90,4 @@ volumes(grid::AbstractGrid) = grid.volumes
 ############################################################################################
 #::. EXPORTS
 ############################################################################################
-export areas, coords, coord2idx, surfacecoords, volumes
+export areas, coords, coord2idx, mapgrid, surfacecoords, volumes
