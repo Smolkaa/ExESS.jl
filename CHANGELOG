@@ -1,6 +1,6 @@
 # ExESS -- CHANGELOG
 
-## v0.1.9 (2024/??/??) - current changes
+## v0.1.9 (2024/07/05)
 
 - added `pclamp` utility function
   + periodic clamp function that limits the input to a given range, where the overflow is
