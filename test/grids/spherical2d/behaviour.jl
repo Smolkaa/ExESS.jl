@@ -55,11 +55,33 @@
         xs = coords(grid_reduced)[idx]
         @test coord2idx(grid_reduced, xs) == idx
         @test coord2idx(grid_reduced, xs + xs_offset) == idx
-        
+
         idx = rand(1:length(grid_reduced_eqsim))
         xs = coords(grid_reduced_eqsim)[idx]
         @test coord2idx(grid_reduced_eqsim, xs) == idx
         @test coord2idx(grid_reduced_eqsim, xs + xs_offset) == idx
-
     end
+
+    # test for overflowing longitudes (periodic clamping to [-pi, pi])
+    @test all(r -> coord2idx(grid, r...) == coord2idx(grid, 2pi + r[1], r[2]), [rand(2) for _ in 1:1000])
+    @test all(r -> coord2idx(grid_eqsim, r...) == coord2idx(grid_eqsim, 2pi + r[1], r[2]), [rand(2) for _ in 1:1000])
+    @test all(r -> coord2idx(grid_reduced, r...) == coord2idx(grid_reduced, 2pi + r[1], r[2]), [rand(2) for _ in 1:1000])
+    @test all(r -> coord2idx(grid_reduced_eqsim, r...) == coord2idx(grid_reduced_eqsim, 2pi + r[1], r[2]), [rand(2) for _ in 1:1000])
+
+    @test all(r -> coord2idx(grid, -r[1], r[2]) == coord2idx(grid, -2pi - r[1], r[2]), [rand(2) for _ in 1:1000])
+    @test all(r -> coord2idx(grid_eqsim, -r[1], r[2]) == coord2idx(grid_eqsim, -2pi - r[1], r[2]), [rand(2) for _ in 1:1000])
+    @test all(r -> coord2idx(grid_reduced, -r[1], r[2]) == coord2idx(grid_reduced, -2pi - r[1], r[2]), [rand(2) for _ in 1:1000])
+    @test all(r -> coord2idx(grid_reduced_eqsim, -r[1], r[2]) == coord2idx(grid_reduced_eqsim, -2pi - r[1], r[2]), [rand(2) for _ in 1:1000])
+
+    # test coord2idx for overflowing latitudes (clamping to max. ranges)
+    @test all(r -> coord2idx(grid, r, pi/2 + rand()) == coord2idx(grid, r, pi/2), rand(1000))
+    @test all(r -> coord2idx(grid_eqsim, r, pi/2 + rand()) == coord2idx(grid_eqsim, r, pi/2), rand(1000))
+    @test all(r -> coord2idx(grid_reduced, r, pi/2 + rand()) == coord2idx(grid_reduced, r, pi/2), rand(1000))
+    @test all(r -> coord2idx(grid_reduced_eqsim, r, pi/2 + rand()) == coord2idx(grid_reduced_eqsim, r, pi/2), rand(1000))
+
+    @test all(r -> coord2idx(grid, r, -pi/2 - rand()) == coord2idx(grid, r, -pi/2), rand(1000))
+    @test all(r -> coord2idx(grid_eqsim, r, -rand()) == coord2idx(grid_eqsim, r, 0), rand(1000))
+    @test all(r -> coord2idx(grid_reduced, r, -pi/2 - rand()) == coord2idx(grid_reduced, r, -pi/2), rand(1000))
+    @test all(r -> coord2idx(grid_reduced_eqsim, r, -rand()) == coord2idx(grid_reduced_eqsim, r, 0), rand(1000))
+
 end

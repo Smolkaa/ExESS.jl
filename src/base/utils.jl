@@ -75,11 +75,21 @@ LT2lng(LT::BigInt) = LT2lng(BigFloat(LT))
 
 
 """
+
+"""
+function pclamp(x::T, l::T, u::T) where {T<:Real}
+    return T(l + mod(x - l, u - l))
+end
+pclamp(x::Real, l::Real, u::Real) = pclamp(promote(x, l, u)...)
+# pclamp(x::Integer, l::Integer, u::Integer) = pclamp(float(x), l, u)
+
+
+"""
     [1] sgn(x::Real)
 
 Returns the sign of `x` with the custom definition `sgn(0) = 1`.
 """
-sgn(x::Real) = x != 0 ? sign(x) : typeof(x)(1) 
+sgn(x::Real) = x != 0 ? sign(x) : typeof(x)(1)
 
 
 ############################################################################################
@@ -111,4 +121,4 @@ SpecialFunctions.erfinv(x::Float16) = Float16(erfinv(Float32(x)))
 ############################################################################################
 #::. EXPORTS
 ############################################################################################
-export amu2kg, eV2J, eV2kJpmol, J2eV, kJpmol2eV, limit_acos, lng2LT, LT2lng, sgn
+export amu2kg, eV2J, eV2kJpmol, J2eV, kJpmol2eV, limit_acos, lng2LT, LT2lng, pclamp, sgn

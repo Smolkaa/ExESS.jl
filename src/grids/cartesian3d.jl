@@ -9,12 +9,12 @@ abstract type AbstractCartesian3DGrid <: AbstractCartesianGrid end
 ############################################################################################
 """
     [1] struct Cartesian3DGrid{T<:AbstractFloat} <: AbstractCartesian3DGrid
-    [2] Cartesian3DGrid([T::Type,] xrange::Tuple, yrange::Tuple, zrange::Tuple, N_x::Int64, 
+    [2] Cartesian3DGrid([T::Type,] xrange::Tuple, yrange::Tuple, zrange::Tuple, N_x::Int64,
                         N_y::Int64, N_z::Int64)
 
 Local structured volume grid (3D) of type `Cartesian3DGrid{T}` over a rectangular
-domain. The domain is defined by tuples of the form `xrange=(x1, x2)`, `yrange=(y1, y2)`, 
-and `zrange=(z1, z2)`. The number of grid points in each direction is given by `N_x`, 
+domain. The domain is defined by tuples of the form `xrange=(x1, x2)`, `yrange=(y1, y2)`,
+and `zrange=(z1, z2)`. The number of grid points in each direction is given by `N_x`,
 `N_y`, and `N_z`. The grid points are centered in their respective grid element.
 
 | Field    | Type                                | Description                           |
@@ -29,10 +29,10 @@ and `zrange=(z1, z2)`. The number of grid points in each direction is given by `
 | `area`   | `T`                                 | grid-element surface areas (xy-plane) |
 | `volume` | `T`                                 | grid-element volume                   |
 
-Note that the fields `area` and `volume` are scalar values, aplying to all grid elements. 
-For a correct, vectorized output, please use the grid-utility-methods `areas(grid)` and 
+Note that the fields `area` and `volume` are scalar values, aplying to all grid elements.
+For a correct, vectorized output, please use the grid-utility-methods `areas(grid)` and
 `volumes(grid)`.
- 
+
 To ensure expected behavior, the grid object should generally be created with the outer
 constructors [2].
 """
@@ -47,7 +47,7 @@ struct Cartesian3DGrid{T<:AbstractFloat} <: AbstractCartesian3DGrid
     area::T
     volume::T
 end
-function Cartesian3DGrid(T::Type{<:AbstractFloat}, xrange::Tuple, yrange::Tuple, 
+function Cartesian3DGrid(T::Type{<:AbstractFloat}, xrange::Tuple, yrange::Tuple,
                          zrange::Tuple, N_x::Integer, N_y::Integer, N_z::Integer)
     # coordinates
     x1, x2 = T.(sort([xrange[1], xrange[2]]))
@@ -68,26 +68,26 @@ function Cartesian3DGrid(T::Type{<:AbstractFloat}, xrange::Tuple, yrange::Tuple,
     # area and volume
     A = dx * dy / N_x / N_y
     V = A * dz / N_z
-    
+
     return Cartesian3DGrid((x1,x2), (y1,y2), (z1,z2), N_x, N_y, N_z, coords, T(A), T(V))
 end
-function Cartesian3DGrid(xrange::Tuple, yrange::Tuple, zrange::Tuple, 
+function Cartesian3DGrid(xrange::Tuple, yrange::Tuple, zrange::Tuple,
                          N_x::Integer, N_y::Integer, N_z::Integer)
     x1, _, _, _, _, _ = promote(xrange..., yrange..., zrange...)
-    return Cartesian3DGrid(promote_type(typeof(x1), Float64), xrange, yrange, zrange, 
+    return Cartesian3DGrid(promote_type(typeof(x1), Float64), xrange, yrange, zrange,
                            N_x, N_y, N_z)
 end
 
 
 """
     [1] Cartesian3DGrid_Exponential{T<:AbstractFloat} <: AbstractCartesian3DGrid
-    [2] Cartesian3DGrid_Exponential([T::Type,] xrange::Tuple, yrange::Tuple, zrange::Tuple, 
+    [2] Cartesian3DGrid_Exponential([T::Type,] xrange::Tuple, yrange::Tuple, zrange::Tuple,
                                     N_x::Int64, N_y::Int64, N_z::Int64; c=1.0)
 
 
 Local structured volume grid (3D) of type `Cartesian3DGrid_Exponential{T}` over a rectangular
-domain. The domain is defined by tuples of the form `xrange=(x1, x2)`, `yrange=(y1, y2)`, 
-and `zrange=(z1, z2)`. The number of grid points in each direction is given by `N_x`, 
+domain. The domain is defined by tuples of the form `xrange=(x1, x2)`, `yrange=(y1, y2)`,
+and `zrange=(z1, z2)`. The number of grid points in each direction is given by `N_x`,
 `N_y`, and `N_z`. In contrast to the `Cartesian3DGrid`, the grid points are distributed
 exponentially in the vertical direction, i.e. with exponentially increasing spacing with
 higher `z`-coordinates. The grid points are centered in their respective grid element.
@@ -113,7 +113,7 @@ lead to a more linear distribution.
 
 Note that the fields `area` and `volume` are auxiliary values. For a correct, vectorized
 output, please use the grid-utility-methods `areas(grid)` and `volumes(grid)`.
- 
+
 To ensure expected behavior, the grid object should generally be created with the outer
 constructors [2].
 """
@@ -129,8 +129,8 @@ struct Cartesian3DGrid_Exponential{T<:AbstractFloat} <: AbstractCartesian3DGrid
     volumes::Vector{T}
     c::Float64
 end
-function Cartesian3DGrid_Exponential(T::Type{<:AbstractFloat}, xrange::Tuple, yrange::Tuple, 
-                                     zrange::Tuple, N_x::Int64, N_y::Int64, N_z::Int64; 
+function Cartesian3DGrid_Exponential(T::Type{<:AbstractFloat}, xrange::Tuple, yrange::Tuple,
+                                     zrange::Tuple, N_x::Int64, N_y::Int64, N_z::Int64;
                                      c=1.0)
     # coordinates
     x1, x2 = T.(sort([xrange[1], xrange[2]]))
@@ -151,19 +151,19 @@ function Cartesian3DGrid_Exponential(T::Type{<:AbstractFloat}, xrange::Tuple, yr
     A = dx * dy / N_x / N_y
     V = T[]
     for k in 1:N_z
-        dz = k == 1   ? (z[2]   - z[1])     / 2 + (z[1] - z1) : 
-             k == N_z ? (z[N_z] - z[N_z-1]) / 2 + (z2   - z[N_z]) : 
+        dz = k == 1   ? (z[2]   - z[1])     / 2 + (z[1] - z1) :
+             k == N_z ? (z[N_z] - z[N_z-1]) / 2 + (z2   - z[N_z]) :
                         (z[k+1] - z[k-1])   / 2
         push!(V, A * dz)
     end
-    
-    return Cartesian3DGrid_Exponential((x1,x2), (y1,y2), (z1,z2), N_x, N_y, N_z, coords, 
+
+    return Cartesian3DGrid_Exponential((x1,x2), (y1,y2), (z1,z2), N_x, N_y, N_z, coords,
                                        T(A), V, Float64(c))
 end
-function Cartesian3DGrid_Exponential(xrange::Tuple, yrange::Tuple, zrange::Tuple, 
+function Cartesian3DGrid_Exponential(xrange::Tuple, yrange::Tuple, zrange::Tuple,
                                      N_x::Int64, N_y::Int64, N_z::Int64; kwargs...)
     x1, _, _, _, _, _ = promote(xrange..., yrange..., zrange...)
-    return Cartesian3DGrid_Exponential(promote_type(typeof(x1), Float64), xrange, yrange, 
+    return Cartesian3DGrid_Exponential(promote_type(typeof(x1), Float64), xrange, yrange,
                                        zrange, N_x, N_y, N_z; kwargs...)
 end
 
@@ -176,7 +176,7 @@ end
 areas(grid::AbstractCartesian3DGrid) = grid.area .* ones(length(grid))
 
 
-function coord2idx(grid::Cartesian3DGrid, x::Real, y::Real, z::Real)
+function coord2idx(grid::Cartesian3DGrid, x::Real, y::Real, z::Real)::Int64
     x1, x2 = grid.xrange[1], grid.xrange[2]
     y1, y2 = grid.yrange[1], grid.yrange[2]
     z1, z2 = grid.zrange[1], grid.zrange[2]
@@ -189,7 +189,7 @@ function coord2idx(grid::Cartesian3DGrid, x::Real, y::Real, z::Real)
     k = ceil(Int64, (z - z1)/dz)
     return (k-1)*grid.N_x*grid.N_y + (j-1)*grid.N_x + i
 end
-function coord2idx(grid::Cartesian3DGrid_Exponential, x::Real, y::Real, z::Real)
+function coord2idx(grid::Cartesian3DGrid_Exponential, x::Real, y::Real, z::Real)::Int64
     x1, x2 = grid.xrange[1], grid.xrange[2]
     y1, y2 = grid.yrange[1], grid.yrange[2]
     z1, z2 = grid.zrange[1], grid.zrange[2]
@@ -221,7 +221,7 @@ Base.length(grid::AbstractCartesian3DGrid) = grid.N_x * grid.N_y * grid.N_z
 Base.size(grid::AbstractCartesian3DGrid) = (grid.N_x, grid.N_y, grid.N_z)
 
 
-Base.show(io::IO, ::MIME"text/plain", grid::Cartesian3DGrid) = 
+Base.show(io::IO, ::MIME"text/plain", grid::Cartesian3DGrid) =
     print(io, "$(typeof(grid)):\n"*
             " xrange:  $(grid.xrange)\n"*
             " yrange:  $(grid.yrange)\n"*
@@ -233,7 +233,7 @@ Base.show(io::IO, ::MIME"text/plain", grid::Cartesian3DGrid) =
             " area:    $(grid.area)\n"*
             " volume:  $(grid.volume)\n")
 
-Base.show(io::IO, ::MIME"text/plain", grid::Cartesian3DGrid_Exponential) = 
+Base.show(io::IO, ::MIME"text/plain", grid::Cartesian3DGrid_Exponential) =
     print(io, "$(typeof(grid)):\n"*
             " xrange:  $(grid.xrange)\n"*
             " yrange:  $(grid.yrange)\n"*
@@ -252,6 +252,6 @@ Base.show(io::IO, ::MIME"text/plain", grid::Cartesian3DGrid_Exponential) =
 ############################################################################################
 #::. EXPORTS
 ############################################################################################
-export 
-    Cartesian3DGrid, 
+export
+    Cartesian3DGrid,
     Cartesian3DGrid_Exponential

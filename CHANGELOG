@@ -1,10 +1,27 @@
 # ExESS -- CHANGELOG
 
+## v0.1.9 (2024/07/05)
+
+- added `pclamp` utility function
+  + periodic clamp function that limits the input to a given range, where the overflow is
+    wrapped around to the other side of the range
+  + important for periodic values like longitude/azimuth angles
+- adjusted `coord2idx` functions for grids
+  + using the new `pclamp` function to correctly handle overvflowing coordinates
+  + added output type `Int64` to the function signature
+- added `mapgrid` function that maps values defined on one grid to another
+- updated grid tests (among others: tested `mapgrid` function)
+- added more icons/logos for subsystems, to be used in the GitHub Wiki
+  - `res/exess-constants-icon` for custom defined constants
+  - `res/exess-drivers-icon` for drivers of exospheres
+  - `res/exess-grids-icon` for custom grids
+  
+ 
 ## v0.1.8b (2024/06/26)
 
 - edited and added more constants to `moon/constants.jl`
 - added more icons/logos for subsystems, to be used in the GitHub Wiki
-  - `res/exess-coords-logo` for custom coordinates
+  - `res/exess-coords-icon` for custom coordinates
 - housekeeping of scripts and tests
 
 ## v0.1.8 (2024/06/07)
