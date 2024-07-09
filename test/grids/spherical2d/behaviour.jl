@@ -84,4 +84,43 @@
     @test all(r -> coord2idx(grid_reduced, r, -pi/2 - rand()) == coord2idx(grid_reduced, r, -pi/2), rand(1000))
     @test all(r -> coord2idx(grid_reduced_eqsim, r, -rand()) == coord2idx(grid_reduced_eqsim, r, 0), rand(1000))
 
+    # test mapgrid - setup
+    x_s2d   = collect(1:length(grid))
+    x_s2de  = collect(1:length(grid_eqsim))
+    x_s2dr  = collect(1:length(grid_reduced))
+    x_s2dre = collect(1:length(grid_reduced_eqsim))
+
+    # test mapgrid - behaviour
+    @test all(_ -> mapgrid(x_s2d, grid, Spherical2DGrid(LUNAR_RADIUS, rand(2:45, 2)...)) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2d, grid, Spherical2DGrid_EqSim(LUNAR_RADIUS, rand(2:45, 2)...)) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2d, grid, Spherical2DGrid_Reduced(LUNAR_RADIUS, rand(2:45))) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2d, grid, Spherical2DGrid_Reduced_EqSim(LUNAR_RADIUS, rand(2:45))) isa Vector{Int64}, 1:100)
+
+    @test all(_ -> mapgrid(x_s2de, grid_eqsim, Spherical2DGrid(LUNAR_RADIUS, rand(2:45, 2)...)) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2de, grid_eqsim, Spherical2DGrid_EqSim(LUNAR_RADIUS, rand(2:45, 2)...)) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2de, grid_eqsim, Spherical2DGrid_Reduced(LUNAR_RADIUS, rand(2:45))) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2de, grid_eqsim, Spherical2DGrid_Reduced_EqSim(LUNAR_RADIUS, rand(2:45))) isa Vector{Int64}, 1:100)
+
+    @test all(_ -> mapgrid(x_s2dr, grid_reduced, Spherical2DGrid(LUNAR_RADIUS, rand(2:45, 2)...)) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2dr, grid_reduced, Spherical2DGrid_EqSim(LUNAR_RADIUS, rand(2:45, 2)...)) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2dr, grid_reduced, Spherical2DGrid_Reduced(LUNAR_RADIUS, rand(2:45))) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2dr, grid_reduced, Spherical2DGrid_Reduced_EqSim(LUNAR_RADIUS, rand(2:45))) isa Vector{Int64}, 1:100)
+
+    @test all(_ -> mapgrid(x_s2dre, grid_reduced_eqsim, Spherical2DGrid(LUNAR_RADIUS, rand(2:45, 2)...)) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2dre, grid_reduced_eqsim, Spherical2DGrid_EqSim(LUNAR_RADIUS, rand(2:45, 2)...)) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2dre, grid_reduced_eqsim, Spherical2DGrid_Reduced(LUNAR_RADIUS, rand(2:45))) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2dre, grid_reduced_eqsim, Spherical2DGrid_Reduced_EqSim(LUNAR_RADIUS, rand(2:45))) isa Vector{Int64}, 1:100)
+
+    # test mapgrid - invariance if the same grid is used
+    @test mapgrid(x_s2d, grid, grid) == x_s2d
+    @test mapgrid(x_s2de, grid_eqsim, grid_eqsim) == x_s2de
+    @test mapgrid(x_s2dr, grid_reduced, grid_reduced) == x_s2dr
+    @test mapgrid(x_s2dre, grid_reduced_eqsim, grid_reduced_eqsim) == x_s2dre
+
+    # test mapgrid - output size
+    @test all(g -> length(mapgrid(x_s2d, grid, g)) == length(g), [grid, grid_eqsim, grid_reduced, grid_reduced_eqsim])
+    @test all(g -> length(mapgrid(x_s2de, grid_eqsim, g)) == length(g), [grid, grid_eqsim, grid_reduced, grid_reduced_eqsim])
+    @test all(g -> length(mapgrid(x_s2dr, grid_reduced, g)) == length(g), [grid, grid_eqsim, grid_reduced, grid_reduced_eqsim])
+    @test all(g -> length(mapgrid(x_s2dre, grid_reduced_eqsim, g)) == length(g), [grid, grid_eqsim, grid_reduced, grid_reduced_eqsim])
+
 end
