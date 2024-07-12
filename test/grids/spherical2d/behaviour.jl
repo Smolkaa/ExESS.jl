@@ -80,9 +80,9 @@
     @test all(r -> coord2idx(grid_reduced_eqsim, r, pi/2 + rand()) == coord2idx(grid_reduced_eqsim, r, pi/2), rand(1000))
 
     @test all(r -> coord2idx(grid, r, -pi/2 - rand()) == coord2idx(grid, r, -pi/2), rand(1000))
-    @test all(r -> coord2idx(grid_eqsim, r, -rand()) == coord2idx(grid_eqsim, r, 0), rand(1000))
+    @test all(r -> coord2idx(grid_eqsim, r, -pi/2 - rand()) == coord2idx(grid_eqsim, r, pi/2), rand(1000))
     @test all(r -> coord2idx(grid_reduced, r, -pi/2 - rand()) == coord2idx(grid_reduced, r, -pi/2), rand(1000))
-    @test all(r -> coord2idx(grid_reduced_eqsim, r, -rand()) == coord2idx(grid_reduced_eqsim, r, 0), rand(1000))
+    @test all(r -> coord2idx(grid_reduced_eqsim, r, -pi/2 - rand()) == coord2idx(grid_reduced_eqsim, r, pi/2), rand(1000))
 
     # test mapgrid - setup
     x_s2d   = collect(1:length(grid))

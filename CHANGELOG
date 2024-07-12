@@ -1,5 +1,12 @@
 # ExESS -- CHANGELOG
 
+## v0.1.10 (2024/??/??)
+
+- BUGFIX of `coord2idx` for `Spherical2DGrid_EqSim` and `Spherical2DGrid_Reduced_Eqsim`, 
+  which now correctly mirrors the latitude values onto the northern hemisphere and does not
+  clip it to the equator anymore
+- BUGFIX of `coord2idx` to also correctly handle boundary cases close to `pi` and `-pi`
+
 ## v0.1.9 (2024/07/05)
 
 - added `pclamp` utility function

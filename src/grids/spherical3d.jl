@@ -379,43 +379,53 @@ end
 ############################################################################################
 #::. UTILITY FUNCTIONS
 ############################################################################################
-function coord2idx(grid::Spherical3DGrid, r::Real, theta::Real, phi::Real)
+function coord2idx(grid::Spherical3DGrid, r::T, theta::T, phi::T)::Int64 where {T<:AbstractFloat}
     if !(grid.r0 <= r <= grid.r0 + grid.h[end]); return 0; end
-    theta    = pclamp(theta, -pi + eps(Float64), pi)
-    phi      = clamp(phi, -pi/2 + eps(Float64), pi/2)
+    PI       = T(pi) # to prevent numerical cutoff/rounding mistakes
+    theta    = pclamp(theta, -PI, PI - eps(T)) + eps(T)
+    phi      = clamp(phi, -PI/2, PI/2 - eps(T)) + eps(T)
     idxr     = findfirst(grid.h .+ grid.r0 .> r)
     idxtheta = ceil(Int64, (theta+pi)*grid.N_theta/2/pi)
     idxphi   = ceil(Int64, (phi+pi/2)*grid.N_phi/pi)
     return (idxr-1) * grid.N_phi*grid.N_theta + (idxtheta-1) * grid.N_phi + idxphi
 end
-function coord2idx(grid::Spherical3DGrid_EqSim, r::Real, theta::Real, phi::Real)
+function coord2idx(grid::Spherical3DGrid_EqSim, r::T, theta::T, phi::T)::Int64 where {T<:AbstractFloat}
     if !(grid.r0 <= r <= grid.r0 + grid.h[end]); return 0; end
-    theta    = pclamp(theta, -pi + eps(Float64), pi)
-    phi      = clamp(phi, eps(Float64), pi/2)
+    PI       = T(pi) # to prevent numerical cutoff/rounding mistakes
+    theta    = pclamp(theta, -PI, PI - eps(T)) + eps(T)
+    phi      = clamp(phi, -PI/2, PI/2 - eps(T)) + eps(T)
     idxr     = findfirst(grid.h .+ grid.r0 .> r)
     idxtheta = ceil(Int64, (theta+pi)*grid.N_theta/2/pi)
     idxphi   = ceil(Int64, abs(phi)*grid.N_phi*2/pi)
     return (idxr-1) * grid.N_phi*grid.N_theta + (idxtheta-1) * grid.N_phi + idxphi
 end
-function coord2idx(grid::Spherical3DGrid_Reduced, r::Real, theta::Real, phi::Real)
+function coord2idx(grid::Spherical3DGrid_Reduced, r::T, theta::T, phi::T)::Int64 where {T<:AbstractFloat}
     if !(grid.r0 <= r <= grid.r0 + grid.h[end]); return 0; end
-    theta    = pclamp(theta, -pi + eps(Float64), pi)
-    phi      = clamp(phi, -pi/2 + eps(Float64), pi/2)
+    PI       = T(pi) # to prevent numerical cutoff/rounding mistakes
+    theta    = pclamp(theta, -PI, PI - eps(T)) + eps(T)
+    phi      = clamp(phi, -PI/2, PI/2 - eps(T)) + eps(T)
     idxr     = findfirst(grid.h .+ grid.r0 .> r)
     idxphi   = ceil(Int64, (phi+pi/2)/pi*grid.N_phi)
     idxtheta = ceil(Int64, (theta+pi)/2/pi*grid.N_theta[idxphi])
     if idxphi == 1; return (idxr-1) * sum(grid.N_theta) + idxtheta; end
     return (idxr-1) * sum(grid.N_theta) + idxtheta + accumulate(+, grid.N_theta[1:idxphi])[end-1]
 end
-function coord2idx(grid::Spherical3DGrid_Reduced_EqSim, r::Real, theta::Real, phi::Real)
+function coord2idx(grid::Spherical3DGrid_Reduced_EqSim, r::T, theta::T, phi::T)::Int64 where {T<:AbstractFloat}
     if !(grid.r0 <= r <= grid.r0 + grid.h[end]); return 0; end
-    theta    = pclamp(theta, -pi + eps(Float64), pi)
-    phi      = clamp(phi, eps(Float64), pi/2)
+    PI       = T(pi) # to prevent numerical cutoff/rounding mistakes
+    theta    = pclamp(theta, -PI, PI - eps(T)) + eps(T)
+    phi      = clamp(phi, -PI/2, PI/2 - eps(T)) + eps(T)
     idxr     = findfirst(grid.h .+ grid.r0 .> r)
     idxphi   = ceil(Int64, abs(phi)*grid.N_phi*2/pi)
     idxtheta = ceil(Int64, (theta+pi)/2/pi*grid.N_theta[idxphi])
     if idxphi == 1; return (idxr-1) * sum(grid.N_theta) + idxtheta; end
     return (idxr-1) * sum(grid.N_theta) + idxtheta + accumulate(+, grid.N_theta[1:idxphi])[end-1]
+end
+function coord2idx(grid::AbstractSpherical3DGrid, r::Real, theta::Real, phi::Real)::Int64
+    return coord2idx(grid, promote(r, theta, phi)...)
+end
+function coord2idx(grid::AbstractSpherical3DGrid, r::Integer, theta::Integer, phi::Integer)::Int64
+    return coord2idx(grid, float(r), float(theta), float(phi))
 end
 
 
