@@ -176,8 +176,6 @@ function cdf(d::MBFluxSpeedDistribution{S}, l::Real, u::Real) where {S<:Abstract
 end
 cdf(d::MBFluxSpeedDistribution, u::Real) = cdf(d, 0, u)
 
-
-
 function cdf(d::MBVelocityDistribution{S}, l::_TVLCV, u::_TVLCV) where {S<:AbstractFloat}
     return S(cdf(MBSpeedDistribution(d.T, d.m), speed(l), speed(u)) *
              cdf(MBElevationDistribution(d.T, d.m), elevation(l), elevation(u)) *
