@@ -214,7 +214,7 @@ function coord2idx(grid::Spherical2DGrid, theta::Real, phi::Real)::Int64
 end
 function coord2idx(grid::Spherical2DGrid_EqSim, theta::Real, phi::Real)::Int64
     theta    = pclamp(theta, -pi + eps(Float64), pi)
-    phi      = clamp(phi, eps(Float64), pi/2)
+    phi      = clamp(phi, -pi/2 + eps(Float64), pi/2)
     idxtheta = ceil(Int64, (theta+pi)*grid.N_theta/2/pi)
     idxphi   = ceil(Int64, abs(phi)*grid.N_phi*2/pi)
     return (idxtheta-1) * grid.N_phi + idxphi
@@ -229,7 +229,7 @@ function coord2idx(grid::Spherical2DGrid_Reduced, theta::Real, phi::Real)::Int64
 end
 function coord2idx(grid::Spherical2DGrid_Reduced_EqSim, theta::Real, phi::Real)::Int64
     theta    = pclamp(theta, -pi + eps(Float64), pi)
-    phi      = clamp(phi, eps(Float64), pi/2)
+    phi      = clamp(phi, -pi/2 + eps(Float64), pi/2)
     idxphi   = ceil(Int64, abs(phi)*grid.N_phi*2/pi)
     idxtheta = ceil(Int64, (theta+pi)*grid.N_theta[idxphi]/2/pi)
     if idxphi == 1; return idxtheta; end
