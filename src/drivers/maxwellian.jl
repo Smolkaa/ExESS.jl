@@ -264,12 +264,14 @@ end
 # overwriting additional `Base.rand` methods for multivariate maxwellians
 Base.rand(S::Type{<:AbstractFloat}, d::_VDs) = S.(rand(d))
 Base.rand(S::Type{<:LocalCartesianVelocity}, d::_VDs) = S(rand(d))
+Base.rand(S::Type{<:LocalSphericalVelocity}, d::_VDs) = S(rand(LocalCartesianVelocity, d))
 function Base.rand(S::Type{<:AbstractFloat}, d::_VDs, N::Integer) # perormance improvment
     SAMPLES = Vector{NTuple{3, S}}(undef, N)
     for i in 1:N; SAMPLES[i] = rand(S, d); end
     return SAMPLES
 end
 Base.rand(S::Type{<:LocalCartesianVelocity}, d::_VDs, N::Integer) = S.(rand(d, N))
+Base.rand(S::Type{<:LocalSphericalVelocity}, args...) = S.(rand(LocalCartesianlVelocity, args...))
 
 
 

@@ -11,6 +11,9 @@
     ExESS vector" and should not be confused with the `AbstractVector` type
 - removed the `GlobalSphericalVelocity` type as it was never used and wrongly defined, based
   on the new vector/coordinate definitions and notations
+- added new velocity type `LocalSphericalVelocity`
+  - edited `maxwellian`s to use the new velocity type in sampler function
+- removed the local cartesian 3d grid type (reverted into the private repo)
 
 ## v0.1.9 (2024/07/05)
 
