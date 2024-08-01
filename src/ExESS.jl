@@ -36,7 +36,6 @@ include(joinpath(@__DIR__, "grids", "spherical2d.jl"))
 include(joinpath(@__DIR__, "grids", "spherical2d_spiral.jl"))
 include(joinpath(@__DIR__, "grids", "spherical2d_HEALPix.jl"))
 include(joinpath(@__DIR__, "grids", "spherical3d.jl"))
-include(joinpath(@__DIR__, "grids", "cartesian3d.jl"))
 
 # trajectory
 include(joinpath(@__DIR__, "trajectories", "trajectory.jl"))
