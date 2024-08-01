@@ -6,6 +6,11 @@
   which now correctly mirrors the latitude values onto the northern hemisphere and does not
   clip it to the equator anymore
 - BUGFIX of `coord2idx` to also correctly handle boundary cases close to `pi` and `-pi`
+- renamed `coordinates/` to `vectors/` to clarify the notation
+  - also renamed `AbstractCoordinate` to `AbstractEVector`, which is short for "abtract
+    ExESS vector" and should not be confused with the `AbstractVector` type
+- removed the `GlobalSphericalVelocity` type as it was never used and wrongly defined, based
+  on the new vector/coordinate definitions and notations
 
 ## v0.1.9 (2024/07/05)
 
