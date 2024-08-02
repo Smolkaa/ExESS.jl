@@ -2,7 +2,7 @@
 #::. FUNCTIONS
 ############################################################################################
 """
-[1] arrhenius([S::Type{<:AbstractFloat}], [A::Real], T::Real, Ea::Real)
+    [1] arrhenius([S::Type{<:AbstractFloat}], [A::Real], T::Real, Ea::Real)
 
 Calculation of the rate constant based on the
 [Arrhenius Equation](https://en.wikipedia.org/wiki/Arrhenius_equation), with parameters `A`
