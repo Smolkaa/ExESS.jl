@@ -49,10 +49,12 @@ end
     end
     # trajectories
     @testset verbose=true "TRAJECTORIES --------------------" begin
+        include(joinpath(@__DIR__, "trajectories", "landing_position.jl"))
         include(joinpath(@__DIR__, "trajectories", "trajectory.jl"))
         include(joinpath(@__DIR__, "trajectories", "scale_height.jl"))
     end
 
+    println("")
 end
 
 nothing
