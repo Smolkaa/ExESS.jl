@@ -1,6 +1,6 @@
 # ExESS -- CHANGELOG
 
-## v0.1.10 (2024/??/??)
+## v0.1.10 (2024/0805?)
 
 - BUGFIX of `coord2idx` for `Spherical2DGrid_EqSim` and `Spherical2DGrid_Reduced_Eqsim`, 
   which now correctly mirrors the latitude values onto the northern hemisphere and does not
