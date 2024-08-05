@@ -365,6 +365,26 @@ elevation(x::AbstractSphericalVector) = x.phi
 elevation(S::Type{<:AbstractFloat}, args...) = S(elevation(args...))
 
 
+
+
+function rotate_x(x::Union{Tuple, AbstractVector}, a::Real)
+    return (x[1], x[2]*cos(a) + x[3]*sin(a), -x[2]*sin(a) + x[3]*cos(a))
+end
+rotate_x(x::T, a::Real) where {T<:AbstractCartesianVector} = T(rotate_x(_get(x), a)...)
+
+function rotate_y(x::Union{Tuple, AbstractVector}, a::Real)
+    return (x[1]*cos(a) - x[3]*sin(a), x[2], x[1]*sin(a) + x[3]*cos(a))
+end
+rotate_y(x::T, a::Real) where {T<:AbstractCartesianVector} = T(rotate_y(_get(x), a)...)
+
+function rotate_z(x::Union{Tuple, AbstractVector}, a::Real)
+    return (x[1]*cos(a) + x[2]*sin(a), -x[1]*sin(a) + x[2]*cos(a), x[3])
+end
+rotate_z(x::T, a::Real) where {T<:AbstractCartesianVector} = T(rotate_z(_get(x), a)...)
+
+
+
+
 """
     [1] speed([S::Type], v::Tuple)
     [2] speed([S::Type], v::AbstractVector)
@@ -483,4 +503,8 @@ export
     LocalCartesianVelocity,
     LocalSphericalVelocity,
 
-    azimuth, elevation, speed, zenith
+    azimuth,
+    elevation,
+    rotate_x, rotate_y, rotate_z,
+    speed,
+    zenith
