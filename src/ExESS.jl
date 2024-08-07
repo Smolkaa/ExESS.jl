@@ -38,6 +38,7 @@ include(joinpath(@__DIR__, "grids", "spherical2d_HEALPix.jl"))
 include(joinpath(@__DIR__, "grids", "spherical3d.jl"))
 
 # trajectory
+include(joinpath(@__DIR__, "trajectories", "landing_position.jl"))
 include(joinpath(@__DIR__, "trajectories", "trajectory.jl"))
 include(joinpath(@__DIR__, "trajectories", "escape_velocity.jl"))
 include(joinpath(@__DIR__, "trajectories", "scale_height.jl"))
