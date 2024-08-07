@@ -313,7 +313,7 @@ end
 
 
 ############################################################################################
-#::. UTILITY FUNCTIONS
+#::. INTERNAL UTILITY FUNCTIONS
 ############################################################################################
 _get(a::T) where {T<:AbstractCartesianVector} = (a.x, a.y, a.z)
 _get(a::T) where {T<:AbstractSphericalVector} = (a.r, a.theta, a.phi)
@@ -339,12 +339,16 @@ _getphi(a::T) where {T<:AbstractSphericalVector} = a.phi
 _getphi(a::Union{Tuple, AbstractVector}) = a[3]
 
 
+
+############################################################################################
+#::. EXPORTED UTILITY FUNCTIONS
+############################################################################################
 """
     [1] azimuth([S::Type{<:AbstractFloat}], x::Tuple)
     [2] azimuth([S::Type{<:AbstractFloat}], x::AbstractVector)
     [3] azimuth([S::Type{<:AbstractFloat}], x::AbstractEVector)
 
-Calculate the azimuth angle (in [rad]) of the vector `x`.
+Calculate the azimuth angle in (rad) of the vector `x`.
 """
 azimuth(x::Union{Tuple, AbstractVector}) = sgn(x[2]) * acos( x[1] / sqrt(x[1]^2 + x[2]^2) )
 azimuth(x::AbstractCartesianVector) = sgn(x.y) * acos( x.x / sqrt(x.x^2 + x.y^2) )
@@ -357,7 +361,7 @@ azimuth(S::Type{<:AbstractFloat}, args...) = S(azimuth(args...))
     [2] elevation([S::Type{<:AbstractFloat}], x::AbstractVector)
     [3] elevation([S::Type{<:AbstractFloat}], x::AbstractEVector)
 
-Calculate the elevation angle (in [rad]) of the cartesian vector `x`.
+Calculate the elevation angle in (rad) of the cartesian vector `x`.
 """
 elevation(x::Union{Tuple, AbstractVector}) = atan(x[3] / sqrt(x[1]^2 + x[2]^2))
 elevation(x::AbstractCartesianVector) = atan(x.z / sqrt(x.x^2 + x.y^2))
@@ -370,7 +374,7 @@ elevation(S::Type{<:AbstractFloat}, args...) = S(elevation(args...))
     [1] rotate_x([S::Type{<:AbstractFloat}], x::Tuple, a::Real)
     [2] rotate_x([S::Type{<:AbstractFloat}], x::AbstractVector, a::Real)
 
-Rotates the vector `x` around the x-axis by the angle `a` (in [rad]).
+Rotates the vector `x` around the x-axis by the angle `a` in (rad).
 """
 function rotate_x(x::Union{Tuple, AbstractVector}, a::Real)
     return (x[1], x[2]*cos(a) + x[3]*sin(a), -x[2]*sin(a) + x[3]*cos(a))
@@ -383,7 +387,7 @@ rotate_x(x::T, a::Real) where {T<:AbstractCartesianVector} = T(rotate_x(_get(x),
     [1] rotate_y([S::Type{<:AbstractFloat}], x::Tuple, a::Real)
     [2] rotate_y([S::Type{<:AbstractFloat}], x::AbstractVector, a::Real)
 
-Rotates the vector `x` around the y-axis by the angle `a` (in [rad]).
+Rotates the vector `x` around the y-axis by the angle `a` in (rad).
 """
 function rotate_y(x::Union{Tuple, AbstractVector}, a::Real)
     return (x[1]*cos(a) - x[3]*sin(a), x[2], x[1]*sin(a) + x[3]*cos(a))
@@ -396,7 +400,7 @@ rotate_y(x::T, a::Real) where {T<:AbstractCartesianVector} = T(rotate_y(_get(x),
     [1] rotate_z([S::Type{<:AbstractFloat}], x::Tuple, a::Real)
     [2] rotate_z([S::Type{<:AbstractFloat}], x::AbstractVector, a::Real)
 
-Rotates the vector `x` around the z-axis by the angle `a` (in [rad]).
+Rotates the vector `x` around the z-axis by the angle `a` in (rad).
 """
 function rotate_z(x::Union{Tuple, AbstractVector}, a::Real)
     return (x[1]*cos(a) + x[2]*sin(a), -x[1]*sin(a) + x[2]*cos(a), x[3])
@@ -412,7 +416,7 @@ rotate_z(x::T, a::Real) where {T<:AbstractCartesianVector} = T(rotate_z(_get(x),
     [4] speed([S::Type], v::GobalCartesianVelocity)
     [5] speed([S::Type], v::LocalSphericalVelocity)
 
-Calculate the speed (in [m s-1]) of the velocity vector `v` (in [m s-1]).
+Calculate the speed in (m s-1) of the velocity vector `v` in (m s-1).
 """
 speed(v::Union{Tuple, AbstractVector, LocalCartesianVelocity, GlobalCartesianVelocity}) = norm(v)
 speed(v::LocalSphericalVelocity) = v.r
@@ -424,7 +428,7 @@ speed(S::Type{<:AbstractFloat}, args...) = S(speed(args...))
     [2] zenith([S::Type{<:Real}], c::AbstractVector)
     [3] zenith([S::Type{<:Real}], c::AbstractEVector)
 
-Calculate the zenith angle (in [rad]) of the the vector `x`.
+Calculate the zenith angle in (rad) of the the vector `x`.
 
 **Notes**
 - the zenith angle is the same-sign `pi/2`-inversion of the elevation angle
