@@ -104,7 +104,7 @@ MBFluxSpeedDistribution(T::Integer, m::Integer) = MBFluxSpeedDistribution(promot
 Custom struct defining a (3D) Maxwell-Boltzmann velocity distribution. Uses the temperature
 `T` in K and the mass `m` in kg as inputs.
 
-The lower and upper bounds of the distribution are `(-Inf, -Inf, -Inf)` and
+The lower and upper bounds of the distribution are `(-Inf, -Inf, 0)` and
 `(Inf, Inf, Inf)`, respectively.
 
 **Defined Methods**: `rand`, `cdf`, `pdf`
@@ -121,7 +121,7 @@ MBVelocityDistribution(T::Integer, m::Integer) = MBVelocityDistribution(promote(
 Custom struct defining a (3D) Maxwell-Boltzmann flux velocity distribution. Uses the
 temperature `T` in K and the mass `m` in kg as inputs.
 
-The lower and upper bounds of the distribution are `(-Inf, -Inf, -Inf)` and
+The lower and upper bounds of the distribution are `(-Inf, -Inf, 0)` and
 `(Inf, Inf, Inf)`, respectively.
 
 **Defined Methods**: `rand`, `cdf`, `pdf`
@@ -189,6 +189,9 @@ end
 
 
 
+
+Statistics.mean(d::MBElevationDistribution{S}) where {S<:AbstractFloat} = S((pi-2)/2)
+Statistics.mean(d::MBFluxElevationDistribution{S}) where {S<:AbstractFloat} = S(pi/4)
 function Statistics.mean(d::MBSpeedDistribution{S}) where {S<:AbstractFloat}
     return S(sqrt(8 * BOLTZMANN_CONSTANT * d.T / (pi * d.m)))
 end
@@ -254,7 +257,7 @@ end
 
 function Base.rand(d::MBVelocityDistribution{S}) where {S<:AbstractFloat}
     a = sqrt(BOLTZMANN_CONSTANT * d.T / d.m)
-    return S.((a*randn(), a*randn(), a*randn()))
+    return S.((a*randn(), a*randn(), abs(a*randn())))
 end
 function Base.rand(d::MBFluxVelocityDistribution{S}) where {S<:AbstractFloat}
     a = sqrt(BOLTZMANN_CONSTANT * d.T / d.m)

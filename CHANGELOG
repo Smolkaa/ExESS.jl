@@ -14,6 +14,8 @@
 - added new velocity type `LocalSphericalVelocity`
   - edited `maxwellian`s to use the new velocity type in sampler function
 - removed the local cartesian 3d grid type (reverted into the private repo)
+- added `Statistics.mean` extension for Maxwellian elevation distributions
+- changed `MBVelocityDistribution` to be strictly positive in upwards (z) direction
 
 ## v0.1.9 (2024/07/05)
 
