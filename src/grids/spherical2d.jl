@@ -39,8 +39,8 @@ end
 function Spherical2DGrid(T::Type{<:AbstractFloat}, r::Real, N_lon::Integer,
                          N_lat::Integer; lonrange=(-pi, pi), latrange=(-pi/2, pi/2))
 
-    @assert lonrange[1] < lonrange[2] "Invalid longitude range"
-    @assert latrange[1] < latrange[2] "Invalid latitude range"
+    @assert lonrange[1] <= lonrange[2] "Invalid longitude range"
+    @assert latrange[1] <= latrange[2] "Invalid latitude range"
 
     lon = T.(repeat(range(1/2/N_lon, 1 - 1/2/N_lon, length=N_lon) *
         (lonrange[2]-lonrange[1]) .+ lonrange[1]; inner=N_lat))
@@ -95,8 +95,8 @@ end
 function Spherical2DGrid_EqSim(T::Type{<:AbstractFloat}, r::Real, N_lon::Integer,
                                N_lat::Integer; lonrange=(-pi, pi), latmax=pi/2)
 
-    @assert lonrange[1] < lonrange[2] "Invalid longitude range"
-    @assert latmax > 0 "Invalid `latmax`"
+    @assert lonrange[1] <= lonrange[2] "Invalid longitude range"
+    @assert latmax >= 0 "Invalid `latmax`"
 
     lon = T.(repeat(range(1/2/N_lon, 1 - 1/2/N_lon, length=N_lon) *
         (lonrange[2]-lonrange[1]) .+ lonrange[1]; inner=N_lat))
@@ -150,16 +150,18 @@ end
 function Spherical2DGrid_Reduced(T::Type{<:AbstractFloat}, r::Real, N_lat::Integer;
                                  lonrange=(-pi, pi), latrange=(-pi/2, pi/2))
 
-    @assert lonrange[1] < lonrange[2] "Invalid longitude range"
-    @assert latrange[1] < latrange[2] "Invalid latitude range"
+    @assert lonrange[1] <= lonrange[2] "Invalid longitude range"
+    @assert latrange[1] <= latrange[2] "Invalid latitude range"
 
+    # calculate maximum longitude size and latitude grid
     dlon_max = T((latrange[2] - latrange[1])/N_lat)
     lat0 = T.(range(1/2/N_lat, 1 - 1/2/N_lat, length=N_lat) *
         (latrange[2]-latrange[1]) .+ latrange[1])
 
+    # claculate coordinates for longitudes and latitudes
     lon, lat, N_lon = T[], T[], Int64[]
     for p0 in lat0
-        n_lon = ceil(Int64, (lonrange[2] - lonrange[1])*cos(p0)/dlon_max)
+        n_lon = ceil(Int64, (lonrange[2] - lonrange[1])*cos(p0)/dlon_max + eps(T))
         push!(lon, range(1/2/n_lon, 1 - 1/2/n_lon, length=n_lon) *
             (lonrange[2]-lonrange[1]) .+ lonrange[1]...)
         push!(lat, repeat([p0], n_lon)...)
@@ -169,7 +171,8 @@ function Spherical2DGrid_Reduced(T::Type{<:AbstractFloat}, r::Real, N_lat::Integ
     areas = T[]
     for i in eachindex(N_lon)
         idx = accumulate(+, N_lon[1:i])[end]
-        dlon, dlat = lon[idx] - lon[idx-1], lat0[2] - lat0[1]
+        # dlon, dlat = lon[idx] - lon[idx-1], lat0[2] - lat0[1]
+        dlon, dlat = (lonrange[2] - lonrange[1]) / N_lon[i], lat0[2] - lat0[1]
         push!(areas, repeat([r^2 * dlon * (sin(lat0[i]+dlat/2) - sin(lat0[i]-dlat/2))], N_lon[i])...)
     end
 
@@ -218,15 +221,15 @@ end
 function Spherical2DGrid_Reduced_EqSim(T::Type{<:AbstractFloat}, r::Real, N_lat::Integer;
                                        lonrange=(-pi, pi), latmax=pi/2)
 
-    @assert lonrange[1] < lonrange[2] "Invalid longitude range"
-    @assert latmax > 0 "Invalid `latmax`"
+    @assert lonrange[1] <= lonrange[2] "Invalid longitude range"
+    @assert latmax >= 0 "Invalid `latmax`"
 
     dlon_max = T(latmax/N_lat)
     lat0 = T.(range(1/2/N_lat, 1 - 1/2/N_lat, length=N_lat) * latmax)
 
     lon, lat, N_lon = T[], T[], Int64[]
     for p0 in lat0
-        n_lon = ceil(Int64, (lonrange[2] - lonrange[1])*cos(p0)/dlon_max)
+        n_lon = ceil(Int64, (lonrange[2] - lonrange[1])*cos(p0)/dlon_max + eps(T))
         push!(lon, range(1/2/n_lon, 1 - 1/2/n_lon, length=n_lon) *
             (lonrange[2]-lonrange[1]) .+ lonrange[1]...)
         push!(lat, repeat([p0], n_lon)...)
@@ -357,8 +360,9 @@ Base.show(io::IO, ::MIME"text/plain", grid::Spherical2DGrid_Reduced) =
             " lonrange: $(grid.lonrange)\n"*
             " latrange: $(grid.latrange)\n"*
             " N_lon:    $(length(grid.N_lon))-element Vector{Int64}\n"*
-            "             @ quator: $(grid.N_lon[ceil(Int64,grid.N_lat/2)])\n"*
-            "             @ poles:  $(grid.N_lon[end])\n"*
+            "             [$(grid.N_lon[1]) .. $(grid.N_lon[end])]\n"*
+            # "             @ equator: $(grid.N_lon[ceil(Int64,grid.N_lat/2)])\n"*
+            # "             @ poles:  $(grid.N_lon[end])\n"*
             " N_lat:    $(grid.N_lat)\n"*
             " coords:   $(length(grid.coords))-element $(typeof(coords(grid)))\n"*
             " areas:    $(length(grid.areas))-element $(typeof(grid.areas))\n"*
@@ -371,8 +375,9 @@ Base.show(io::IO, ::MIME"text/plain", grid::Spherical2DGrid_Reduced_EqSim) =
             " lonrange: $(grid.lonrange)\n"*
             " latrange: $(grid.latrange)\n"*
             " N_lon:    $(length(grid.N_lon))-element Vector{Int64}\n"*
-            "             @ quator: $(grid.N_lon[1])\n"*
-            "             @ poles:  $(grid.N_lon[end])\n"*
+            "             [$(N_lon[1]) .. $(N_lon[end])]\n"*
+            # "             @ equator: $(grid.N_lon[1])\n"*
+            # "             @ poles:  $(grid.N_lon[end])\n"*
             " N_lat:    $(grid.N_lat)\n"*
             " coords:   $(length(grid.coords))-element $(typeof(coords(grid)))\n"*
             " areas:    $(length(grid.areas))-element $(typeof(grid.areas))\n"*

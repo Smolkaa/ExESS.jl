@@ -1,5 +1,9 @@
 # ExESS -- CHANGELOG
 
+## v0.1.11 (2024/??/??)
+
+
+
 ## v0.1.10 (2024/08/26)
 
 - BUGFIX of `coord2idx` for `Spherical2DGrid_EqSim` and `Spherical2DGrid_Reduced_Eqsim`, 
