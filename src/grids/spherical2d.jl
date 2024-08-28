@@ -260,59 +260,59 @@ end
 ############################################################################################
 function coord2idx(grid::Spherical2DGrid, lon::T, lat::T)::Int64 where {T<:AbstractFloat}
     PI  = T(pi) # to prevent numerical cutoff/rounding issues
-    lon = pclamp(lon, -PI, PI - eps(T)) + eps(T)
-    lat = clamp(lat, -PI/2, PI/2 - eps(T)) + eps(T)
+    lon = pclamp(lon, -PI, PI - eps(T))
+    lat = clamp(lat, -PI/2, PI/2 - eps(T))
 
     lonrange, latrange = grid.lonrange, grid.latrange
     if lon < lonrange[1] || lon > lonrange[2] || lat < latrange[1] || lat > latrange[2]
         return 0
     end
 
-    idxlon = ceil(Int64, (lon-lonrange[1])*grid.N_lon/(lonrange[2]-lonrange[1]))
-    idxlat = ceil(Int64, (lat-latrange[1])*grid.N_lat/(latrange[2]-latrange[1]))
+    idxlon = ceil(Int64, (lon-lonrange[1])*grid.N_lon/(lonrange[2]-lonrange[1]) + eps(T))
+    idxlat = ceil(Int64, (lat-latrange[1])*grid.N_lat/(latrange[2]-latrange[1]) + eps(T))
     return (idxlon-1) * grid.N_lat + idxlat
 end
 function coord2idx(grid::Spherical2DGrid_EqSim, lon::T, lat::T)::Int64 where {T<:AbstractFloat}
     PI  = T(pi) # to prevent numerical cutoff/rounding issues
-    lon = pclamp(lon, -PI, PI - eps(T)) + eps(T)
-    lat = clamp(lat, -PI/2, PI/2 - eps(T)) + eps(T)
+    lon = pclamp(lon, -PI, PI - eps(T))
+    lat = clamp(lat, -PI/2, PI/2 - eps(T))
 
     lonrange, latrange = grid.lonrange, grid.latrange
     if lon < lonrange[1] || lon > lonrange[2] || lat < -latrange[2] || lat > latrange[2]
         return 0
     end
 
-    idxlon = ceil(Int64, (lon-lonrange[1])*grid.N_lon/(lonrange[2]-lonrange[1]))
-    idxlat = ceil(Int64, abs(lat)*grid.N_lat/latrange[2])
+    idxlon = ceil(Int64, (lon-lonrange[1])*grid.N_lon/(lonrange[2]-lonrange[1]) + eps(T))
+    idxlat = ceil(Int64, abs(lat)*grid.N_lat/latrange[2] + eps(T))
     return (idxlon-1) * grid.N_lat + idxlat
 end
 function coord2idx(grid::Spherical2DGrid_Reduced, lon::T, lat::T)::Int64 where {T<:AbstractFloat}
     PI  = T(pi) # to prevent numerical cutoff/rounding issues
-    lon = pclamp(lon, -PI, PI - eps(T)) + eps(T)
-    lat = clamp(lat, -PI/2, PI/2 - eps(T)) + eps(T)
+    lon = pclamp(lon, -PI, PI - eps(T))
+    lat = clamp(lat, -PI/2, PI/2 - eps(T))
 
     lonrange, latrange = grid.lonrange, grid.latrange
     if lon < lonrange[1] || lon > lonrange[2] || lat < latrange[1] || lat > latrange[2]
         return 0
     end
 
-    idxlat = ceil(Int64, (lat-latrange[1])*grid.N_lat/(latrange[2]-latrange[1]))
-    idxlon = ceil(Int64, (lon-lonrange[1])*grid.N_lon[idxlat]/(lonrange[2]-lonrange[1]))
+    idxlat = ceil(Int64, (lat-latrange[1])*grid.N_lat/(latrange[2]-latrange[1]) + eps(T))
+    idxlon = ceil(Int64, (lon-lonrange[1])*grid.N_lon[idxlat]/(lonrange[2]-lonrange[1]) + eps(T))
     if idxlat == 1; return idxlon; end
     return idxlon + accumulate(+, grid.N_lon[1:idxlat])[end-1]
 end
 function coord2idx(grid::Spherical2DGrid_Reduced_EqSim, lon::T, lat::T)::Int64 where {T<:AbstractFloat}
     PI  = T(pi) # to prevent numerical cutoff/rounding issues
-    lon = pclamp(lon, -PI, PI - eps(T)) + eps(T)
-    lat = clamp(lat, -PI/2, PI/2 - eps(T)) + eps(T)
+    lon = pclamp(lon, -PI, PI - eps(T))
+    lat = clamp(lat, -PI/2, PI/2 - eps(T))
 
     lonrange, latrange = grid.lonrange, grid.latrange
     if lon < lonrange[1] || lon > lonrange[2] || lat < -latrange[2] || lat > latrange[2]
         return 0
     end
 
-    idxlat = ceil(Int64, abs(lat)*grid.N_lat/latrange[2])
-    idxlon = ceil(Int64, (lon-lonrange[1])*grid.N_lon[idxlat]/(lonrange[2]-lonrange[1]))
+    idxlat = ceil(Int64, abs(lat)*grid.N_lat/latrange[2] + eps(T))
+    idxlon = ceil(Int64, (lon-lonrange[1])*grid.N_lon[idxlat]/(lonrange[2]-lonrange[1]) + eps(T))
     if idxlat == 1; return idxlon; end
     return idxlon + accumulate(+, grid.N_lon[1:idxlat])[end-1]
 end
@@ -375,7 +375,7 @@ Base.show(io::IO, ::MIME"text/plain", grid::Spherical2DGrid_Reduced_EqSim) =
             " lonrange: $(grid.lonrange)\n"*
             " latrange: $(grid.latrange)\n"*
             " N_lon:    $(length(grid.N_lon))-element Vector{Int64}\n"*
-            "             [$(N_lon[1]) .. $(N_lon[end])]\n"*
+            "             [$(grid.N_lon[1]) .. $(grid.N_lon[end])]\n"*
             # "             @ equator: $(grid.N_lon[1])\n"*
             # "             @ poles:  $(grid.N_lon[end])\n"*
             " N_lat:    $(grid.N_lat)\n"*
