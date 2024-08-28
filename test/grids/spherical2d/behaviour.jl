@@ -161,6 +161,9 @@
     @test all(r -> coord2idx(pgrid_reduced, r, -pi/2 - rand()) == coord2idx(pgrid_reduced, r, -pi/2), rand(1000))
     @test all(r -> coord2idx(pgrid_reduced_eqsim, r, -pi/2 - rand()) == coord2idx(pgrid_reduced_eqsim, r, pi/2), rand(1000))
 
+    # test for NOT drawing index 0 at grid element borders
+    # TODO
+
     # test mapgrid - setup
     x_s2d   = collect(1:length(grid))
     x_s2de  = collect(1:length(grid_eqsim))

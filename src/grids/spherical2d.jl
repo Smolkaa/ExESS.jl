@@ -268,8 +268,8 @@ function coord2idx(grid::Spherical2DGrid, lon::T, lat::T)::Int64 where {T<:Abstr
         return 0
     end
 
-    idxlon = ceil(Int64, (lon-lonrange[1])*grid.N_lon/(lonrange[2]-lonrange[1]) + eps(T))
-    idxlat = ceil(Int64, (lat-latrange[1])*grid.N_lat/(latrange[2]-latrange[1]) + eps(T))
+    idxlon = max(1,ceil(Int64, (lon-lonrange[1])*grid.N_lon/(lonrange[2]-lonrange[1])))
+    idxlat = max(1,ceil(Int64, (lat-latrange[1])*grid.N_lat/(latrange[2]-latrange[1])))
     return (idxlon-1) * grid.N_lat + idxlat
 end
 function coord2idx(grid::Spherical2DGrid_EqSim, lon::T, lat::T)::Int64 where {T<:AbstractFloat}
@@ -282,8 +282,8 @@ function coord2idx(grid::Spherical2DGrid_EqSim, lon::T, lat::T)::Int64 where {T<
         return 0
     end
 
-    idxlon = ceil(Int64, (lon-lonrange[1])*grid.N_lon/(lonrange[2]-lonrange[1]) + eps(T))
-    idxlat = ceil(Int64, abs(lat)*grid.N_lat/latrange[2] + eps(T))
+    idxlon = max(1,ceil(Int64, (lon-lonrange[1])*grid.N_lon/(lonrange[2]-lonrange[1]) + eps(T)))
+    idxlat = max(1,ceil(Int64, abs(lat)*grid.N_lat/latrange[2] + eps(T)))
     return (idxlon-1) * grid.N_lat + idxlat
 end
 function coord2idx(grid::Spherical2DGrid_Reduced, lon::T, lat::T)::Int64 where {T<:AbstractFloat}
@@ -296,8 +296,8 @@ function coord2idx(grid::Spherical2DGrid_Reduced, lon::T, lat::T)::Int64 where {
         return 0
     end
 
-    idxlat = ceil(Int64, (lat-latrange[1])*grid.N_lat/(latrange[2]-latrange[1]) + eps(T))
-    idxlon = ceil(Int64, (lon-lonrange[1])*grid.N_lon[idxlat]/(lonrange[2]-lonrange[1]) + eps(T))
+    idxlat = max(1,ceil(Int64, (lat-latrange[1])*grid.N_lat/(latrange[2]-latrange[1]) + eps(T)))
+    idxlon = max(1,ceil(Int64, (lon-lonrange[1])*grid.N_lon[idxlat]/(lonrange[2]-lonrange[1]) + eps(T)))
     if idxlat == 1; return idxlon; end
     return idxlon + accumulate(+, grid.N_lon[1:idxlat])[end-1]
 end
@@ -311,8 +311,8 @@ function coord2idx(grid::Spherical2DGrid_Reduced_EqSim, lon::T, lat::T)::Int64 w
         return 0
     end
 
-    idxlat = ceil(Int64, abs(lat)*grid.N_lat/latrange[2] + eps(T))
-    idxlon = ceil(Int64, (lon-lonrange[1])*grid.N_lon[idxlat]/(lonrange[2]-lonrange[1]) + eps(T))
+    idxlat = max(1,ceil(Int64, abs(lat)*grid.N_lat/latrange[2] + eps(T)))
+    idxlon = max(1,ceil(Int64, (lon-lonrange[1])*grid.N_lon[idxlat]/(lonrange[2]-lonrange[1]) + eps(T)))
     if idxlat == 1; return idxlon; end
     return idxlon + accumulate(+, grid.N_lon[1:idxlat])[end-1]
 end
