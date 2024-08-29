@@ -78,6 +78,7 @@ LT2lng(LT::BigInt) = LT2lng(BigFloat(LT))
 
 """
 function pclamp(x::T, l::T, u::T) where {T<:Real}
+    if l <= x <= u; return x; end
     return T(l + mod(x - l, u - l))
 end
 pclamp(x::Real, l::Real, u::Real) = pclamp(promote(x, l, u)...)
