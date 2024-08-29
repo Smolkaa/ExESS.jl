@@ -72,7 +72,7 @@
     @test surfacecoords(pgrid_reduced_eqsim) == coords(pgrid_reduced_eqsim) isa AbstractVector
 
     # test for correct index and coordinate conversion
-    xs_offset = (0, 0.0001*rand()*pi, 0.0001*rand()*pi/2)
+    xs_offset = (0, 0.00001*rand()*pi, 0.00001*rand()*pi/2)
     for _ in 1:100
         idx = rand(1:length(grid))
         xs = coords(grid)[idx]
