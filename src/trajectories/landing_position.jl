@@ -99,7 +99,7 @@ Returns the time of flight in seconds. Returns `NaN` if the particle escapes.
 
 | Field    | Default Value  | Unit       | Description                          |
 |:-------- | --------------:|:---------- |:------------------------------------ |
-| `m`      | `LUNAR_MASS`   | [kg]       | mass of central object               |
+| `m`      | `LUNAR_MASS`   | (kg)       | mass of central object               |
 
 
 **References**
