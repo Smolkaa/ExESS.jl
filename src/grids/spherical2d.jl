@@ -170,7 +170,7 @@ function Spherical2DGrid_Reduced(T::Type{<:AbstractFloat}, r::Real, N_lat::Integ
 
     areas = T[]
     for i in eachindex(N_lon)
-        idx = accumulate(+, N_lon[1:i])[end]
+        # idx = accumulate(+, N_lon[1:i])[end]
         # dlon, dlat = lon[idx] - lon[idx-1], lat0[2] - lat0[1]
         dlon, dlat = (lonrange[2] - lonrange[1]) / N_lon[i], lat0[2] - lat0[1]
         push!(areas, repeat([r^2 * dlon * (sin(lat0[i]+dlat/2) - sin(lat0[i]-dlat/2))], N_lon[i])...)
@@ -238,8 +238,9 @@ function Spherical2DGrid_Reduced_EqSim(T::Type{<:AbstractFloat}, r::Real, N_lat:
 
     areas = T[]
     for i in eachindex(N_lon)
-        idx = accumulate(+, N_lon[1:i])[end]
-        dlon, dlat = lon[idx] - lon[idx-1], lat0[2] - lat0[1]
+        # idx = accumulate(+, N_lon[1:i])[end]
+        # dlon, dlat = lon[idx] - lon[idx-1], lat0[2] - lat0[1]
+        dlon, dlat = (lonrange[2] - lonrange[1]) / N_lon[i], lat0[2] - lat0[1]
         push!(areas, repeat([r^2 * dlon * (sin(lat0[i]+dlat/2) - sin(lat0[i]-dlat/2))], N_lon[i])...)
     end
 
@@ -260,12 +261,12 @@ end
 ############################################################################################
 function coord2idx(grid::Spherical2DGrid, lon::T, lat::T)::Int64 where {T<:AbstractFloat}
     PI  = T(pi) # to prevent numerical cutoff/rounding issues
-    lon = pclamp(lon, -PI, PI - eps(T))
-    lat = clamp(lat, -PI/2, PI/2 - eps(T))
+    lon = pclamp(lon, -PI, PI)
+    lat = clamp(lat, -PI/2, PI/2)
 
     lonrange, latrange = grid.lonrange, grid.latrange
-    if lon < lonrange[1] - eps(T) || lon > lonrange[2] + eps(T) ||
-        lat < latrange[1] - eps(T) || lat > latrange[2] + eps(T)
+    if lon < lonrange[1] || lon > lonrange[2] ||
+        lat < latrange[1] || lat > latrange[2]
         return 0
     end
 
@@ -275,12 +276,12 @@ function coord2idx(grid::Spherical2DGrid, lon::T, lat::T)::Int64 where {T<:Abstr
 end
 function coord2idx(grid::Spherical2DGrid_EqSim, lon::T, lat::T)::Int64 where {T<:AbstractFloat}
     PI  = T(pi) # to prevent numerical cutoff/rounding issues
-    lon = pclamp(lon, -PI, PI - eps(T))
-    lat = clamp(lat, -PI/2, PI/2 - eps(T))
+    lon = pclamp(lon, -PI, PI)
+    lat = clamp(lat, -PI/2, PI/2)
 
     lonrange, latrange = grid.lonrange, grid.latrange
-    if lon < lonrange[1] - eps(T) || lon > lonrange[2] + eps(T) ||
-        lat < -latrange[2] - eps(T) || lat > latrange[2] + eps(T)
+    if lon < lonrange[1] || lon > lonrange[2] ||
+        lat < -latrange[2] || lat > latrange[2]
         return 0
     end
 
@@ -290,12 +291,12 @@ function coord2idx(grid::Spherical2DGrid_EqSim, lon::T, lat::T)::Int64 where {T<
 end
 function coord2idx(grid::Spherical2DGrid_Reduced, lon::T, lat::T)::Int64 where {T<:AbstractFloat}
     PI  = T(pi) # to prevent numerical cutoff/rounding issues
-    lon = pclamp(lon, -PI, PI - eps(T))
-    lat = clamp(lat, -PI/2, PI/2 - eps(T))
+    lon = pclamp(lon, -PI, PI)
+    lat = clamp(lat, -PI/2, PI/2)
 
     lonrange, latrange = grid.lonrange, grid.latrange
-    if lon < lonrange[1] - eps(T) || lon > lonrange[2] + eps(T) ||
-        lat < latrange[1] - eps(T) || lat > latrange[2] + eps(T)
+    if lon < lonrange[1] || lon > lonrange[2] ||
+        lat < latrange[1] || lat > latrange[2]
         return 0
     end
 
@@ -306,12 +307,12 @@ function coord2idx(grid::Spherical2DGrid_Reduced, lon::T, lat::T)::Int64 where {
 end
 function coord2idx(grid::Spherical2DGrid_Reduced_EqSim, lon::T, lat::T)::Int64 where {T<:AbstractFloat}
     PI  = T(pi) # to prevent numerical cutoff/rounding issues
-    lon = pclamp(lon, -PI, PI - eps(T))
-    lat = clamp(lat, -PI/2, PI/2 - eps(T))
+    lon = pclamp(lon, -PI, PI)
+    lat = clamp(lat, -PI/2, PI/2)
 
     lonrange, latrange = grid.lonrange, grid.latrange
-    if lon < lonrange[1] - eps(T) || lon > lonrange[2] + eps(T) ||
-        lat < -latrange[2] - eps(T) || lat > latrange[2] + eps(T)
+    if lon < lonrange[1] || lon > lonrange[2] ||
+        lat < -latrange[2] || lat > latrange[2]
         return 0
     end
 

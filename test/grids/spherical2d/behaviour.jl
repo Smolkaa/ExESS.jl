@@ -162,22 +162,15 @@
     @test all(r -> coord2idx(pgrid_reduced_eqsim, r, -pi/2 - rand()) == coord2idx(pgrid_reduced_eqsim, r, pi/2), rand(1000))
 
     # test for NOT drawing index <1 at grid element borders
-    # NOTE: using `BigFloat` does not work here, though it should never be used
-    EPS = [eps(Float16), eps(Float32), eps(Float64), -eps(Float16), -eps(Float32), -eps(Float64)]
-    for g in [grid, grid_eqsim, grid_reduced, grid_reduced_eqsim]
-        for tshift in EPS
-            for pshift in EPS
-                @test coord2idx(g, g.lonrange[1] + tshift, g.latrange[1] + pshift) > 0
-                @test coord2idx(g, g.lonrange[2] + tshift, g.latrange[1] + pshift) > 0
-                @test coord2idx(g, g.lonrange[1] + tshift, g.latrange[2] + pshift) > 0
-                @test coord2idx(g, g.lonrange[2] + tshift, g.latrange[2] + pshift) > 0
-            end
-        end
-        # @test all(tshift -> all(pshift -> coord2idx(g, g.lonrange[1] + tshift, g.latrange[1] + pshift) > 0, EPS), EPS)
-        # @test all(tshift -> all(pshift -> coord2idx(g, g.lonrange[2] + tshift, g.latrange[1] + pshift) > 0, EPS), EPS)
-        # @test all(tshift -> all(pshift -> coord2idx(g, g.lonrange[1] + tshift, g.latrange[2] + pshift) > 0, EPS), EPS)
-        # @test all(tshift -> all(pshift -> coord2idx(g, g.lonrange[2] + tshift, g.latrange[2] + pshift) > 0, EPS), EPS)
-    end
+    @test all(i -> all(j -> coord2idx(grid, grid.lonrange[i], grid.latrange[j]) > 0, 1:2), 1:2)
+    @test all(i -> all(j -> coord2idx(grid_eqsim, grid_eqsim.lonrange[i], grid_eqsim.latrange[j]) > 0, 1:2), 1:2)
+    @test all(i -> all(j -> coord2idx(grid_reduced, grid_reduced.lonrange[i], grid_reduced.latrange[j]) > 0, 1:2), 1:2)
+    @test all(i -> all(j -> coord2idx(grid_reduced_eqsim, grid_reduced_eqsim.lonrange[i], grid_reduced_eqsim.latrange[j]) > 0, 1:2), 1:2)
+
+    @test all(i -> all(j -> coord2idx(pgrid, pgrid.lonrange[i], pgrid.latrange[j]) > 0, 1:2), 1:2)
+    @test all(i -> all(j -> coord2idx(pgrid_eqsim, pgrid_eqsim.lonrange[i], pgrid_eqsim.latrange[j]) > 0, 1:2), 1:2)
+    @test all(i -> all(j -> coord2idx(pgrid_reduced, pgrid_reduced.lonrange[i], pgrid_reduced.latrange[j]) > 0, 1:2), 1:2)
+    @test all(i -> all(j -> coord2idx(pgrid_reduced_eqsim, pgrid_reduced_eqsim.lonrange[i], pgrid_reduced_eqsim.latrange[j]) > 0, 1:2), 1:2)
 
     # test mapgrid - setup
     x_s2d   = collect(1:length(grid))
