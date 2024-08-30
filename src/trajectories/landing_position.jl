@@ -40,6 +40,7 @@ function landing_position(x0::NTuple{3, T}, v0::NTuple{3, T};
     r, lon0, lat0 = x0
     v_esc = escape_velocity(r, T(m))
     if norm(v0) > v_esc * 0.99999; return (NaN, NaN, NaN); end
+    if norm(v0)*v0[3] <= 0; return x0; end
 
     # orbital mechanics to determine trajectory
     psi    = zenith(v0)                          # zenith angle at launch
@@ -49,7 +50,7 @@ function landing_position(x0::NTuple{3, T}, v0::NTuple{3, T};
     dtheta = 2pi - 2*_true_anomaly(e, epskin)    # true anomaly of trajectory
 
     # calculate landing position
-    sin_lat1 = sin(lat0) * cos(dtheta) + cos(lat0) * sin(dtheta) * sin(az)
+    sin_lat1 = isnan(az) ? sin(lat0) : sin(lat0) * cos(dtheta) + cos(lat0) * sin(dtheta) * sin(az)
     cos_lat1 = sqrt(1 - sin_lat1^2)
     cos_dlon = (cos(dtheta) - sin(lat0) * sin_lat1) / (cos(lat0) * cos_lat1)
 
@@ -119,6 +120,7 @@ function time_of_flight(x0::NTuple{3, T}, v0::NTuple{3, T};
     r = _getr(x0)
     v_esc = escape_velocity(r, T(m))
     if norm(v0) > v_esc; return NaN; end
+    if norm(v0)*v0[3] <= 0; return zero(T); end
 
     # orbital mechanics to determine trajectory time
     psi    = zenith(v0)                          # zenith angle at x0
