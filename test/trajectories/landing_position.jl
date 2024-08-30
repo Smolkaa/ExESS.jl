@@ -1,6 +1,5 @@
 using LinearAlgebra
 
-
 @testset verbose=true "landing_position.jl ........" begin
 
     print("TESTING: trajectories > landing_position.jl")
@@ -49,8 +48,9 @@ using LinearAlgebra
 
 
     #=====================================================================#
-    #::. behaviour (MC test)
+    #::. behaviour
     #=====================================================================#
+    # MC tests for accuracy / correctness
     for _ in 1:2_500
         # inputs
         x0 = rand(GlobalSphericalPosition, EqualSurfaceDistribution(LUNAR_RADIUS))
@@ -80,6 +80,19 @@ using LinearAlgebra
             @test norm(land_pos2) > LUNAR_RADIUS
         end
     end
+
+    # zero-velocity should land at launch position without throwing NaNs @ zero time-of-flight
+    @test all(x0 -> isapprox(landing_position(x0, LocalCartesianVelocity(0, 0, 0)), x0; rtol=1e-4), rand(GlobalSphericalPosition, EqualSurfaceDistribution(LUNAR_RADIUS), 1000))
+    @test all(x0 -> isapprox(time_of_flight(x0, LocalCartesianVelocity(0, 0, 0)), 0; rtol=1e-4), rand(GlobalSphericalPosition, EqualSurfaceDistribution(LUNAR_RADIUS), 1000))
+
+    # vertically upward velocity should land at launch position without throwing NaNs
+    @test all(x0 -> isapprox(landing_position(x0, LocalCartesianVelocity(0, 0, rand())), x0; rtol=1e-4), rand(GlobalSphericalPosition, EqualSurfaceDistribution(LUNAR_RADIUS), 1000))
+
+    # horizontal velocity should land at launch position without throwing NaNs @ zero time-of-flight
+    @test all(x0 -> isapprox(landing_position(x0, LocalCartesianVelocity(rand(), rand(), 0)), x0; rtol=1e-4), rand(GlobalSphericalPosition, EqualSurfaceDistribution(LUNAR_RADIUS), 1000))
+    @test all(x0 -> isapprox(time_of_flight(x0, LocalCartesianVelocity(rand(), rand(), 0)), 0; rtol=1e-4), rand(GlobalSphericalPosition, EqualSurfaceDistribution(LUNAR_RADIUS), 1000))
+
+
 
 
     println("\rTESTING: trajectories > landing_position.jl - DONE")
