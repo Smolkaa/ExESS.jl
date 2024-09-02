@@ -168,12 +168,12 @@ function Spherical2DGrid_Reduced(T::Type{<:AbstractFloat}, r::Real, N_lat::Integ
         push!(N_lon, n_lon)
     end
 
+    # areas calculation
     areas = T[]
     for i in eachindex(N_lon)
-        # idx = accumulate(+, N_lon[1:i])[end]
-        # dlon, dlat = lon[idx] - lon[idx-1], lat0[2] - lat0[1]
         dlon, dlat = (lonrange[2] - lonrange[1]) / N_lon[i], lat0[2] - lat0[1]
-        push!(areas, repeat([r^2 * dlon * (sin(lat0[i]+dlat/2) - sin(lat0[i]-dlat/2))], N_lon[i])...)
+        push!(areas, repeat(
+            [r^2 * dlon * (sin(lat0[i]+dlat/2) - sin(lat0[i]-dlat/2))], N_lon[i])...)
     end
 
     return Spherical2DGrid_Reduced(T(r), N_lon, N_lat,
