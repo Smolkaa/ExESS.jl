@@ -10,9 +10,9 @@ abstract type AbstractSpherical3DGrid <: AbstractSphericalGrid end
 """
     [1] struct Spherical3DGrid{T<:AbstractFloat} <: AbstractSpherical3DGrid
     [2] Spherical3DGrid([T::Type{<:AbstractFloat}, ] r0::Real, h::AbstractVector,
-                        N_lon::Integer, N_lat::Integer)
+                        N_lon::Integer, N_lat::Integer; kwargs...)
     [3] Spherical3DGrid([T::Type{<:AbstractFloat}, ] r::AbstractVector, N_lon::Integer,
-                        N_lat::Integer)
+                        N_lat::Integer; kwargs...)
 
 Global structured volume grid (3D) of type `GlobalSphericalPosition{T}` over a sphere of
 radius `r0` with heights of the individual radial layers `h`. Alternatively, the radial
@@ -34,7 +34,9 @@ at the bottom (base/surface) of each cell.
 | `latrange` | `Tuple{T, T}`                        | latitude range                    |
 
 To ensure expected behavior, the grid object should generally be created with the outer
-constructors [2] or [3].
+constructors [2] or [3]. Those functions take the key-word `lonrange` and `latrange` to
+specify the range of the longitude and latitude. The default values are `(-pi, pi)` and
+`(-pi/2, pi/2)`, respectively.
 """
 struct Spherical3DGrid{T<:AbstractFloat} <: AbstractSpherical3DGrid
     r0::T
@@ -52,9 +54,9 @@ function Spherical3DGrid(T::Type{<:AbstractFloat}, r0::Real, h::AbstractVector,
             N_lon::Integer, N_lat::Integer; lonrange=(-pi, pi), latrange=(-pi/2, pi/2))
 
     # input assertions
+    @assert sort(h)[1] > 0 "Invalid heights"
     @assert lonrange[1] <= lonrange[2] "Invalid longitude range"
     @assert latrange[1] <= latrange[2] "Invalid latitude range"
-    @assert sort(h)[1] > 0
 
     # coordinates
     h, N_r = sort(h), length(h)
@@ -79,11 +81,13 @@ function Spherical3DGrid(T::Type{<:AbstractFloat}, r0::Real, h::AbstractVector,
                            GlobalSphericalPosition.(r, lon, lat),
                            T.(areas), T.(volumes), T.(lonrange), T.(latrange))
 end
-function Spherical3DGrid(r0::Real, h::AbstractVector, N_lon::Integer, N_lat::Integer; kwargs...)
+function Spherical3DGrid(r0::Real, h::AbstractVector, N_lon::Integer, N_lat::Integer;
+                         kwargs...)
     return Spherical3DGrid(typeof(r0), r0, h, N_lon, N_lat; kwargs...)
 end
-function Spherical3DGrid(r0::Integer, h::AbstractVector, N_lon::Integer, N_lat::Integer; kwargs...)
-    return Spherical3DGrid(promote_type(typeof(r0), Float64), r0, h, N_lon, N_lat; kwargs...)
+function Spherical3DGrid(r0::Integer, h::AbstractVector, N_lon::Integer, N_lat::Integer;
+                         kwargs...)
+    return Spherical3DGrid(promote_type(typeof(r0),Float64), r0, h, N_lon, N_lat; kwargs...)
 end
 function Spherical3DGrid(T::Type{<:AbstractFloat}, r::AbstractVector, N_lon::Integer,
                          N_lat::Integer; kwargs...)
@@ -93,35 +97,42 @@ end
 function Spherical3DGrid(r::AbstractVector, N_lon::Integer, N_lat::Integer; kwargs...)
     return Spherical3DGrid(typeof(r[1]), r, N_lon, N_lat; kwargs...)
 end
-function Spherical3DGrid(r::AbstractVector{<:Integer}, N_lon::Integer, N_lat::Integer; kwargs...)
+function Spherical3DGrid(r::AbstractVector{<:Integer}, N_lon::Integer, N_lat::Integer;
+                         kwargs...)
     return Spherical3DGrid(promote_type(typeof(r[1]), Float64), r, N_lon, N_lat; kwargs...)
 end
 
 """
     [1] struct Spherical3DGrid_EqSim{T<:AbstractFloat} <: AbstractSpherical3DGrid end
     [2] Spherical3DGrid_EqSim([T::Type{<:AbstractFloat}, ] r0::Real, h::AbstractVector,
-                              N_lon::Integer, N_lat::Integer)
+                              N_lon::Integer, N_lat::Integer; kwargs...)
     [3] Spherical3DGrid_EqSim([T::Type{<:AbstractFloat}, ] r::AbstractVector,
-                              N_lon::Integer, N_lat::Integer)
+                              N_lon::Integer, N_lat::Integer; kwargs...)
 
 Global structured volume grid (3D) of type `GlobalSphericalPosition{T}` over a hemisphere of
 radius `r0` with heights of the individual radial layers `h`. Alternatively, the radial
 distances can directly be specified by `r` (`r = r0 .+ h`). Note that all heights have
-to be positive.
+to be positive. Note that the radial position of each individual grid element is located
+at the bottom (base/surface) of each cell.
 
-| Field     | Type; with `T<:AbstractFloat`        | Description                       |
-|:--------- |:------------------------------------ |:--------------------------------- |
-| `r0`      | `T`                                  | radius of global body (sphere)    |
-| `h`       | `Vector{T}`                          | heights above radial base `r0`    |
-| `N_r`     | `Int64`                              | # elements in radial direction    |
-| `N_lon` | `Int64`                              | # elements in azimuth direction   |
-| `N_lat`   | `Int64`                              | # elements in elevation direction |
-| `coords`  | `Vector{GlobalSphericalPosition{T}}` | coordinates                       |
-| `areas`   | `Vector{T}`                          | surface area                      |
-| `volumes` | `Vector{T}`                          | volumes                           |
+| Field      | Type; with `T<:AbstractFloat`        | Description                       |
+|:---------- |:------------------------------------ |:--------------------------------- |
+| `r0`       | `T`                                  | radius of global body (sphere)    |
+| `h`        | `Vector{T}`                          | heights above radial base `r0`    |
+| `N_r`      | `Int64`                              | # elements in radial direction    |
+| `N_lon`    | `Int64`                              | # elements in azimuth direction   |
+| `N_lat`    | `Int64`                              | # elements in elevation direction |
+| `coords`   | `Vector{GlobalSphericalPosition{T}}` | coordinates                       |
+| `areas`    | `Vector{T}`                          | surface area                      |
+| `volumes`  | `Vector{T}`                          | volumes                           |
+| `lonrange` | `Tuple{T, T}`                        | longitude range                   |
+| `latrange` | `Tuple{T, T}`                        | latitude range                    |
 
 To ensure expected behavior, the grid object should generally be created with the outer
-constructors [2] or [3].
+constructors [2] or [3]. Those functions take the key-word `lonrange` and `latmax` to
+specify the range of the longitude and latitude. The default values are `(-pi, pi)` and
+`pi/2`, respectively (the lower boundary of latitudes for equatorially symmetric grids is
+always zero).
 """
 struct Spherical3DGrid_EqSim{T<:AbstractFloat} <: AbstractSpherical3DGrid
     r0::T
@@ -132,19 +143,23 @@ struct Spherical3DGrid_EqSim{T<:AbstractFloat} <: AbstractSpherical3DGrid
     coords::Vector{GlobalSphericalPosition{T}}
     areas::Vector{T}
     volumes::Vector{T}
+    lonrange::Tuple{T, T}
+    latrange::Tuple{T, T}
 end
 function Spherical3DGrid_EqSim(T::Type{<:AbstractFloat}, r0::Real, h::AbstractVector,
-            N_lon::Integer, N_lat::Integer)
+            N_lon::Integer, N_lat::Integer; lonrange=(-pi, pi), latmax=pi/2)
 
-    h = sort(h)
-    @assert h[1] > 0
-    N_r = length(h)
+    # input assertions
+    @assert sort(h)[1] > 0 "Invalid heights"
+    @assert lonrange[1] <= lonrange[2] "Invalid longitude range"
+    @assert latmax >= 0 "Invalid `latmax`"
 
     # coordinates
+    h, N_r = sort(h), length(h)
     r = T.(repeat(r0 .+ vcat(0, h[1:end-1]), inner=N_lon*N_lat))
-    lon = T.(repeat(
-        range(1/N_lon-1, 1-1/N_lon, length=N_lon) .* pi, inner=N_lat, outer=N_r))
-    lat = T.(repeat(range(1/N_lat, 2-1/N_lat, length=N_lat) .* pi/4, outer=N_lon*N_r))
+    lon = T.(repeat(range(1/2/N_lon, 1-1/2/N_lon, length=N_lon) *
+        (lonrange[2]-lonrange[1]) .+ lonrange[1]; inner=N_lat, outer=N_r))
+    lat = T.(repeat(range(1/2/N_lat, 1-1/2/N_lat, length=N_lat) * latmax; outer=N_lon*N_r))
 
     # area and volume calculation
     dR, dlon, dlat = vcat(h[1], diff(h)), lon[N_lat+1] - lon[1], lat[2] - lat[1]
@@ -159,53 +174,60 @@ function Spherical3DGrid_EqSim(T::Type{<:AbstractFloat}, r0::Real, h::AbstractVe
 
     return Spherical3DGrid_EqSim(T(r0), T.(h), N_r, N_lon, N_lat,
                                  GlobalSphericalPosition.(r, lon, lat),
-                                 T.(areas), T.(volumes))
+                                 T.(areas), T.(volumes), T.(lonrange), T.((0, latmax)))
 end
-function Spherical3DGrid_EqSim(r0::Real, h::AbstractVector, N_lon::Integer, N_lat::Integer)
-    return Spherical3DGrid_EqSim(typeof(r0), r0, h, N_lon, N_lat)
+function Spherical3DGrid_EqSim(r0::Real, h::AbstractVector, N_lon::Integer, N_lat::Integer;
+                               kwargs...)
+    return Spherical3DGrid_EqSim(typeof(r0), r0, h, N_lon, N_lat; kwargs...)
 end
-function Spherical3DGrid_EqSim(r0::Integer, h::AbstractVector, N_lon::Integer, N_lat::Integer)
-    return Spherical3DGrid_EqSim(promote_type(typeof(r0), Float64), r0, h, N_lon, N_lat)
+function Spherical3DGrid_EqSim(r0::Integer, h::AbstractVector, N_lon::Integer,
+                               N_lat::Integer; kwargs...)
+    return Spherical3DGrid_EqSim(promote_type(typeof(r0),Float64),r0,h,N_lon,N_lat;kwargs...)
 end
 function Spherical3DGrid_EqSim(T::Type{<:AbstractFloat}, r::AbstractVector, N_lon::Integer,
-                               N_lat::Integer)
+                               N_lat::Integer; kwargs...)
     r0, h = r[1], accumulate(+,diff(r))
-    return Spherical3DGrid_EqSim(T, r0, h, N_lon, N_lat)
+    return Spherical3DGrid_EqSim(T, r0, h, N_lon, N_lat; kwargs...)
 end
-function Spherical3DGrid_EqSim(r::AbstractVector, N_lon::Integer, N_lat::Integer)
-    return Spherical3DGrid_EqSim(typeof(r[1]), r, N_lon, N_lat)
+function Spherical3DGrid_EqSim(r::AbstractVector, N_lon::Integer, N_lat::Integer; kwargs...)
+    return Spherical3DGrid_EqSim(typeof(r[1]), r, N_lon, N_lat; kwargs...)
 end
-function Spherical3DGrid_EqSim(r::AbstractVector{<:Integer}, N_lon::Integer, N_lat::Integer)
-    return Spherical3DGrid_EqSim(promote_type(typeof(r[1]), Float64), r, N_lon, N_lat)
+function Spherical3DGrid_EqSim(r::AbstractVector{<:Integer}, N_lon::Integer, N_lat::Integer;
+                               kwargs...)
+    return Spherical3DGrid_EqSim(promote_type(typeof(r[1]),Float64),r,N_lon,N_lat;kwargs...)
 end
 
 
 """
     [1] struct Spherical3DGrid_Reduced{T<:AbstractFloat} <: AbstractSpherical3DGrid end
     [2] Spherical3DGrid_Reduced([T::Type{<:AbstractFloat}, ] r0::Real, h::AbstractVector,
-                                N_lat::Integer)
+                                N_lat::Integer; kwargs...)
     [3] Spherical3DGrid_Reduced([T::Type{<:AbstractFloat}, ] r::AbstractVector,
-                                N_lat::Integer)
+                                N_lat::Integer; kwargs...)
 
 Global structured volume grid (3D) of type `GlobalSphericalPosition{T}` over a sphere of
 radius `r0` with heights of the individual radial layers `h`. Alternatively, the radial
 distances can directly be specified by `r` (`r = r0 .+ h`). Note that all heights have
 to be positive. The grid is reduced in the azimuth direction to have approximately equal
-`2*pi*r*cos(lat)/N_lon` grid element lengths.
+`(lonrange[2]-lonrange[1])*r*cos(lat)/N_lon` grid element lengths.
 
-| Field     | Type; with `T<:AbstractFloat`        | Description                       |
-|:--------- |:------------------------------------ |:--------------------------------- |
-| `r0`      | `T`                                  | radius of global body (sphere)    |
-| `h`       | `Vector{T}`                          | heights above radial base `r0`    |
-| `N_r`     | `Int64`                              | # elements in radial direction    |
-| `N_lon` | `Int64`                              | # elements in azimuth direction   |
-| `N_lat`   | `Int64`                              | # elements in elevation direction |
-| `coords`  | `Vector{GlobalSphericalPosition{T}}` | coordinates                       |
-| `areas`   | `Vector{T}`                          | surface area                      |
-| `volumes` | `Vector{T}`                          | volumes                           |
+| Field      | Type; with `T<:AbstractFloat`        | Description                       |
+|:---------- |:------------------------------------ |:--------------------------------- |
+| `r0`       | `T`                                  | radius of global body (sphere)    |
+| `h`        | `Vector{T}`                          | heights above radial base `r0`    |
+| `N_r`      | `Int64`                              | # elements in radial direction    |
+| `N_lon`    | `Int64`                              | # elements in azimuth direction   |
+| `N_lat`    | `Int64`                              | # elements in elevation direction |
+| `coords`   | `Vector{GlobalSphericalPosition{T}}` | coordinates                       |
+| `areas`    | `Vector{T}`                          | surface area                      |
+| `volumes`  | `Vector{T}`                          | volumes                           |
+| `lonrange` | `Tuple{T, T}`                        | longitude range                   |
+| `latrange` | `Tuple{T, T}`                        | latitude range                    |
 
 To ensure expected behavior, the grid object should generally be created with the outer
-constructors [2] or [3].
+constructors [2] or [3]. Those functions take the key-word `lonrange` and `latrange` to
+specify the range of the longitude and latitude. The default values are `(-pi, pi)` and
+`(-pi/2, pi/2)`, respectively.
 """
 struct Spherical3DGrid_Reduced{T<:AbstractFloat} <: AbstractSpherical3DGrid
     r0::T
@@ -216,23 +238,29 @@ struct Spherical3DGrid_Reduced{T<:AbstractFloat} <: AbstractSpherical3DGrid
     coords::Vector{GlobalSphericalPosition{T}}
     areas::Vector{T}
     volumes::Vector{T}
+    lonrange::Tuple{T, T}
+    latrange::Tuple{T, T}
 end
-function Spherical3DGrid_Reduced(T::Type{<:AbstractFloat}, r0::Real,
-            h::AbstractVector, N_lat::Integer)
+function Spherical3DGrid_Reduced(T::Type{<:AbstractFloat}, r0::Real, h::AbstractVector,
+                                 N_lat::Integer; lonrange=(-pi, pi), latrange=(-pi/2, pi/2))
 
-    h = sort(h)
-    @assert h[1] > 0
-    N_r = length(h)
+    # input assertions
+    @assert sort(h)[1] > 0 "Invalid heights"
+    @assert lonrange[1] <= lonrange[2] "Invalid longitude range"
+    @assert latrange[1] <= latrange[2] "Invalid latitude range"
 
     # prepare coordiante calculation
-    dlon_max = T(pi/N_lat)
-    lat0 = T.(range(1/N_lat-1, 1-1/N_lat, length=N_lat) * pi/2)
+    h, N_r = sort(h), length(h)
+    dlon_max = T((latrange[2] - latrange[1])/N_lat)
+    lat0 = T.(range(1/2/N_lat, 1 - 1/2/N_lat, length=N_lat) *
+        (latrange[2]-latrange[1]) .+ latrange[1])
 
     # coordinates
     r, lon, lat, N_lon = T[], T[], T[], Int64[]
     for p0 in lat0
-        n_lon = ceil(Int64, 2*pi*cos(p0)/dlon_max)
-        push!(lon, range(1/n_lon-1, 1-1/n_lon, length=n_lon) .* pi...)
+        n_lon = ceil(Int64, (lonrange[2] - lonrange[1])*cos(p0)/dlon_max + eps(T))
+        push!(lon, range(1/2/n_lon, 1 - 1/2/n_lon, length=n_lon) *
+            (lonrange[2]-lonrange[1]) .+ lonrange[1]...)
         push!(lat, repeat([p0], n_lon)...)
         push!(N_lon, n_lon)
     end
@@ -242,9 +270,8 @@ function Spherical3DGrid_Reduced(T::Type{<:AbstractFloat}, r0::Real,
 
     # areas calculation
     areas = T[]
-    for i in 1:N_lat
-        idx = accumulate(+, N_lon[1:i])[end]
-        dlon, dlat = lon[idx] - lon[idx-1], lat0[2] - lat0[1]
+    for i in eachindex(N_lon)
+        dlon, dlat = (lonrange[2] - lonrange[1]) / N_lon[i], (latrange[2] - latrange[1]) / N_lat
         push!(areas, repeat(
             [r[1]^2 * dlon * (sin(lat0[i]+dlat/2) - sin(lat0[i]-dlat/2))], N_lon[i])...)
     end
@@ -256,30 +283,29 @@ function Spherical3DGrid_Reduced(T::Type{<:AbstractFloat}, r0::Real,
     volumes = T[]
     for i in 1:N_r, j in 1:N_lat, _ in 1:N_lon[j]
         ri, dr = [r0 .+ vcat(0, h[1:end-1])...][i], vcat(h[1], diff(h))[i]
-        dlon = 2pi / N_lon[j]
-        p0, dlat = lat0[j], pi / N_lat
-        push!(volumes, ((ri + dr)^3 - ri^3)/3 * dlon * (sin(p0+dlat/2) - sin(p0-dlat/2)))
+        dlon, dlat = (lonrange[2] - lonrange[1]) / N_lon[i], (latrange[2] - latrange[1]) / N_lat
+        push!(volumes, ((ri + dr)^3 - ri^3)/3 * dlon * (sin(lat0[j]+dlat/2) - sin(lat0[j]-dlat/2)))
     end
 
     return Spherical3DGrid_Reduced(T(r0), T.(h), N_r, N_lon, N_lat,
                                    GlobalSphericalPosition.(r, lon, lat),
-                                   T.(areas), T.(volumes))
+                                   T.(areas), T.(volumes), T.(lonrange), T.((latrange)))
 end
-function Spherical3DGrid_Reduced(r0::Real, h::AbstractVector, N_lat::Integer)
-    return Spherical3DGrid_Reduced(typeof(r0), r0, h, N_lat)
+function Spherical3DGrid_Reduced(r0::Real, h::AbstractVector, N_lat::Integer; kwargs...)
+    return Spherical3DGrid_Reduced(typeof(r0), r0, h, N_lat; kwargs...)
 end
-function Spherical3DGrid_Reduced(r0::Integer, h::AbstractVector, N_lat::Integer)
-    return Spherical3DGrid_Reduced(promote_type(typeof(r0), Float64), r0, h, N_lat)
+function Spherical3DGrid_Reduced(r0::Integer, h::AbstractVector, N_lat::Integer; kwargs...)
+    return Spherical3DGrid_Reduced(promote_type(typeof(r0), Float64), r0, h, N_lat; kwargs...)
 end
-function Spherical3DGrid_Reduced(T::Type{<:AbstractFloat}, r::AbstractVector, N_lat::Integer)
+function Spherical3DGrid_Reduced(T::Type{<:AbstractFloat}, r::AbstractVector, N_lat::Integer; kwargs...)
     r0, h = r[1], accumulate(+,diff(r))
-    Spherical3DGrid_Reduced(T, r0, h, N_lat)
+    Spherical3DGrid_Reduced(T, r0, h, N_lat; kwargs...)
 end
-function Spherical3DGrid_Reduced(r::AbstractVector, N_lat::Integer)
-    return Spherical3DGrid_Reduced(typeof(r[1]), r, N_lat)
+function Spherical3DGrid_Reduced(r::AbstractVector, N_lat::Integer; kwargs...)
+    return Spherical3DGrid_Reduced(typeof(r[1]), r, N_lat; kwargs...)
 end
-function Spherical3DGrid_Reduced(r::AbstractVector{<:Integer}, N_lat::Integer)
-    return Spherical3DGrid_Reduced(promote_type(typeof(r[1]), Float64), r, N_lat)
+function Spherical3DGrid_Reduced(r::AbstractVector{<:Integer}, N_lat::Integer; kwargs...)
+    return Spherical3DGrid_Reduced(promote_type(typeof(r[1]), Float64), r, N_lat; kwargs...)
 end
 
 
