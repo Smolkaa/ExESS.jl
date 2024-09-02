@@ -1,43 +1,43 @@
 @testset verbose=true "behaviour" begin
 
     # create grids
-    r, N_theta, N_phi = rand()*100, rand(2:180), rand(2:90)
-    grid = Spherical2DGrid(r, N_theta, N_phi)
-    grid_eqsim = Spherical2DGrid_EqSim(r, N_theta, N_phi)
-    grid_reduced = Spherical2DGrid_Reduced(r, N_phi)
-    grid_reduced_eqsim = Spherical2DGrid_Reduced_EqSim(r, N_phi)
+    r, N_lon, N_lat = rand()*100, rand(2:180), rand(2:90)
+    grid = Spherical2DGrid(r, N_lon, N_lat)
+    grid_eqsim = Spherical2DGrid_EqSim(r, N_lon, N_lat)
+    grid_reduced = Spherical2DGrid_Reduced(r, N_lat)
+    grid_reduced_eqsim = Spherical2DGrid_Reduced_EqSim(r, N_lat)
 
     # create partial grids with random ranges
     lonmin, latmin = rand(2) .* rand([-1,1])
     lonmax, latmax = lonmin + rand()*pi/10, latmin + rand()*pi/10
-    pgrid = Spherical2DGrid(r, N_theta, N_phi; lonrange=(lonmin, lonmax), latrange=(latmin, latmax))
-    pgrid_eqsim = Spherical2DGrid_EqSim(r, N_theta, N_phi; lonrange=(lonmin, lonmax), latmax=abs(latmax))
-    pgrid_reduced = Spherical2DGrid_Reduced(r, N_phi; lonrange=(lonmin, lonmax), latrange=(latmin, latmax))
-    pgrid_reduced_eqsim = Spherical2DGrid_Reduced_EqSim(r, N_phi; lonrange=(lonmin, lonmax), latmax=abs(latmax))
+    pgrid = Spherical2DGrid(r, N_lon, N_lat; lonrange=(lonmin, lonmax), latrange=(latmin, latmax))
+    pgrid_eqsim = Spherical2DGrid_EqSim(r, N_lon, N_lat; lonrange=(lonmin, lonmax), latmax=abs(latmax))
+    pgrid_reduced = Spherical2DGrid_Reduced(r, N_lat; lonrange=(lonmin, lonmax), latrange=(latmin, latmax))
+    pgrid_reduced_eqsim = Spherical2DGrid_Reduced_EqSim(r, N_lat; lonrange=(lonmin, lonmax), latmax=abs(latmax))
 
     # test lengths
-    @test length(grid) == N_theta*N_phi == length(coords(grid)) == length(areas(grid))
-    @test length(grid_eqsim) == N_theta*N_phi == length(coords(grid_eqsim)) == length(areas(grid_eqsim))
+    @test length(grid) == N_lon*N_lat == length(coords(grid)) == length(areas(grid))
+    @test length(grid_eqsim) == N_lon*N_lat == length(coords(grid_eqsim)) == length(areas(grid_eqsim))
     @test length(grid_reduced) == length(coords(grid_reduced)) == length(areas(grid_reduced))
     @test length(grid_reduced_eqsim) == length(coords(grid_reduced_eqsim)) == length(areas(grid_reduced_eqsim))
 
-    @test length(pgrid) == N_theta*N_phi == length(coords(pgrid)) == length(areas(pgrid))
-    @test length(pgrid_eqsim) == N_theta*N_phi == length(coords(pgrid_eqsim)) == length(areas(pgrid_eqsim))
+    @test length(pgrid) == N_lon*N_lat == length(coords(pgrid)) == length(areas(pgrid))
+    @test length(pgrid_eqsim) == N_lon*N_lat == length(coords(pgrid_eqsim)) == length(areas(pgrid_eqsim))
     @test length(pgrid_reduced) == length(coords(pgrid_reduced)) == length(areas(pgrid_reduced))
     @test length(pgrid_reduced_eqsim) == length(coords(pgrid_reduced_eqsim)) == length(areas(pgrid_reduced_eqsim))
 
     # test sizes
-    @test size(grid) == (N_theta, N_phi)
-    @test size(grid_eqsim) == (N_theta, N_phi)
+    @test size(grid) == (N_lon, N_lat)
+    @test size(grid_eqsim) == (N_lon, N_lat)
     @test size(grid_reduced)[1] isa AbstractVector
     @test size(grid_reduced_eqsim)[1] isa AbstractVector
 
-    @test size(pgrid) == (N_theta, N_phi)
-    @test size(pgrid_eqsim) == (N_theta, N_phi)
+    @test size(pgrid) == (N_lon, N_lat)
+    @test size(pgrid_eqsim) == (N_lon, N_lat)
     @test size(pgrid_reduced)[1] isa AbstractVector
     @test size(pgrid_reduced_eqsim)[1] isa AbstractVector
 
-    # test completeness
+    # test area completeness
     RTOL = 1e-2
     @test isapprox(sum(areas(grid)), 4*pi*r^2; rtol=RTOL)
     @test isapprox(sum(areas(grid_eqsim)), 2*pi*r^2; rtol=RTOL)
@@ -119,7 +119,7 @@
         @test coord2idx(pgrid_reduced_eqsim, xs + xs_offset) == idx
     end
 
-    # test for overflowing longitudes (periodic clamping to [-pi, pi])
+    # test for overflowing longitudes (periodic clamping to lonrange)
     @test all(r -> coord2idx(grid, r...) == coord2idx(grid, 2pi + r[1], r[2]), [rand(2) for _ in 1:1000])
     @test all(r -> coord2idx(grid_eqsim, r...) == coord2idx(grid_eqsim, 2pi + r[1], r[2]), [rand(2) for _ in 1:1000])
     @test all(r -> coord2idx(grid_reduced, r...) == coord2idx(grid_reduced, 2pi + r[1], r[2]), [rand(2) for _ in 1:1000])
