@@ -2,6 +2,9 @@
 
 ## v0.1.11 (2024/??/??)
 
+- BUGFIX of `landing_position` and `time_of_flight` functions in `trajectory.jl` to handle
+  special velocity cases (vertical, horizontal, zero, and negative) correctly and not return
+  `NaN` values anymore
 
 
 ## v0.1.10 (2024/08/26)
