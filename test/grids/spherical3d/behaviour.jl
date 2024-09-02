@@ -48,6 +48,13 @@
     @test all(x -> coord2idx(grid, x[1], x[2], pi/2 + rand()) == coord2idx(grid, x[1], x[2], pi/2), [rand(3) .* [R[end]-R[1], 1, 1] .+ [R[1], 0, 0] for _ in 1:1000])
 
     # test for NOT drawing indecies < 1 at grid element borders
+    @test all(i -> all(j -> all(k -> coord2idx(grid, grid.r0 + grid.h[i], grid.lonrange[j], grid.latrange[k]) > 0, 1:2), 1:2), 1:length(grid.h)-1)
+
+    # test mapgrid - setup
+    x_s3d   = collect(1:length(grid))
 
     # test mapgrid
+
+    # test mapgrid - invariance if the same grid is used
+    @test mapgrid(x_s3d, grid, grid) == x_s3d
 end
