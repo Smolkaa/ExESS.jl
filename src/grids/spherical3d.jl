@@ -17,7 +17,8 @@ abstract type AbstractSpherical3DGrid <: AbstractSphericalGrid end
 Global structured volume grid (3D) of type `GlobalSphericalPosition{T}` over a sphere of
 radius `r0` with heights of the individual radial layers `h`. Alternatively, the radial
 distances can directly be specified by `r` (`r = r0 .+ h`). Note that all heights have
-to be positive.
+to be positive. Note that the radial position of each individual grid element is located
+at the bottom (base/surface) of each cell.
 
 | Field      | Type; with `T<:AbstractFloat`        | Description                       |
 |:---------- |:------------------------------------ |:--------------------------------- |
@@ -390,13 +391,18 @@ end
 #::. UTILITY FUNCTIONS
 ############################################################################################
 function coord2idx(grid::Spherical3DGrid, r::T, lon::T, lat::T)::Int64 where {T<:AbstractFloat}
-    if !(grid.r0 <= r <= grid.r0 + grid.h[end]); return 0; end
-    PI       = T(pi) # to prevent numerical cutoff/rounding mistakes
-    lon    = pclamp(lon, -PI, PI - eps(T)) + eps(T)
-    lat      = clamp(lat, -PI/2, PI/2 - eps(T)) + eps(T)
-    idxr     = findfirst(grid.h .+ grid.r0 .> r)
-    idxlon = ceil(Int64, (lon+pi)*grid.N_lon/2/pi)
-    idxlat   = ceil(Int64, (lat+pi/2)*grid.N_lat/pi)
+    PI     = T(pi) # to prevent numerical cutoff/rounding mistakes
+    lon    = pclamp(lon, -PI, PI)
+    lat    = clamp(lat, -PI/2, PI/2)
+
+    lonrange, latrange = grid.lonrange, grid.latrange
+    if !(grid.r0 <= r < grid.r0 + grid.h[end]); return 0; end
+    if !(lonrange[1] <= lon <= lonrange[2]); return 0; end
+    if !(latrange[1] <= lat <= latrange[2]); return 0; end
+
+    idxr   = findfirst(grid.h .+ grid.r0 .> r)
+    idxlon = max(1,ceil(Int64, (lon-lonrange[1])/(lonrange[2]-lonrange[1])*grid.N_lon))
+    idxlat = max(1,ceil(Int64, (lat-latrange[1])/(latrange[2]-latrange[1])*grid.N_lat))
     return (idxr-1) * grid.N_lat*grid.N_lon + (idxlon-1) * grid.N_lat + idxlat
 end
 function coord2idx(grid::Spherical3DGrid_EqSim, r::T, lon::T, lat::T)::Int64 where {T<:AbstractFloat}
