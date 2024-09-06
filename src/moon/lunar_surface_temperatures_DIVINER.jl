@@ -159,6 +159,7 @@ vector of `GlobalSphericalPosition` objects or an `AbstractGrid` object.
 """
 function lunar_surface_temperatures_DIVINER_avg()
     T = readdlm(joinpath(@__DIR__,"..","..","data","lunar_surface_temperatures_DIVINER.csv"), ',')
+    return T
     return T[:,3]
 end
 function lunar_surface_temperatures_DIVINER_avg(theta::S, phi::S) where {S<:AbstractFloat}
