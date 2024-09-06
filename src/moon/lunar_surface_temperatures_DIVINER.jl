@@ -160,7 +160,7 @@ vector of `GlobalSphericalPosition` objects or an `AbstractGrid` object.
 function lunar_surface_temperatures_DIVINER_avg()
     T = readdlm(joinpath(@__DIR__, "..", "..", "data",
                          "lunar_surface_temperatures_DIVINER.csv"), '\t')
-    return T
+    return T[:,3]
 end
 function lunar_surface_temperatures_DIVINER_avg(theta::S, phi::S) where {S<:AbstractFloat}
     @assert -pi <= theta <= pi "Longitude must be in [-pi, pi]!"
@@ -209,12 +209,12 @@ function lunar_surface_temperatures_DIVINER_avg(thetas::AbstractVector{S},
 end
 function lunar_surface_temperatures_DIVINER_avg(thetas::AbstractVector, phis::AbstractVector)
     S = typeof(promote(thetas[1], phis[1])[1])
-    return lunar_surface_temperatures_DIVINER_avg(S.(thetas), S.(phis); kwargs...)
+    return lunar_surface_temperatures_DIVINER_avg(S.(thetas), S.(phis))
 end
 function lunar_surface_temperatures_DIVINER_avg(thetas::AbstractVector{<:Integer},
                                                 phis::AbstractVector{<:Integer})
     S = promote_type(typeof(thetas[1]), typeof(phis[1]), Float64)
-    return lunar_surface_temperatures_DIVINER_avg(S.(thetas), S.(phis); kwargs...)
+    return lunar_surface_temperatures_DIVINER_avg(S.(thetas), S.(phis))
 end
 function lunar_surface_temperatures_DIVINER_avg(x::_TVGSP)
     return lunar_surface_temperatures_DIVINER_avg(_gettheta(x), _getphi(x))
