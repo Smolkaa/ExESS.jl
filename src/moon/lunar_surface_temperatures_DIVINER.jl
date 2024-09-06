@@ -158,7 +158,7 @@ parameters are in spherical, sub-solar coordinates, with the longitude `theta` i
 vector of `GlobalSphericalPosition` objects or an `AbstractGrid` object.
 """
 function lunar_surface_temperatures_DIVINER_avg()
-    T = readdlm(joinpath(@__DIR__,"..","..","data","lunar_surface_temperatures_DIVINER.csv"))
+    T = readdlm(joinpath(@__DIR__,"..","..","data","lunar_surface_temperatures_DIVINER.csv"), ',')
     return T[:,3]
 end
 function lunar_surface_temperatures_DIVINER_avg(theta::S, phi::S) where {S<:AbstractFloat}
