@@ -56,7 +56,7 @@ function lunar_surface_temperatures_DIVINER(theta0::Real)
     T_low = readdlm(joinpath(@__DIR__, "..", "..", "data", "diviner_snapshots", low), S)
     T_high = readdlm(joinpath(@__DIR__, "..", "..", "data", "diviner_snapshots", high), S)
 
-    # return longitude, latitude, and temperature
+    # return temperatures
     return S.(T_low[:,3] .+ f * (T_high[:,3] .- T_low[:,3]))[:]
 end
 function lunar_surface_temperatures_DIVINER(theta0::S, theta::S, phi::S) where {S<:AbstractFloat}
@@ -106,7 +106,7 @@ function lunar_surface_temperatures_DIVINER(theta0::S, thetas::AbstractVector{S}
 end
 function lunar_surface_temperatures_DIVINER(theta0::Real, thetas::AbstractVector,
                                             phis::AbstractVector)
-    S = typeof(promote(theta0, thetas..., phis...)[1])
+    S = typeof(promote(theta0, thetas[1], phis[1])[1])
     return lunar_surface_temperatures_DIVINER(S(theta0), S.(thetas), S.(phis))
 end
 function lunar_surface_temperatures_DIVINER(theta0::Integer, thetas::AbstractVector{<:Integer},
@@ -160,7 +160,7 @@ vector of `GlobalSphericalPosition` objects or an `AbstractGrid` object.
 function lunar_surface_temperatures_DIVINER_avg()
     T = readdlm(joinpath(@__DIR__, "..", "..", "data",
                          "lunar_surface_temperatures_DIVINER.csv"), '\t')
-    return T[:,3]
+    return T
 end
 function lunar_surface_temperatures_DIVINER_avg(theta::S, phi::S) where {S<:AbstractFloat}
     @assert -pi <= theta <= pi "Longitude must be in [-pi, pi]!"
@@ -208,7 +208,7 @@ function lunar_surface_temperatures_DIVINER_avg(thetas::AbstractVector{S},
     return TT
 end
 function lunar_surface_temperatures_DIVINER_avg(thetas::AbstractVector, phis::AbstractVector)
-    S = typeof(promote(thetas..., phis...)[1])
+    S = typeof(promote(thetas[1], phis[1])[1])
     return lunar_surface_temperatures_DIVINER_avg(S.(thetas), S.(phis); kwargs...)
 end
 function lunar_surface_temperatures_DIVINER_avg(thetas::AbstractVector{<:Integer},
