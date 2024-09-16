@@ -25,7 +25,7 @@ using ExESS
 ```
 If you want to use the latest development version, you can install the package as:
 ```julia
-Pkg.add(url="https://github.com/Smolkaa/ExESS.jl.git#dev")
+Pkg.add(url="https://github.com/Smolkaa/ExESS.jl.git", rev="dev")
 ```
 Note that this version may contain bugs and is not recommended for general use.
 
