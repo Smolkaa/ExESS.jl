@@ -1,41 +1,40 @@
 ############################################################################################
 #::. FUNCTIONS
-
-# internal union for simplified type handling
-_TVGSP = Union{Tuple{Real, Real, Real}, AbstractVector{<:Real}, GlobalSphericalPosition}
 ############################################################################################
 """
-    [1] lunar_surface_temperatures_DIVINER([S::Type{<:AbstractFloat}], theta0::Real)
-    [2] lunar_surface_temperatures_DIVINER([S::Type{<:AbstractFloat}], theta0::Real,
-                                           theta::Real, phi::Real)
-    [3] lunar_surface_temperatures_DIVINER([S::Type{<:AbstractFloat}], theta0::Real,
-                                           thetas::AbstractVector, phis::AbstractVector)
-    [4] lunar_surface_temperatures_DIVINER([S::Type{<:AbstractFloat}], theta0::Real,
-                                           x::Union{Tuple{Real, Real, Real},
-                                                    AbstractVector{<:Real},
-                                                    GlobalSphericalPosition})
-    [5] lunar_surface_temperatures_DIVINER([S::Type{<:AbstractFloat}], theta0::Real,
-                                           XS::Vector{Union{Tuple{Real, Real, Real},
-                                                            AbstractVector{<:Real},
-                                                            GlobalSphericalPosition}})
-    [6] lunar_surface_temperatures_DIVINER([S::Type{<:AbstractFloat}], theta0::Real,
-                                           grid::AbstractGrid)
+    [1] lunar_surface_temperatures_DIVINER([S], lon0)
+    [2] lunar_surface_temperatures_DIVINER([S], lon0, lon, lat)
+    [3] lunar_surface_temperatures_DIVINER([S], lon0, x)
+    [4] lunar_surface_temperatures_DIVINER([S], lon0, grid)
 
 Returns the Diviner measurements based lunar surface temperatures, with the subsolar point
-shifted by `theta0` (in radians) in the range of [0, 2π] from the center. The input
-parameters are in spherical,  sub-solar coordinates, with the longitude `theta` in the range
-[-π, π] and the latitude `phi` in the range [-π/2, π/2]. Alternatively, the input can be a
-vector of `GlobalSphericalPosition` objects or an `AbstractGrid` object.
+shifted by `lon0` (in radians) in the range of (0, 2π) from the center. The input
+parameters are in spherical,  sub-solar coordinates, with the longitude `lon` in the range
+(-π, π) and the latitude `lat` in the range (-π/2, π/2). Additionally, the user can provide
+a type `S` to convert the output to the desired type.
+
+# Arguments
+- (optional) `S::Type{<:AbstractFloat}`: Output type.
+- `lon0::Real`: Subsolar longitude shift.
+- `lon::Real` or `lon::AbstractVector`: Longitude(s) in the range (-π, π).
+- `lat::Real` or `lat::AbstractVector`: Latitude(s) in the range (-π/2, π/2).
+- `x::GlobalSphericalPosition` or `x::Tuple{Real, Real, Real}` or `x::AbstractVector` or
+  an `Abstractvector` with entries of the same: SSE coordinate(s).
+- `grid::AbstractGrid`: Grid of points to evaluate the temperatures.
+
+# References
+- Williams, J.-P., Paige, D. A., Greenhagen, B. T., & Sefton-Nash, E. (2017). The global
+  surface temperatures of the Moon as measured by the Diviner Lunar Radiometer Experiment.
+  Icarus, 283, 300--325. DOI: 10.1016/j.icarus.2016.08.012
 """
-function lunar_surface_temperatures_DIVINER(theta0::Real)
-    @assert 0 <= theta0 <= 2pi "Longitudinal shift must be in [0, 2pi]!"
-    dtheta = rad2deg(theta0)
-    S = typeof(dtheta)
+function lunar_surface_temperatures_DIVINER(lon0::Real)
+    dlon = rad2deg(pclamp(lon0, 0, 2pi))
+    S = typeof(dlon)
 
     # find correct index & interpolation factor
-    idx = findlast(x -> x<=dtheta, 0:15:360)
+    idx = findlast(x -> x<=dlon, 0:15:360)
     l = (idx-1)*15;
-    h, f = l + 15, (dtheta - l) / 15
+    h, f = l + 15, (dlon - l) / 15
 
     # setup correct files
     if idx == 1;         high = "diviner_tbol_snapshot_015E.xyz";
@@ -59,11 +58,11 @@ function lunar_surface_temperatures_DIVINER(theta0::Real)
     # return temperatures
     return S.(T_low[:,3] .+ f * (T_high[:,3] .- T_low[:,3]))[:]
 end
-function lunar_surface_temperatures_DIVINER(theta0::S, theta::S, phi::S) where {S<:AbstractFloat}
-    @assert -pi <= theta <= pi "Longitude must be in [-pi, pi]!"
-    @assert -pi/2 <= phi <= pi/2 "Latitude must be in [-pi/2, pi/2]!"
+function lunar_surface_temperatures_DIVINER(lon0::S, lon::S, lat::S) where {S<:AbstractFloat}
+    @assert -pi/2 <= lat <= pi/2 "Latitude must be in (-π/2, π/2)!"
+    lon = pclamp(lon, -pi, pi)
 
-    T = lunar_surface_temperatures_DIVINER(theta0)
+    T = lunar_surface_temperatures_DIVINER(lon0)
     T = reshape(T, 360, :)' |> Matrix{Float64}
 
     # setup interpolate object for the temperature map
@@ -71,20 +70,20 @@ function lunar_surface_temperatures_DIVINER(theta0::S, theta::S, phi::S) where {
     itp = interpolate(T, BSpline(Linear()))
 
     # interpolate and return at given SSE coordinates
-    idx_theta = (rad2deg(theta) + 179.75) / 359.5 * 719 + 1
-    idx_theta += idx_theta < 1 ? 720 : 0
-    idx_phi = (rad2deg(phi) +  89.75) / 179.5 * 359 + 2
-    return S(itp(idx_theta, idx_phi))
+    idx_lon = (rad2deg(lon) + 179.75) / 359.5 * 719 + 1
+    idx_lon += idx_lon < 1 ? 720 : 0
+    idx_lat = (rad2deg(lat) +  89.75) / 179.5 * 359 + 2
+    return S(itp(idx_lon, idx_lat))
 end
-function lunar_surface_temperatures_DIVINER(theta0::Real, theta::Real, phi::Real)
-    return lunar_surface_temperatures_DIVINER(promote(theta0, theta, phi)...)
+function lunar_surface_temperatures_DIVINER(lon0::Real, lon::Real, lat::Real)
+    return lunar_surface_temperatures_DIVINER(promote(lon0, lon, lat)...)
 end
-function lunar_surface_temperatures_DIVINER(theta0::Integer, theta::Integer, phi::Integer)
-    return lunar_surface_temperatures_DIVINER(promote(theta0, theta, phi, 1.0)[1:3]...)
+function lunar_surface_temperatures_DIVINER(lon0::Integer, lon::Integer, lat::Integer)
+    return lunar_surface_temperatures_DIVINER(promote(lon0, lon, lat, 1.0)[1:3]...)
 end
-function lunar_surface_temperatures_DIVINER(theta0::S, thetas::AbstractVector{S},
-                                            phis::AbstractVector{S}) where {S<:AbstractFloat}
-    T = lunar_surface_temperatures_DIVINER(theta0)
+function lunar_surface_temperatures_DIVINER(lon0::S, lons::AbstractVector{S},
+                                            lats::AbstractVector{S}) where {S<:AbstractFloat}
+    T = lunar_surface_temperatures_DIVINER(lon0)
     T = reshape(T, 360, :)' |> Matrix{S}
 
     # setup interpolate object for the temperature map
@@ -92,139 +91,131 @@ function lunar_surface_temperatures_DIVINER(theta0::S, thetas::AbstractVector{S}
     itp = interpolate(T, BSpline(Linear()))
 
     # interpolate at given SSE coordinates
-    TT = zeros(S, length(thetas))
-    for i in eachindex(thetas)
-        @assert -pi <= thetas[i] <= pi "Longitude must be in [-pi, pi]!"
-        @assert -pi/2 <= phis[i] <= pi/2 "Latitude must be in [-pi/2, pi/2]!"
+    TT = zeros(S, length(lons))
+    for i in eachindex(lons)
+        @assert -pi <= lons[i] <= pi "Longitude must be in [-pi, pi]!"
+        @assert -pi/2 <= lats[i] <= pi/2 "Latitude must be in (-π/2, π/2)!"
 
-        idx_theta = (rad2deg(thetas[i]) + 179.75) / 359.5 * 719 + 1
-        idx_theta += idx_theta < 1 ? 720 : 0
-        idx_phi = (rad2deg(phis[i]) +  89.75) / 179.5 * 359 + 2
-        TT[i] = itp(idx_theta, idx_phi)
+        idx_lon = (rad2deg(lons[i]) + 179.75) / 359.5 * 719 + 1
+        idx_lon += idx_lon < 1 ? 720 : 0
+        idx_lat = (rad2deg(lats[i]) +  89.75) / 179.5 * 359 + 2
+        TT[i] = itp(idx_lon, idx_lat)
     end
     return S.(TT)
 end
-function lunar_surface_temperatures_DIVINER(theta0::Real, thetas::AbstractVector,
-                                            phis::AbstractVector)
-    S = typeof(promote(theta0, thetas[1], phis[1])[1])
-    return lunar_surface_temperatures_DIVINER(S(theta0), S.(thetas), S.(phis))
+function lunar_surface_temperatures_DIVINER(lon0::Real, lons::AbstractVector,
+                                            lats::AbstractVector)
+    S = typeof(promote(lon0, lons[1], lats[1])[1])
+    return lunar_surface_temperatures_DIVINER(S(lon0), S.(lons), S.(lats))
 end
-function lunar_surface_temperatures_DIVINER(theta0::Integer, thetas::AbstractVector{<:Integer},
-                                            phis::AbstractVector{<:Integer})
-    S = promote_type(typeof(theta0), typeof(thetas[1]), typeof(phis[1]), Float64)
-    return lunar_surface_temperatures_DIVINER(S(theta0), S.(thetas), S.(phis))
+function lunar_surface_temperatures_DIVINER(lon0::Integer, lons::AbstractVector{<:Integer},
+                                            lats::AbstractVector{<:Integer})
+    S = promote_type(typeof(lon0), typeof(lons[1]), typeof(lats[1]), Float64)
+    return lunar_surface_temperatures_DIVINER(S(lon0), S.(lons), S.(lats))
 end
-function lunar_surface_temperatures_DIVINER(theta0::Real, x::_TVGSP)
-    return lunar_surface_temperatures_DIVINER(theta0, _gettheta(x), _getphi(x))
+function lunar_surface_temperatures_DIVINER(lon0::Real, x)
+    return lunar_surface_temperatures_DIVINER(lon0, _gettheta(x), _getphi(x))
 end
-function lunar_surface_temperatures_DIVINER(theta0::Real, X::Vector{_TVGSP})
-    thetas, phis = [_gettheta(x) for x in X], [_getphi(x) for x in X]
-    return lunar_surface_temperatures_DIVINER(theta0, thetas, phis)
+function lunar_surface_temperatures_DIVINER(lon0::Real, X::AbstractVector)
+    lons, lats = [_gettheta(x) for x in X], [_getphi(x) for x in X]
+    return lunar_surface_temperatures_DIVINER(lon0, lons, lats)
 end
-function lunar_surface_temperatures_DIVINER(theta0::Real,
-                                            X::Vector{GlobalSphericalPosition{S}}) where {S}
-    thetas, phis = [_gettheta(x) for x in X], [_getphi(x) for x in X]
-    return lunar_surface_temperatures_DIVINER(theta0, thetas, phis)
-end
-function lunar_surface_temperatures_DIVINER(theta0::Real, grid::AbstractGrid)
-    return lunar_surface_temperatures_DIVINER(theta0, surfacecoords(grid))
+function lunar_surface_temperatures_DIVINER(lon0::Real, grid::AbstractGrid)
+    return lunar_surface_temperatures_DIVINER(lon0, surfacecoords(grid))
 end
 function lunar_surface_temperatures_DIVINER(S::Type{<:AbstractFloat}, args...)
     return S.(lunar_surface_temperatures_DIVINER(args...))
 end
 
 
-
 """
-    [1] lunar_surface_temperatures_DIVINER_avg([S::Type{<:AbstractFloat}])
-    [2] lunar_surface_temperatures_DIVINER_avg([S::Type{<:AbstractFloat}], theta::Real,
-                                               phi::Real)
-    [3] lunar_surface_temperatures_DIVINER_avg([S::Type{<:AbstractFloat}],
-                                               thetas::AbstractVector, phis::AbstractVector)
-    [4] lunar_surface_temperatures_DIVINER_avg([S::Type{<:AbstractFloat}],
-                                               x::Union{Tuple{Real, Real, Real},
-                                                        AbstractVector{<:Real},
-                                                        GlobalSphericalPosition})
-    [5] lunar_surface_temperatures_DIVINER_avg([S::Type{<:AbstractFloat}],
-                                               XS::Vector{Union{Tuple{Real, Real, Real},
-                                                                AbstractVector{<:Real},
-                                                                GlobalSphericalPosition}})
-    [6] lunar_surface_temperatures_DIVINER_avg([S::Type{<:AbstractFloat}],
-                                               grid::AbstractGrid)
+    [1] lunar_surface_temperatures_DIVINER_avg([S])
+    [2] lunar_surface_temperatures_DIVINER_avg([S], lon, lat)
+    [3] lunar_surface_temperatures_DIVINER_avg([S], x)
+    [4] lunar_surface_temperatures_DIVINER_avg([S], grid)
 
 Returns the Diviner measurements based averaged lunar surface temperatures. The input
-parameters are in spherical, sub-solar coordinates, with the longitude `theta` in the range
-[-π, π] and the latitude `phi` in the range [-π/2, π/2]. Alternatively, the input can be a
-vector of `GlobalSphericalPosition` objects or an `AbstractGrid` object.
+parameters are in spherical, sub-solar coordinates, with the longitude `lon` in the range
+(-π, π) and the latitude `lat` in the range (-π/2, π/2). Additionally, the user can provide
+a type `S` to convert the output to the desired type.
+
+# Arguments
+- (optional) `S::Type{<:AbstractFloat}`: Output type.
+- `lon::Real` or `lon::AbstractVector`: Longitude(s) in the range (-π, π).
+- `lat::Real` or `lat::AbstractVector`: Latitude(s) in the range (-π/2, π/2).
+- `x::GlobalSphericalPosition` or `x::Tuple{Real, Real, Real}` or `x::AbstractVector` or
+  an `Abstractvector` with entries of the same: SSE coordinate(s).
+- `grid::AbstractGrid`: Grid of points to evaluate the temperatures.
+
+# References
+- Williams, J.-P., Paige, D. A., Greenhagen, B. T., & Sefton-Nash, E. (2017). The global
+  surface temperatures of the Moon as measured by the Diviner Lunar Radiometer Experiment.
+  Icarus, 283, 300--325. DOI: 10.1016/j.icarus.2016.08.012
 """
 function lunar_surface_temperatures_DIVINER_avg()
     T = readdlm(joinpath(@__DIR__,"..","..","data","lunar_surface_temperatures_DIVINER.dat"),',')
     return T[:,3]
 end
-function lunar_surface_temperatures_DIVINER_avg(theta::S, phi::S) where {S<:AbstractFloat}
-    @assert -pi <= theta <= pi "Longitude must be in [-pi, pi]!"
-    @assert -pi/2 <= phi <= pi/2 "Latitude must be in [-pi/2, pi/2]!"
+function lunar_surface_temperatures_DIVINER_avg(lon::S, lat::S) where {S<:AbstractFloat}
+    @assert -pi/2 <= lat <= pi/2 "Latitude must be in (-π/2, π/2)!"
+    lon = pclamp(lon, -pi, pi)
 
     T = lunar_surface_temperatures_DIVINER_avg(S)
     T = reshape(T, 360, :)' |> Matrix{S}
 
-    # setup interpophiion object for the temperature map
+    # setup interpolation object for the temperature map
     T = vcat(T, T[1,:]'); T = hcat(T, T[:, end]); T = hcat(T[:,1], T);
     itp = interpolate(T, BSpline(Linear()))
 
     # interpolate at given SSE coordinates
-    idx_theta = (rad2deg(theta) + 179.75) / 359.5 * 719 + 1
-    idx_theta += idx_theta < 1 ? 720 : 0
-    idx_phi = (rad2deg(phi) +  89.75) / 179.5 * 359 + 2
-    return S(itp(idx_theta, idx_phi))
+    idx_lon = (rad2deg(lon) + 179.75) / 359.5 * 719 + 1
+    idx_lon += idx_lon < 1 ? 720 : 0
+    idx_lat = (rad2deg(lat) +  89.75) / 179.5 * 359 + 2
+    return S(itp(idx_lon, idx_lat))
 end
-function lunar_surface_temperatures_DIVINER_avg(theta::Real, phi::Real)
-    return lunar_surface_temperatures_DIVINER_avg(promote(theta, phi)...)
+function lunar_surface_temperatures_DIVINER_avg(lon::Real, lat::Real)
+    return lunar_surface_temperatures_DIVINER_avg(promote(lon, lat)...)
 end
-function lunar_surface_temperatures_DIVINER_avg(theta::Integer, phi::Integer)
-    return lunar_surface_temperatures_DIVINER_avg(promote(theta, phi, 1.0)[1:2]...)
+function lunar_surface_temperatures_DIVINER_avg(lon::Integer, lat::Integer)
+    return lunar_surface_temperatures_DIVINER_avg(promote(lon, lat, 1.0)[1:2]...)
 end
-function lunar_surface_temperatures_DIVINER_avg(thetas::AbstractVector{S},
-                                                phis::AbstractVector{S}) where {S<:AbstractFloat}
+function lunar_surface_temperatures_DIVINER_avg(lons::AbstractVector{S},
+                                                lats::AbstractVector{S}) where {S<:AbstractFloat}
     T = lunar_surface_temperatures_DIVINER_avg(S)
     T = reshape(T, 360, :)' |> Matrix{S}
 
-    # setup interpophiion object for the temperature map
+    # setup interpolation object for the temperature map
     T = vcat(T, T[1,:]'); T = hcat(T, T[:, end]); T = hcat(T[:,1], T);
     itp = interpolate(T, BSpline(Linear()))
 
     # interpolate at given SSE coordinates
-    TT = zeros(S, length(thetas))
-    for i in eachindex(thetas)
-        @assert -pi <= thetas[i] <= pi "Longitude must be in [-pi, pi]!"
-        @assert -pi/2 <= phis[i] <= pi/2 "Latitude must be in [-pi/2, pi/2]!"
+    TT = zeros(S, length(lons))
+    for i in eachindex(lons)
+        @assert -pi/2 <= lats[i] <= pi/2 "Latitude must be in (-pi/2, pi/2)!"
+        lons[i] = pclamp(lons[i], -pi, pi)
 
-        idx_theta = (rad2deg(thetas[i]) + 179.75) / 359.5 * 719 + 1
-        idx_theta += idx_theta < 1 ? 720 : 0
-        idx_phi = (rad2deg(phis[i]) +  89.75) / 179.5 * 359 + 2
-        TT[i] = itp(idx_theta, idx_phi)
+        idx_lon = (rad2deg(lons[i]) + 179.75) / 359.5 * 719 + 1
+        idx_lon += idx_lon < 1 ? 720 : 0
+        idx_lat = (rad2deg(lats[i]) +  89.75) / 179.5 * 359 + 2
+        TT[i] = itp(idx_lon, idx_lat)
     end
     return TT
 end
-function lunar_surface_temperatures_DIVINER_avg(thetas::AbstractVector, phis::AbstractVector)
-    S = typeof(promote(thetas[1], phis[1])[1])
-    return lunar_surface_temperatures_DIVINER_avg(S.(thetas), S.(phis))
+function lunar_surface_temperatures_DIVINER_avg(lons::AbstractVector, lats::AbstractVector)
+    S = typeof(promote(lons[1], lats[1])[1])
+    return lunar_surface_temperatures_DIVINER_avg(S.(lons), S.(lats))
 end
-function lunar_surface_temperatures_DIVINER_avg(thetas::AbstractVector{<:Integer},
-                                                phis::AbstractVector{<:Integer})
-    S = promote_type(typeof(thetas[1]), typeof(phis[1]), Float64)
-    return lunar_surface_temperatures_DIVINER_avg(S.(thetas), S.(phis))
+function lunar_surface_temperatures_DIVINER_avg(lons::AbstractVector{<:Integer},
+                                                lats::AbstractVector{<:Integer})
+    S = promote_type(typeof(lons[1]), typeof(lats[1]), Float64)
+    return lunar_surface_temperatures_DIVINER_avg(S.(lons), S.(lats))
 end
-function lunar_surface_temperatures_DIVINER_avg(x::_TVGSP)
+function lunar_surface_temperatures_DIVINER_avg(x)
     return lunar_surface_temperatures_DIVINER_avg(_gettheta(x), _getphi(x))
 end
-function lunar_surface_temperatures_DIVINER_avg(X::Vector{_TVGSP})
-    thetas, phis = [_gettheta(x) for x in X], [_getphi(x) for x in X]
-    return lunar_surface_temperatures_DIVINER_avg(thetas, phis)
-end
-function lunar_surface_temperatures_DIVINER_avg(X::Vector{GlobalSphericalPosition{S}}) where {S}
-    thetas, phis = [_gettheta(x) for x in X], [_getphi(x) for x in X]
-    return lunar_surface_temperatures_DIVINER_avg(thetas, phis)
+function lunar_surface_temperatures_DIVINER_avg(X::AbstractVector)
+    lons, lats = [_gettheta(x) for x in X], [_getphi(x) for x in X]
+    return lunar_surface_temperatures_DIVINER_avg(lons, lats)
 end
 function lunar_surface_temperatures_DIVINER_avg(grid::AbstractGrid)
     return lunar_surface_temperatures_DIVINER_avg(surfacecoords(grid))

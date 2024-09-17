@@ -2,7 +2,7 @@
 
 ## v0.1.11 (2024/??/??)
 
-- BUGFIX of `landing_position` and `time_of_flight` functions in `trajectory.jl` to handle
+- BUGFIX: `landing_position` and `time_of_flight` functions in `trajectory.jl` now handle
   special velocity cases (vertical, horizontal, zero, and negative) correctly and not return
   `NaN` values anymore
 - HOUSEKEEPING of lunar surface temperature functions
