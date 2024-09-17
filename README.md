@@ -20,12 +20,12 @@ installing Julia on your machine. The `ExESS.jl` package can be installed using 
 package-manager `Pkg`:
 ```julia
 using Pkg
-Pkg.add("https://github.com/Smolkaa/ExESS.jl.git")
+Pkg.add(url="https://github.com/Smolkaa/ExESS.jl.git")
 using ExESS
 ```
 If you want to use the latest development version, you can install the package as:
 ```julia
-Pkg.add("https://github.com/Smolkaa/ExESS.jl.git#dev")
+Pkg.add(url="https://github.com/Smolkaa/ExESS.jl.git", rev="dev")
 ```
 Note that this version may contain bugs and is not recommended for general use.
 
