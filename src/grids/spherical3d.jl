@@ -322,16 +322,18 @@ distances can directly be specified by `r` (`r = r0 .+ h`). Note that all height
 to be positive. The grid is reduced in the azimuth direction to have approximately equal
 `2*pi*r*cos(lat)/N_lon` grid element lengths.
 
-| Field     | Type; with `T<:AbstractFloat`        | Description                       |
-|:--------- |:------------------------------------ |:--------------------------------- |
-| `r0`      | `T`                                  | radius of global body (sphere)    |
-| `h`       | `Vector{T}`                          | heights above radial base `r0`    |
-| `N_r`     | `Int64`                              | # elements in radial direction    |
-| `N_lon` | `Int64`                              | # elements in azimuth direction   |
-| `N_lat`   | `Int64`                              | # elements in elevation direction |
-| `coords`  | `Vector{GlobalSphericalPosition{T}}` | coordinates                       |
-| `areas`   | `Vector{T}`                          | surface area                      |
-| `volumes` | `Vector{T}`                          | volumes                           |
+| Field      | Type; with `T<:AbstractFloat`        | Description                       |
+|:---------- |:------------------------------------ |:--------------------------------- |
+| `r0`       | `T`                                  | radius of global body (sphere)    |
+| `h`        | `Vector{T}`                          | heights above radial base `r0`    |
+| `N_r`      | `Int64`                              | # elements in radial direction    |
+| `N_lon`    | `Int64`                              | # elements in azimuth direction   |
+| `N_lat`    | `Int64`                              | # elements in elevation direction |
+| `coords`   | `Vector{GlobalSphericalPosition{T}}` | coordinates                       |
+| `areas`    | `Vector{T}`                          | surface area                      |
+| `volumes`  | `Vector{T}`                          | volumes                           |
+| `lonrange` | `Tuple{T, T}`                        | longitude range                   |
+| `latrange` | `Tuple{T, T}`                        | latitude range                    |
 
 To ensure expected behavior, the grid object should generally be created with the outer
 constructors [2] or [3].
