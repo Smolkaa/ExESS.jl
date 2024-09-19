@@ -5,9 +5,12 @@
 - BUGFIX: `landing_position` and `time_of_flight` functions in `trajectory.jl` now handle
   special velocity cases (vertical, horizontal, zero, and negative) correctly and not return
   `NaN` values anymore
-- HOUSEKEEPING of lunar surface temperature functions
+- HOUSEKEEPING: lunar surface temperature functions
   - unified format, docstrings, and typesetting
   - fixed `lunar_surface_temperatures_DIVINER_avg` to correctly access the data
+- HOUSEKEEPING & BUGFIX: renamed `coordinates` to `vectors` in tests and fixed the cartesian
+  rotation functions, which previously rotated in the wrong direction
+    - added tests for the cartesian rotation functions
 
 
 ## v0.1.10 (2024/08/26)
