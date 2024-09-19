@@ -371,40 +371,40 @@ elevation(S::Type{<:AbstractFloat}, args...) = S(elevation(args...))
 
 
 """
-    [1] rotate_x([S::Type{<:AbstractFloat}], x::Tuple, a::Real)
-    [2] rotate_x([S::Type{<:AbstractFloat}], x::AbstractVector, a::Real)
+    rotate_x(x, a)
 
-Rotates the vector `x` around the x-axis by the angle `a` in (rad).
+Rotates a cartesian tuple/vector `x` around the x-axis by the angle `a` in (rad).
 """
-function rotate_x(x::Union{Tuple, AbstractVector}, a::Real)
-    return (x[1], x[2]*cos(a) + x[3]*sin(a), -x[2]*sin(a) + x[3]*cos(a))
+function rotate_x(x::Tuple, a::Real)
+    return (x[1], x[2]*cos(a) - x[3]*sin(a), x[2]*sin(a) + x[3]*cos(a))
 end
+rotate_x(x::AbstractVector, a::Real) = [rotate_x(_get(x), a)...]
 rotate_x(x::T, a::Real) where {T<:AbstractCartesianVector} = T(rotate_x(_get(x), a)...)
 
 
 
 """
-    [1] rotate_y([S::Type{<:AbstractFloat}], x::Tuple, a::Real)
-    [2] rotate_y([S::Type{<:AbstractFloat}], x::AbstractVector, a::Real)
+    rotate_y(x, a)
 
-Rotates the vector `x` around the y-axis by the angle `a` in (rad).
+Rotates a cartesian tuple/vector `x` around the y-axis by the angle `a` in (rad).
 """
-function rotate_y(x::Union{Tuple, AbstractVector}, a::Real)
-    return (x[1]*cos(a) - x[3]*sin(a), x[2], x[1]*sin(a) + x[3]*cos(a))
+function rotate_y(x::Tuple, a::Real)
+    return (x[1]*cos(a) + x[3]*sin(a), x[2], -x[1]*sin(a) + x[3]*cos(a))
 end
+rotate_y(x::AbstractVector, a::Real) = [rotate_y(_get(x), a)...]
 rotate_y(x::T, a::Real) where {T<:AbstractCartesianVector} = T(rotate_y(_get(x), a)...)
 
 
 
 """
-    [1] rotate_z([S::Type{<:AbstractFloat}], x::Tuple, a::Real)
-    [2] rotate_z([S::Type{<:AbstractFloat}], x::AbstractVector, a::Real)
+    rotate_z(x, a)
 
-Rotates the vector `x` around the z-axis by the angle `a` in (rad).
+Rotates a cartesian tuple/vector `x` around the z-axis by the angle `a` in (rad).
 """
-function rotate_z(x::Union{Tuple, AbstractVector}, a::Real)
-    return (x[1]*cos(a) + x[2]*sin(a), -x[1]*sin(a) + x[2]*cos(a), x[3])
+function rotate_z(x::Tuple, a::Real)
+    return (x[1]*cos(a) - x[2]*sin(a), x[1]*sin(a) + x[2]*cos(a), x[3])
 end
+rotate_z(x::AbstractVector, a::Real) = [rotate_z(_get(x), a)...]
 rotate_z(x::T, a::Real) where {T<:AbstractCartesianVector} = T(rotate_z(_get(x), a)...)
 
 
