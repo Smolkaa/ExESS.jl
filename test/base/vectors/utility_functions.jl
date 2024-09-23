@@ -1,6 +1,15 @@
 @testset "utility functions" begin
 
-    #
+    # azimuth
+    @test all(t -> azimuth(t, rand(3)) isa t, [Float16, Float32, Float64, BigFloat])
+    for x in [(1,0,0), (1,1,pi/4), (0,1,pi/2), (-1,1,3pi/4), (-1,0,pi), (-1,-1,-3pi/4), (0,-1,-pi/2), (1,-1,-pi/4)]
+        @test all(r -> isapprox(azimuth((x[1],x[2],r)), x[3]; rtol=1e-10), rand(100))
+        @test all(r -> isapprox(azimuth([x[1],x[2],r]), x[3]; rtol=1e-10), rand(100))
+        @test all(r -> isapprox(azimuth(GlobalCartesianPosition(x[1],x[2],r)), x[3]; rtol=1e-10), rand(100))
+        @test all(r -> isapprox(azimuth(GlobalCartesianVelocity(x[1],x[2],r)), x[3]; rtol=1e-10), rand(100))
+    end
+
+    # elevation
 
     # rotate_x
     @test rotate_x((1, 0, 0), rand()) isa Tuple
@@ -50,5 +59,8 @@
     @test isapprox(rotate_z((0,1,0),-pi/2),  (1,0,0); atol=1e-10)
     @test all(r -> (rotate_z((0,0,1), r) == (0,0,1)), rand(1000))
 
+    # speed
+
+    # zenith
 
 end
