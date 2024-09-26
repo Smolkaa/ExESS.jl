@@ -161,7 +161,7 @@
     @test all(r -> coord2idx(pgrid_reduced, r, -pi/2 - rand()) == coord2idx(pgrid_reduced, r, -pi/2), rand(1000))
     @test all(r -> coord2idx(pgrid_reduced_eqsim, r, -pi/2 - rand()) == coord2idx(pgrid_reduced_eqsim, r, pi/2), rand(1000))
 
-    # test for NOT drawing index <1 at grid element borders
+    # test for NOT drawing index <1 at grid grid borders
     @test all(i -> all(j -> coord2idx(grid, grid.lonrange[i], grid.latrange[j]) > 0, 1:2), 1:2)
     @test all(i -> all(j -> coord2idx(grid_eqsim, grid_eqsim.lonrange[i], grid_eqsim.latrange[j]) > 0, 1:2), 1:2)
     @test all(i -> all(j -> coord2idx(grid_reduced, grid_reduced.lonrange[i], grid_reduced.latrange[j]) > 0, 1:2), 1:2)
@@ -189,56 +189,40 @@
     @test all(_ -> mapgrid(x_s2d, grid, Spherical2DGrid_Reduced(LUNAR_RADIUS, rand(5:45))) isa Vector{Int64}, 1:100)
     @test all(_ -> mapgrid(x_s2d, grid, Spherical2DGrid_Reduced_EqSim(LUNAR_RADIUS, rand(5:45))) isa Vector{Int64}, 1:100)
 
-    @test all(_ -> mapgrid(x_s2d, grid, Spherical2DGrid(LUNAR_RADIUS, rand(5:45, 2)...;
-        lonrange=(rand(), 1+rand()), latrange=(0.5*rand(), 0.5 + rand()*0.5))) isa Vector{Int64}, 1:100)
-    @test all(_ -> mapgrid(x_s2d, grid, Spherical2DGrid_EqSim(LUNAR_RADIUS, rand(5:45, 2)...;
-        lonrange=(rand(), 1+rand()), latmax=0.5 + rand()*0.5)) isa Vector{Int64}, 1:100)
-    @test all(_ -> mapgrid(x_s2d, grid, Spherical2DGrid_Reduced(LUNAR_RADIUS, rand(5:45);
-        lonrange=(rand(), 1+rand()), latrange=(0.5*rand(), 0.5 + rand()*0.5))) isa Vector{Int64}, 1:100)
-    @test all(_ -> mapgrid(x_s2d, grid, Spherical2DGrid_Reduced_EqSim(LUNAR_RADIUS, rand(5:45);
-        lonrange=(rand(), 1+rand()), latmax=0.5 + rand()*0.5)) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2d, grid, Spherical2DGrid(LUNAR_RADIUS, rand(5:45, 2)...; lonrange=(rand(), 1+rand()), latrange=(0.5*rand(), 0.5 + rand()*0.5))) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2d, grid, Spherical2DGrid_EqSim(LUNAR_RADIUS, rand(5:45, 2)...; lonrange=(rand(), 1+rand()), latmax=0.5 + rand()*0.5)) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2d, grid, Spherical2DGrid_Reduced(LUNAR_RADIUS, rand(5:45); lonrange=(rand(), 1+rand()), latrange=(0.5*rand(), 0.5 + rand()*0.5))) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2d, grid, Spherical2DGrid_Reduced_EqSim(LUNAR_RADIUS, rand(5:45); lonrange=(rand(), 1+rand()), latmax=0.5 + rand()*0.5)) isa Vector{Int64}, 1:100)
 
     @test all(_ -> mapgrid(x_s2de, grid_eqsim, Spherical2DGrid(LUNAR_RADIUS, rand(5:45, 2)...)) isa Vector{Int64}, 1:100)
     @test all(_ -> mapgrid(x_s2de, grid_eqsim, Spherical2DGrid_EqSim(LUNAR_RADIUS, rand(5:45, 2)...)) isa Vector{Int64}, 1:100)
     @test all(_ -> mapgrid(x_s2de, grid_eqsim, Spherical2DGrid_Reduced(LUNAR_RADIUS, rand(5:45))) isa Vector{Int64}, 1:100)
     @test all(_ -> mapgrid(x_s2de, grid_eqsim, Spherical2DGrid_Reduced_EqSim(LUNAR_RADIUS, rand(5:45))) isa Vector{Int64}, 1:100)
 
-    @test all(_ -> mapgrid(x_s2de, grid_eqsim, Spherical2DGrid(LUNAR_RADIUS, rand(5:45, 2)...;
-        lonrange=(rand(), 1+rand()), latrange=(0.5*rand(), 0.5 + rand()*0.5))) isa Vector{Int64}, 1:100)
-    @test all(_ -> mapgrid(x_s2de, grid_eqsim, Spherical2DGrid_EqSim(LUNAR_RADIUS, rand(5:45, 2)...;
-        lonrange=(rand(), 1+rand()), latmax=0.5 + rand()*0.5)) isa Vector{Int64}, 1:100)
-    @test all(_ -> mapgrid(x_s2de, grid_eqsim, Spherical2DGrid_Reduced(LUNAR_RADIUS, rand(5:45);
-        lonrange=(rand(), 1+rand()), latrange=(0.5*rand(), 0.5 + rand()*0.5))) isa Vector{Int64}, 1:100)
-    @test all(_ -> mapgrid(x_s2de, grid_eqsim, Spherical2DGrid_Reduced_EqSim(LUNAR_RADIUS, rand(5:45);
-        lonrange=(rand(), 1+rand()), latmax=0.5 + rand()*0.5)) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2de, grid_eqsim, Spherical2DGrid(LUNAR_RADIUS, rand(5:45, 2)...; lonrange=(rand(), 1+rand()), latrange=(0.5*rand(), 0.5 + rand()*0.5))) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2de, grid_eqsim, Spherical2DGrid_EqSim(LUNAR_RADIUS, rand(5:45, 2)...; lonrange=(rand(), 1+rand()), latmax=0.5 + rand()*0.5)) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2de, grid_eqsim, Spherical2DGrid_Reduced(LUNAR_RADIUS, rand(5:45); lonrange=(rand(), 1+rand()), latrange=(0.5*rand(), 0.5 + rand()*0.5))) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2de, grid_eqsim, Spherical2DGrid_Reduced_EqSim(LUNAR_RADIUS, rand(5:45); lonrange=(rand(), 1+rand()), latmax=0.5 + rand()*0.5)) isa Vector{Int64}, 1:100)
 
     @test all(_ -> mapgrid(x_s2dr, grid_reduced, Spherical2DGrid(LUNAR_RADIUS, rand(5:45, 2)...)) isa Vector{Int64}, 1:100)
     @test all(_ -> mapgrid(x_s2dr, grid_reduced, Spherical2DGrid_EqSim(LUNAR_RADIUS, rand(5:45, 2)...)) isa Vector{Int64}, 1:100)
     @test all(_ -> mapgrid(x_s2dr, grid_reduced, Spherical2DGrid_Reduced(LUNAR_RADIUS, rand(5:45))) isa Vector{Int64}, 1:100)
     @test all(_ -> mapgrid(x_s2dr, grid_reduced, Spherical2DGrid_Reduced_EqSim(LUNAR_RADIUS, rand(5:45))) isa Vector{Int64}, 1:100)
 
-    @test all(_ -> mapgrid(x_s2dr, grid_reduced, Spherical2DGrid(LUNAR_RADIUS, rand(5:45, 2)...;
-        lonrange=(rand(), 1+rand()), latrange=(0.5*rand(), 0.5 + rand()*0.5))) isa Vector{Int64}, 1:100)
-    @test all(_ -> mapgrid(x_s2dr, grid_reduced, Spherical2DGrid_EqSim(LUNAR_RADIUS, rand(5:45, 2)...;
-        lonrange=(rand(), 1+rand()), latmax=0.5 + rand()*0.5)) isa Vector{Int64}, 1:100)
-    @test all(_ -> mapgrid(x_s2dr, grid_reduced, Spherical2DGrid_Reduced(LUNAR_RADIUS, rand(5:45);
-        lonrange=(rand(), 1+rand()), latrange=(0.5*rand(), 0.5 + rand()*0.5))) isa Vector{Int64}, 1:100)
-    @test all(_ -> mapgrid(x_s2dr, grid_reduced, Spherical2DGrid_Reduced_EqSim(LUNAR_RADIUS, rand(5:45);
-        lonrange=(rand(), 1+rand()), latmax=0.5 + rand()*0.5)) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2dr, grid_reduced, Spherical2DGrid(LUNAR_RADIUS, rand(5:45, 2)...; lonrange=(rand(), 1+rand()), latrange=(0.5*rand(), 0.5 + rand()*0.5))) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2dr, grid_reduced, Spherical2DGrid_EqSim(LUNAR_RADIUS, rand(5:45, 2)...; lonrange=(rand(), 1+rand()), latmax=0.5 + rand()*0.5)) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2dr, grid_reduced, Spherical2DGrid_Reduced(LUNAR_RADIUS, rand(5:45); lonrange=(rand(), 1+rand()), latrange=(0.5*rand(), 0.5 + rand()*0.5))) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2dr, grid_reduced, Spherical2DGrid_Reduced_EqSim(LUNAR_RADIUS, rand(5:45); lonrange=(rand(), 1+rand()), latmax=0.5 + rand()*0.5)) isa Vector{Int64}, 1:100)
 
     @test all(_ -> mapgrid(x_s2dre, grid_reduced_eqsim, Spherical2DGrid(LUNAR_RADIUS, rand(5:45, 2)...)) isa Vector{Int64}, 1:100)
     @test all(_ -> mapgrid(x_s2dre, grid_reduced_eqsim, Spherical2DGrid_EqSim(LUNAR_RADIUS, rand(5:45, 2)...)) isa Vector{Int64}, 1:100)
     @test all(_ -> mapgrid(x_s2dre, grid_reduced_eqsim, Spherical2DGrid_Reduced(LUNAR_RADIUS, rand(5:45))) isa Vector{Int64}, 1:100)
     @test all(_ -> mapgrid(x_s2dre, grid_reduced_eqsim, Spherical2DGrid_Reduced_EqSim(LUNAR_RADIUS, rand(5:45))) isa Vector{Int64}, 1:100)
 
-    @test all(_ -> mapgrid(x_s2dre, grid_reduced_eqsim, Spherical2DGrid(LUNAR_RADIUS, rand(5:45, 2)...;
-        lonrange=(rand(), 1+rand()), latrange=(0.5*rand(), 0.5 + rand()*0.5))) isa Vector{Int64}, 1:100)
-    @test all(_ -> mapgrid(x_s2dre, grid_reduced_eqsim, Spherical2DGrid_EqSim(LUNAR_RADIUS, rand(5:45, 2)...;
-        lonrange=(rand(), 1+rand()), latmax=0.5 + rand()*0.5)) isa Vector{Int64}, 1:100)
-    @test all(_ -> mapgrid(x_s2dre, grid_reduced_eqsim, Spherical2DGrid_Reduced(LUNAR_RADIUS, rand(5:45);
-        lonrange=(rand(), 1+rand()), latrange=(0.5*rand(), 0.5 + rand()*0.5))) isa Vector{Int64}, 1:100)
-    @test all(_ -> mapgrid(x_s2dre, grid_reduced_eqsim, Spherical2DGrid_Reduced_EqSim(LUNAR_RADIUS, rand(5:45);
-        lonrange=(rand(), 1+rand()), latmax=0.5 + rand()*0.5)) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2dre, grid_reduced_eqsim, Spherical2DGrid(LUNAR_RADIUS, rand(5:45, 2)...; lonrange=(rand(), 1+rand()), latrange=(0.5*rand(), 0.5 + rand()*0.5))) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2dre, grid_reduced_eqsim, Spherical2DGrid_EqSim(LUNAR_RADIUS, rand(5:45, 2)...; lonrange=(rand(), 1+rand()), latmax=0.5 + rand()*0.5)) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2dre, grid_reduced_eqsim, Spherical2DGrid_Reduced(LUNAR_RADIUS, rand(5:45); lonrange=(rand(), 1+rand()), latrange=(0.5*rand(), 0.5 + rand()*0.5))) isa Vector{Int64}, 1:100)
+    @test all(_ -> mapgrid(x_s2dre, grid_reduced_eqsim, Spherical2DGrid_Reduced_EqSim(LUNAR_RADIUS, rand(5:45); lonrange=(rand(), 1+rand()), latmax=0.5 + rand()*0.5)) isa Vector{Int64}, 1:100)
 
     @test_throws BoundsError mapgrid(x_ps2d, pgrid, grid)
     @test_throws BoundsError mapgrid(x_ps2d, pgrid, grid_eqsim)

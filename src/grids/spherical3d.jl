@@ -8,17 +8,24 @@ abstract type AbstractSpherical3DGrid <: AbstractSphericalGrid end
 #::. FUNCTIONS
 ############################################################################################
 """
-    [1] struct Spherical3DGrid{T<:AbstractFloat} <: AbstractSpherical3DGrid
-    [2] Spherical3DGrid([T::Type{<:AbstractFloat}, ] r0::Real, h::AbstractVector,
-                        N_lon::Integer, N_lat::Integer; kwargs...)
-    [3] Spherical3DGrid([T::Type{<:AbstractFloat}, ] r::AbstractVector, N_lon::Integer,
-                        N_lat::Integer; kwargs...)
+    struct Spherical3DGrid{T} <: AbstractSpherical3DGrid
+    Spherical3DGrid([T], r0, h, N_lon, N_lat; kwargs...)
+    Spherical3DGrid([T], r, N_lon, N_lat; kwargs...)
 
 Global structured volume grid (3D) of type `GlobalSphericalPosition{T}` over a sphere of
 radius `r0` with heights of the individual radial layers `h`. Alternatively, the radial
 distances can directly be specified by `r` (`r = r0 .+ h`). Note that all heights have
 to be positive. Note that the radial position of each individual grid element is located
 at the bottom (base/surface) of each cell.
+
+To ensure expected behavior, the grid object should generally be created with the outer
+constructors. Those functions take the key-word `lonrange` and `latrange` to specify the
+range of the longitude and latitude. The default values are `(-pi, pi)` and `(-pi/2, pi/2)`,
+respectively.
+
+The optional argument `T can be used to control the type of the structs fields.
+
+# Fields & Arguments
 
 | Field      | Type; with `T<:AbstractFloat`        | Description                       |
 |:---------- |:------------------------------------ |:--------------------------------- |
@@ -32,11 +39,6 @@ at the bottom (base/surface) of each cell.
 | `volumes`  | `Vector{T}`                          | volumes                           |
 | `lonrange` | `Tuple{T, T}`                        | longitude range                   |
 | `latrange` | `Tuple{T, T}`                        | latitude range                    |
-
-To ensure expected behavior, the grid object should generally be created with the outer
-constructors [2] or [3]. Those functions take the key-word `lonrange` and `latrange` to
-specify the range of the longitude and latitude. The default values are `(-pi, pi)` and
-`(-pi/2, pi/2)`, respectively.
 """
 struct Spherical3DGrid{T<:AbstractFloat} <: AbstractSpherical3DGrid
     r0::T
@@ -67,15 +69,14 @@ function Spherical3DGrid(T::Type{<:AbstractFloat}, r0::Real, h::AbstractVector,
         (latrange[2]-latrange[1]) .+ latrange[1]; outer=N_lon*N_r))
 
     # area and volume calculation
-    dR, dlon, dlat = vcat(h[1], diff(h)), lon[N_lat+1] - lon[1], lat[2] - lat[1]
-    areas = [r[1]^2 * dlon * (sin(p+dlat/2) - sin(p-dlat/2)) for p in lat[1:N_lon*N_lat]]
-    for rr in [r0 .+ vcat(h[1:end-1])...]
-        push!(areas, areas[1:N_lon*N_lat] / r0^2 * rr^2...)
+    dR = vcat(h[1], diff(h))
+    dlon, dlat = (lonrange[2] - lonrange[1]) / N_lon, (latrange[2] - latrange[1]) / N_lat
+    areas, volumes = T[], T[]
+    for i in 1:N_r*N_lon*N_lat
+        ri, dr = r[i], dR[Int64(1 + floor((i-1) / (N_lon*N_lat)))]
+        push!(areas, ri^2 * dlon * (sin(lat[i]+dlat/2) - sin(lat[i]-dlat/2)))
+        push!(volumes, ((ri + dr)^3 - ri^3)/3 * dlon * (sin(lat[i]+dlat/2) - sin(lat[i]-dlat/2)))
     end
-    volumes = [
-        ((r[i] + dr)^3 - r[i]^3)/3 * dlon * (sin(lat[i]+dlat/2) - sin(lat[i]-dlat/2))
-        for i in 1:N_r*N_lon*N_lat for dr = dR[Int64(1 + floor((i-1) / (N_lon*N_lat)))]
-    ]
 
     return Spherical3DGrid(T(r0), T.(h), N_r, N_lon, N_lat,
                            GlobalSphericalPosition.(r, lon, lat),
@@ -103,17 +104,25 @@ function Spherical3DGrid(r::AbstractVector{<:Integer}, N_lon::Integer, N_lat::In
 end
 
 """
-    [1] struct Spherical3DGrid_EqSim{T<:AbstractFloat} <: AbstractSpherical3DGrid end
-    [2] Spherical3DGrid_EqSim([T::Type{<:AbstractFloat}, ] r0::Real, h::AbstractVector,
-                              N_lon::Integer, N_lat::Integer; kwargs...)
-    [3] Spherical3DGrid_EqSim([T::Type{<:AbstractFloat}, ] r::AbstractVector,
-                              N_lon::Integer, N_lat::Integer; kwargs...)
+    struct Spherical3DGrid_EqSim{T} <: AbstractSpherical3DGrid
+    Spherical3DGrid_EqSim([T], r0, h, N_lon, N_lat; kwargs...)
+    Spherical3DGrid_EqSim([T], r, N_lon, N_lat; kwargs...)
 
 Global structured volume grid (3D) of type `GlobalSphericalPosition{T}` over a hemisphere of
 radius `r0` with heights of the individual radial layers `h`. Alternatively, the radial
 distances can directly be specified by `r` (`r = r0 .+ h`). Note that all heights have
 to be positive. Note that the radial position of each individual grid element is located
 at the bottom (base/surface) of each cell.
+
+To ensure expected behavior, the grid object should generally be created with the outer
+constructors. Those functions take the key-word `lonrange` and `latmax` to
+specify the range of the longitude and latitude. The default values are `(-pi, pi)` and
+`pi/2`, respectively (the lower boundary of latitudes for equatorially symmetric grids is
+always zero).
+
+The optional argument `T can be used to control the type of the structs fields.
+
+# Fields & Arguments
 
 | Field      | Type; with `T<:AbstractFloat`        | Description                       |
 |:---------- |:------------------------------------ |:--------------------------------- |
@@ -127,12 +136,6 @@ at the bottom (base/surface) of each cell.
 | `volumes`  | `Vector{T}`                          | volumes                           |
 | `lonrange` | `Tuple{T, T}`                        | longitude range                   |
 | `latrange` | `Tuple{T, T}`                        | latitude range                    |
-
-To ensure expected behavior, the grid object should generally be created with the outer
-constructors [2] or [3]. Those functions take the key-word `lonrange` and `latmax` to
-specify the range of the longitude and latitude. The default values are `(-pi, pi)` and
-`pi/2`, respectively (the lower boundary of latitudes for equatorially symmetric grids is
-always zero).
 """
 struct Spherical3DGrid_EqSim{T<:AbstractFloat} <: AbstractSpherical3DGrid
     r0::T
@@ -162,15 +165,13 @@ function Spherical3DGrid_EqSim(T::Type{<:AbstractFloat}, r0::Real, h::AbstractVe
     lat = T.(repeat(range(1/2/N_lat, 1-1/2/N_lat, length=N_lat) * latmax; outer=N_lon*N_r))
 
     # area and volume calculation
-    dR, dlon, dlat = vcat(h[1], diff(h)), lon[N_lat+1] - lon[1], lat[2] - lat[1]
-    areas = [r[1]^2 * dlon * (sin(p+dlat/2) - sin(p-dlat/2)) for p in lat[1:N_lon*N_lat]]
-    for rr in [r0 .+ vcat(h[1:end-1])...]
-        push!(areas, areas[1:N_lon*N_lat] / r0^2 * rr^2...)
+    dR, dlon, dlat = vcat(h[1], diff(h)), (lonrange[2] - lonrange[1]) / N_lon, latmax / N_lat
+    areas, volumes = T[], T[]
+    for i in 1:N_r*N_lon*N_lat
+        ri, dr = r[i], dR[Int64(1 + floor((i-1) / (N_lon*N_lat)))]
+        push!(areas, ri^2 * dlon * (sin(lat[i]+dlat/2) - sin(lat[i]-dlat/2)))
+        push!(volumes, ((ri + dr)^3 - ri^3)/3 * dlon * (sin(lat[i]+dlat/2) - sin(lat[i]-dlat/2)))
     end
-    volumes = [
-        ((r[i] + dr)^3 - r[i]^3)/3 * dlon * (sin(lat[i]+dlat/2) - sin(lat[i]-dlat/2))
-        for i in 1:N_r*N_lon*N_lat for dr = dR[Int64(1 + floor((i-1) / (N_lon*N_lat)))]
-    ]
 
     return Spherical3DGrid_EqSim(T(r0), T.(h), N_r, N_lon, N_lat,
                                  GlobalSphericalPosition.(r, lon, lat),
@@ -199,17 +200,24 @@ end
 
 
 """
-    [1] struct Spherical3DGrid_Reduced{T<:AbstractFloat} <: AbstractSpherical3DGrid end
-    [2] Spherical3DGrid_Reduced([T::Type{<:AbstractFloat}, ] r0::Real, h::AbstractVector,
-                                N_lat::Integer; kwargs...)
-    [3] Spherical3DGrid_Reduced([T::Type{<:AbstractFloat}, ] r::AbstractVector,
-                                N_lat::Integer; kwargs...)
+    struct Spherical3DGrid_Reduced{T} <: AbstractSpherical3DGrid
+    Spherical3DGrid_Reduced([T], r0, h, N_lat; kwargs...)
+    Spherical3DGrid_Reduced([T], r, N_lat; kwargs...)
 
 Global structured volume grid (3D) of type `GlobalSphericalPosition{T}` over a sphere of
 radius `r0` with heights of the individual radial layers `h`. Alternatively, the radial
 distances can directly be specified by `r` (`r = r0 .+ h`). Note that all heights have
 to be positive. The grid is reduced in the azimuth direction to have approximately equal
 `(lonrange[2]-lonrange[1])*r*cos(lat)/N_lon` grid element lengths.
+
+To ensure expected behavior, the grid object should generally be created with the outer
+constructors. Those functions take the key-word `lonrange` and `latrange` to specify the
+range of the longitude and latitude. The default values are `(-pi, pi)` and `(-pi/2, pi/2)`,
+respectively.
+
+The optional argument `T can be used to control the type of the structs fields.
+
+# Fields & Arguments
 
 | Field      | Type; with `T<:AbstractFloat`        | Description                       |
 |:---------- |:------------------------------------ |:--------------------------------- |
@@ -223,11 +231,6 @@ to be positive. The grid is reduced in the azimuth direction to have approximate
 | `volumes`  | `Vector{T}`                          | volumes                           |
 | `lonrange` | `Tuple{T, T}`                        | longitude range                   |
 | `latrange` | `Tuple{T, T}`                        | latitude range                    |
-
-To ensure expected behavior, the grid object should generally be created with the outer
-constructors [2] or [3]. Those functions take the key-word `lonrange` and `latrange` to
-specify the range of the longitude and latitude. The default values are `(-pi, pi)` and
-`(-pi/2, pi/2)`, respectively.
 """
 struct Spherical3DGrid_Reduced{T<:AbstractFloat} <: AbstractSpherical3DGrid
     r0::T
@@ -251,7 +254,7 @@ function Spherical3DGrid_Reduced(T::Type{<:AbstractFloat}, r0::Real, h::Abstract
 
     # prepare coordiante calculation
     h, N_r = sort(h), length(h)
-    dlon_max = T((latrange[2] - latrange[1])/N_lat)
+    dlat = dlon_max = T((latrange[2] - latrange[1])/N_lat)
     lat0 = T.(range(1/2/N_lat, 1 - 1/2/N_lat, length=N_lat) *
         (latrange[2]-latrange[1]) .+ latrange[1])
 
@@ -268,28 +271,18 @@ function Spherical3DGrid_Reduced(T::Type{<:AbstractFloat}, r0::Real, h::Abstract
     lon = repeat(lon, outer=N_r)
     lat = repeat(lat, outer=N_r)
 
-    # areas calculation
-    areas = T[]
-    for i in eachindex(N_lon)
-        dlon, dlat = (lonrange[2] - lonrange[1]) / N_lon[i], (latrange[2] - latrange[1]) / N_lat
-        push!(areas, repeat(
-            [r[1]^2 * dlon * (sin(lat0[i]+dlat/2) - sin(lat0[i]-dlat/2))], N_lon[i])...)
-    end
-    for rr in [r0 .+ vcat(h[1:end-1])...]
-        push!(areas, areas[1:sum(N_lon)] / r0^2 * rr^2...)
-    end
-
-    # volumes calculation
-    volumes = T[]
+    # area and volume calculation
+    areas, volumes = T[], T[]
     for i in 1:N_r, j in 1:N_lat, _ in 1:N_lon[j]
         ri, dr = [r0 .+ vcat(0, h[1:end-1])...][i], vcat(h[1], diff(h))[i]
-        dlon, dlat = (lonrange[2] - lonrange[1]) / N_lon[i], (latrange[2] - latrange[1]) / N_lat
+        dlon = (lonrange[2] - lonrange[1]) / N_lon[j]
+        push!(areas, ri^2 * dlon * (sin(lat0[j]+dlat/2) - sin(lat0[j]-dlat/2)))
         push!(volumes, ((ri + dr)^3 - ri^3)/3 * dlon * (sin(lat0[j]+dlat/2) - sin(lat0[j]-dlat/2)))
     end
 
     return Spherical3DGrid_Reduced(T(r0), T.(h), N_r, N_lon, N_lat,
                                    GlobalSphericalPosition.(r, lon, lat),
-                                   T.(areas), T.(volumes), T.(lonrange), T.((latrange)))
+                                   T.(areas), T.(volumes), T.(lonrange), T.(latrange))
 end
 function Spherical3DGrid_Reduced(r0::Real, h::AbstractVector, N_lat::Integer; kwargs...)
     return Spherical3DGrid_Reduced(typeof(r0), r0, h, N_lat; kwargs...)
@@ -310,11 +303,9 @@ end
 
 
 """
-    [1] struct Spherical3DGrid_Reduced_EqSim{T<:AbstractFloat} <: AbstractSpherical3DGrid
-    [2] Spherical3DGrid_Reduced_EqSim([T::Type{<:AbstractFloat},] r0::Real,
-            h::AbstractVector, N_lat::Integer)
-    [3] Spherical3DGrid_Reduced_EqSim([T::Type{<:AbstractFloat},] r::AbstractVector,
-            N_lat::Integer)
+    struct Spherical3DGrid_Reduced_EqSim{T} <: AbstractSpherical3DGrid
+    Spherical3DGrid_Reduced_EqSim([T], r0, h, N_lat)
+    Spherical3DGrid_Reduced_EqSim([T], r, N_lat)
 
 Global structured volume grid (3D) of type `GlobalSphericalPosition{T}` over a sphere of
 radius `r0` with heights of the individual radial layers `h`. Alternatively, the radial
@@ -347,23 +338,28 @@ struct Spherical3DGrid_Reduced_EqSim{T<:AbstractFloat} <: AbstractSpherical3DGri
     coords::Vector{GlobalSphericalPosition{T}}
     areas::Vector{T}
     volumes::Vector{T}
+    lonrange::Tuple{T, T}
+    latrange::Tuple{T, T}
 end
 function Spherical3DGrid_Reduced_EqSim(T::Type{<:AbstractFloat}, r0::Real,
-            h::AbstractVector, N_lat::Integer)
+            h::AbstractVector, N_lat::Integer; lonrange=(-pi, pi), latmax=pi/2)
 
-    h = sort(h)
-    @assert h[1] > 0
-    N_r = length(h)
+    # input assertions
+    @assert sort(h)[1] > 0 "Invalid heights"
+    @assert lonrange[1] <= lonrange[2] "Invalid longitude range"
+    @assert latmax >= 0 "Invalid `latmax`"
 
     # prepare coordiante calculation
-    dlon_max = T(pi/2/N_lat)
-    lat0 = T.(range(1/N_lat, 2-1/N_lat, length=N_lat) * pi/4)
+    h, N_r = sort(h), length(h)
+    dlat = dlon_max = T(latmax/N_lat)
+    lat0 = T.(range(1/2/N_lat, 1 - 1/2/N_lat, length=N_lat) * latmax)
 
-    # coordinates
+    # coordinate calculation
     r, lon, lat, N_lon = T[], T[], T[], Int64[]
     for p0 in lat0
-        n_lon = ceil(Int64, 2*pi*cos(p0)/dlon_max)
-        push!(lon, range(1/n_lon-1, 1-1/n_lon, length=n_lon) .* pi...)
+        n_lon = ceil(Int64, (lonrange[2] - lonrange[1])*cos(p0)/dlon_max + eps(T))
+        push!(lon, range(1/2/n_lon, 1 - 1/2/n_lon, length=n_lon) *
+            (lonrange[2]-lonrange[1]) .+ lonrange[1]...)
         push!(lat, repeat([p0], n_lon)...)
         push!(N_lon, n_lon)
     end
@@ -371,47 +367,35 @@ function Spherical3DGrid_Reduced_EqSim(T::Type{<:AbstractFloat}, r0::Real,
     lon = repeat(lon, outer=N_r)
     lat = repeat(lat, outer=N_r)
 
-    # areas calculation
-    areas = T[]
-    for i in 1:N_lat
-        idx = accumulate(+, N_lon[1:i])[end]
-        dlon, dlat = lon[idx] - lon[idx-1], lat0[2] - lat0[1]
-        push!(areas, repeat(
-            [r[1]^2 * dlon * (sin(lat0[i]+dlat/2) - sin(lat0[i]-dlat/2))], N_lon[i])...)
-    end
-    for rr in [r0 .+ vcat(h[1:end-1])...]
-        push!(areas, areas[1:sum(N_lon)] / r0^2 * rr^2...)
-    end
-
-    # volumes calculation
-    volumes = T[]
+    # area and volume calculation
+    areas, volumes = T[], T[]
     for i in 1:N_r, j in 1:N_lat, _ in 1:N_lon[j]
         ri, dr = [r0 .+ vcat(0, h[1:end-1])...][i], vcat(h[1], diff(h))[i]
-        dlon = 2pi / N_lon[j]
-        p0, dlat = lat0[j], pi / N_lat / 2
-        push!(volumes, ((ri + dr)^3 - ri^3)/3 * dlon * (sin(p0+dlat/2) - sin(p0-dlat/2)))
+        dlon = (lonrange[2] - lonrange[1]) / N_lon[j]
+        push!(areas, ri^2 * dlon * (sin(lat0[j]+dlat/2) - sin(lat0[j]-dlat/2)))
+        push!(volumes, ((ri + dr)^3 - ri^3)/3 * dlon * (sin(lat0[j]+dlat/2) - sin(lat0[j]-dlat/2)))
     end
 
     return Spherical3DGrid_Reduced_EqSim(T(r0), T.(h), N_r, N_lon, N_lat,
                                          GlobalSphericalPosition.(r, lon, lat),
-                                         T.(areas), T.(volumes))
+                                         T.(areas), T.(volumes), T.(lonrange), T.((0,latmax)))
 end
-function Spherical3DGrid_Reduced_EqSim(r0::Real, h::AbstractVector, N_lat::Integer)
-    return Spherical3DGrid_Reduced_EqSim(typeof(r0), r0, h, N_lat)
+function Spherical3DGrid_Reduced_EqSim(r0::Real, h::AbstractVector, N_lat::Integer; kwargs...)
+    return Spherical3DGrid_Reduced_EqSim(typeof(r0), r0, h, N_lat; kwargs...)
 end
-function Spherical3DGrid_Reduced_EqSim(r0::Integer, h::AbstractVector, N_lat::Integer)
-    return Spherical3DGrid_Reduced_EqSim(promote_type(typeof(r0), Float64), r0, h, N_lat)
+function Spherical3DGrid_Reduced_EqSim(r0::Integer, h::AbstractVector, N_lat::Integer; kwargs...)
+    return Spherical3DGrid_Reduced_EqSim(promote_type(typeof(r0), Float64), r0, h, N_lat; kwargs...)
 end
 function Spherical3DGrid_Reduced_EqSim(T::Type{<:AbstractFloat}, r::AbstractVector,
-            N_lat::Integer)
+            N_lat::Integer; kwargs...)
     r0, h = r[1], accumulate(+,diff(r))
-    Spherical3DGrid_Reduced_EqSim(T, r0, h, N_lat)
+    Spherical3DGrid_Reduced_EqSim(T, r0, h, N_lat; kwargs...)
 end
-function Spherical3DGrid_Reduced_EqSim(r::AbstractVector, N_lat::Integer)
-    return Spherical3DGrid_Reduced_EqSim(typeof(r[1]), r, N_lat)
+function Spherical3DGrid_Reduced_EqSim(r::AbstractVector, N_lat::Integer; kwargs...)
+    return Spherical3DGrid_Reduced_EqSim(typeof(r[1]), r, N_lat; kwargs...)
 end
-function Spherical3DGrid_Reduced_EqSim(r::AbstractVector{<:Integer}, N_lat::Integer)
-    return Spherical3DGrid_Reduced_EqSim(promote_type(typeof(r[1]), Float64), r, N_lat)
+function Spherical3DGrid_Reduced_EqSim(r::AbstractVector{<:Integer}, N_lat::Integer; kwargs...)
+    return Spherical3DGrid_Reduced_EqSim(promote_type(typeof(r[1]), Float64), r, N_lat; kwargs...)
 end
 
 
@@ -429,41 +413,66 @@ function coord2idx(grid::Spherical3DGrid, r::T, lon::T, lat::T)::Int64 where {T<
     if !(latrange[1] <= lat <= latrange[2]); return 0; end
 
     idxr   = findfirst(grid.h .+ grid.r0 .> r)
-    idxlon = max(1,ceil(Int64, (lon-lonrange[1])/(lonrange[2]-lonrange[1])*grid.N_lon))
+    idxlon = max(1,ceil(Int64, (lon-lonrange[1])/(lonrange[2]-lonrange[1])*grid.N_lon)) # max(...) to prevent index < 1 at boundary
     idxlat = max(1,ceil(Int64, (lat-latrange[1])/(latrange[2]-latrange[1])*grid.N_lat))
     return (idxr-1) * grid.N_lat*grid.N_lon + (idxlon-1) * grid.N_lat + idxlat
 end
 function coord2idx(grid::Spherical3DGrid_EqSim, r::T, lon::T, lat::T)::Int64 where {T<:AbstractFloat}
-    if !(grid.r0 <= r <= grid.r0 + grid.h[end]); return 0; end
-    PI       = T(pi) # to prevent numerical cutoff/rounding mistakes
-    lon    = pclamp(lon, -PI, PI - eps(T)) + eps(T)
-    lat      = clamp(lat, -PI/2, PI/2 - eps(T)) + eps(T)
-    idxr     = findfirst(grid.h .+ grid.r0 .> r)
-    idxlon = ceil(Int64, (lon+pi)*grid.N_lon/2/pi)
-    idxlat   = ceil(Int64, abs(lat)*grid.N_lat*2/pi)
+    PI     = T(pi) # to prevent numerical cutoff/rounding mistakes
+    lon    = pclamp(lon, -PI, PI)
+    lat    = clamp(lat, -PI/2, PI/2)
+
+    lonrange, latrange = grid.lonrange, grid.latrange
+    if !(grid.r0 <= r < grid.r0 + grid.h[end]); return 0; end
+    if !(lonrange[1] <= lon <= lonrange[2]); return 0; end
+    if !(-latrange[2] <= lat <= latrange[2]); return 0; end
+
+    idxr   = findfirst(grid.h .+ grid.r0 .> r)
+    idxlon = max(1,ceil(Int64, (lon-lonrange[1])/(lonrange[2]-lonrange[1])*grid.N_lon))
+    idxlat = max(1,ceil(Int64, abs(lat)/latrange[2]*grid.N_lat))
     return (idxr-1) * grid.N_lat*grid.N_lon + (idxlon-1) * grid.N_lat + idxlat
 end
 function coord2idx(grid::Spherical3DGrid_Reduced, r::T, lon::T, lat::T)::Int64 where {T<:AbstractFloat}
-    if !(grid.r0 <= r <= grid.r0 + grid.h[end]); return 0; end
-    PI       = T(pi) # to prevent numerical cutoff/rounding mistakes
-    lon    = pclamp(lon, -PI, PI - eps(T)) + eps(T)
-    lat      = clamp(lat, -PI/2, PI/2 - eps(T)) + eps(T)
-    idxr     = findfirst(grid.h .+ grid.r0 .> r)
-    idxlat   = ceil(Int64, (lat+pi/2)/pi*grid.N_lat)
-    idxlon = ceil(Int64, (lon+pi)/2/pi*grid.N_lon[idxlat])
+    PI     = T(pi) # to prevent numerical cutoff/rounding mistakes
+    lon    = pclamp(lon, -PI, PI)
+    lat    = clamp(lat, -PI/2, PI/2)
+
+    lonrange, latrange = grid.lonrange, grid.latrange
+    if !(grid.r0 <= r < grid.r0 + grid.h[end]); return 0; end
+    if !(lonrange[1] <= lon <= lonrange[2]); return 0; end
+    if !(latrange[1] <= lat <= latrange[2]); return 0; end
+
+    idxr   = findfirst(grid.h .+ grid.r0 .> r)
+    idxlat = max(1,ceil(Int64, (lat-latrange[1])/(latrange[2]-latrange[1])*grid.N_lat))
+    idxlon = max(1,ceil(Int64, (lon-lonrange[1])/(lonrange[2]-lonrange[1])*grid.N_lon[idxlat]))
     if idxlat == 1; return (idxr-1) * sum(grid.N_lon) + idxlon; end
     return (idxr-1) * sum(grid.N_lon) + idxlon + accumulate(+, grid.N_lon[1:idxlat])[end-1]
 end
 function coord2idx(grid::Spherical3DGrid_Reduced_EqSim, r::T, lon::T, lat::T)::Int64 where {T<:AbstractFloat}
-    if !(grid.r0 <= r <= grid.r0 + grid.h[end]); return 0; end
-    PI       = T(pi) # to prevent numerical cutoff/rounding mistakes
-    lon    = pclamp(lon, -PI, PI - eps(T)) + eps(T)
-    lat      = clamp(lat, -PI/2, PI/2 - eps(T)) + eps(T)
-    idxr     = findfirst(grid.h .+ grid.r0 .> r)
-    idxlat   = ceil(Int64, abs(lat)*grid.N_lat*2/pi)
-    idxlon = ceil(Int64, (lon+pi)/2/pi*grid.N_lon[idxlat])
+    PI     = T(pi) # to prevent numerical cutoff/rounding mistakes
+    lon    = pclamp(lon, -PI, PI)
+    lat    = clamp(lat, -PI/2, PI/2)
+
+    lonrange, latrange = grid.lonrange, grid.latrange
+    if !(grid.r0 <= r < grid.r0 + grid.h[end]); return 0; end
+    if !(lonrange[1] <= lon <= lonrange[2]); return 0; end
+    if !(-latrange[2] <= lat <= latrange[2]); return 0; end
+
+    idxr   = findfirst(grid.h .+ grid.r0 .> r)
+    idxlat = max(1,ceil(Int64, abs(lat)/latrange[2]*grid.N_lat))
+    idxlon = max(1,ceil(Int64, (lon-lonrange[1])/(lonrange[2]-lonrange[1])*grid.N_lon[idxlat]))
     if idxlat == 1; return (idxr-1) * sum(grid.N_lon) + idxlon; end
     return (idxr-1) * sum(grid.N_lon) + idxlon + accumulate(+, grid.N_lon[1:idxlat])[end-1]
+
+    # if !(grid.r0 <= r <= grid.r0 + grid.h[end]); return 0; end
+    # PI       = T(pi) # to prevent numerical cutoff/rounding mistakes
+    # lon    = pclamp(lon, -PI, PI - eps(T)) + eps(T)
+    # lat      = clamp(lat, -PI/2, PI/2 - eps(T)) + eps(T)
+    # idxr     = findfirst(grid.h .+ grid.r0 .> r)
+    # idxlat   = ceil(Int64, abs(lat)*grid.N_lat*2/pi)
+    # idxlon = ceil(Int64, (lon+pi)/2/pi*grid.N_lon[idxlat])
+    # if idxlat == 1; return (idxr-1) * sum(grid.N_lon) + idxlon; end
+    # return (idxr-1) * sum(grid.N_lon) + idxlon + accumulate(+, grid.N_lon[1:idxlat])[end-1]
 end
 function coord2idx(grid::AbstractSpherical3DGrid, r::Real, lon::Real, lat::Real)::Int64
     return coord2idx(grid, promote(r, lon, lat)...)

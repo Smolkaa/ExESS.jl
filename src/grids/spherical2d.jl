@@ -265,10 +265,8 @@ function coord2idx(grid::Spherical2DGrid, lon::T, lat::T)::Int64 where {T<:Abstr
     lat = clamp(lat, -PI/2, PI/2)
 
     lonrange, latrange = grid.lonrange, grid.latrange
-    if lon < lonrange[1] || lon > lonrange[2] ||
-        lat < latrange[1] || lat > latrange[2]
-        return 0
-    end
+    if !(lonrange[1] <= lon <= lonrange[2]); return 0; end
+    if !(latrange[1] <= lat <= latrange[2]); return 0; end
 
     idxlon = max(1,ceil(Int64, (lon-lonrange[1])/(lonrange[2]-lonrange[1])*grid.N_lon))
     idxlat = max(1,ceil(Int64, (lat-latrange[1])/(latrange[2]-latrange[1])*grid.N_lat))
@@ -280,10 +278,8 @@ function coord2idx(grid::Spherical2DGrid_EqSim, lon::T, lat::T)::Int64 where {T<
     lat = clamp(lat, -PI/2, PI/2)
 
     lonrange, latrange = grid.lonrange, grid.latrange
-    if lon < lonrange[1] || lon > lonrange[2] ||
-        lat < -latrange[2] || lat > latrange[2]
-        return 0
-    end
+    if !(lonrange[1] <= lon <= lonrange[2]); return 0; end
+    if !(-latrange[2] <= lat <= latrange[2]); return 0; end
 
     idxlon = max(1,ceil(Int64, (lon-lonrange[1])/(lonrange[2]-lonrange[1])*grid.N_lon))
     idxlat = max(1,ceil(Int64, abs(lat)/latrange[2]*grid.N_lat))
@@ -295,14 +291,11 @@ function coord2idx(grid::Spherical2DGrid_Reduced, lon::T, lat::T)::Int64 where {
     lat = clamp(lat, -PI/2, PI/2)
 
     lonrange, latrange = grid.lonrange, grid.latrange
-    if lon < lonrange[1] || lon > lonrange[2] ||
-        lat < latrange[1] || lat > latrange[2]
-        return 0
-    end
+    if !(lonrange[1] <= lon <= lonrange[2]); return 0; end
+    if !(latrange[1] <= lat <= latrange[2]); return 0; end
 
     idxlat = max(1,ceil(Int64, (lat-latrange[1])/(latrange[2]-latrange[1])*grid.N_lat))
     idxlon = max(1,ceil(Int64, (lon-lonrange[1])/(lonrange[2]-lonrange[1])*grid.N_lon[idxlat]))
-    # idxlon = max(1,ceil(Int64, (lon-lonrange[1])*grid.N_lon[idxlat]/(lonrange[2]-lonrange[1])))
     if idxlat == 1; return idxlon; end
     return idxlon + accumulate(+, grid.N_lon[1:idxlat])[end-1]
 end
@@ -312,14 +305,11 @@ function coord2idx(grid::Spherical2DGrid_Reduced_EqSim, lon::T, lat::T)::Int64 w
     lat = clamp(lat, -PI/2, PI/2)
 
     lonrange, latrange = grid.lonrange, grid.latrange
-    if lon < lonrange[1] || lon > lonrange[2] ||
-        lat < -latrange[2] || lat > latrange[2]
-        return 0
-    end
+    if !(lonrange[1] <= lon <= lonrange[2]); return 0; end
+    if !(-latrange[2] <= lat <= latrange[2]); return 0; end
 
     idxlat = max(1,ceil(Int64, abs(lat)/latrange[2]*grid.N_lat))
     idxlon = max(1,ceil(Int64, (lon-lonrange[1])/(lonrange[2]-lonrange[1])*grid.N_lon[idxlat]))
-    # idxlon = max(1,ceil(Int64, (lon-lonrange[1])*grid.N_lon[idxlat]/(lonrange[2]-lonrange[1])))
     if idxlat == 1; return idxlon; end
     return idxlon + accumulate(+, grid.N_lon[1:idxlat])[end-1]
 end
