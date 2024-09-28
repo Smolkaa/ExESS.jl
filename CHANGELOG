@@ -11,6 +11,10 @@
 - HOUSEKEEPING & BUGFIX: renamed `coordinates` to `vectors` in tests and fixed the cartesian
   rotation functions, which previously rotated in the wrong direction
     - added tests for the cartesian rotation functions
+- FEATURE: added `lonrange` and `latrange` keywords to `Spherical3DGrid`s to have partial
+  partial three-dimensional grids
+    - added tests for three-dimensional spherical grids
+    - housekeeping for all grids: docstrings, renamings, etc.
 
 
 ## v0.1.10 (2024/08/26)
