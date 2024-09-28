@@ -351,30 +351,13 @@ Base.show(io::IO, ::MIME"text/plain", grid::AbstractSpherical2DGrid) =
             "             min: $(min(grid.areas...))\n"*
             "             max: $(max(grid.areas...))\n")
 
-Base.show(io::IO, ::MIME"text/plain", grid::Spherical2DGrid_Reduced) =
+Base.show(io::IO, ::MIME"text/plain", grid::Union{Spherical2DGrid_Reduced, Spherical2DGrid_Reduced_EqSim}) =
     print(io, "$(typeof(grid)):\n"*
             " r:        $(grid.r)\n"*
             " lonrange: $(grid.lonrange)\n"*
             " latrange: $(grid.latrange)\n"*
             " N_lon:    $(length(grid.N_lon))-element Vector{Int64}\n"*
             "             [$(grid.N_lon[1]) .. $(grid.N_lon[end])]\n"*
-            # "             @ equator: $(grid.N_lon[ceil(Int64,grid.N_lat/2)])\n"*
-            # "             @ poles:  $(grid.N_lon[end])\n"*
-            " N_lat:    $(grid.N_lat)\n"*
-            " coords:   $(length(grid.coords))-element $(typeof(coords(grid)))\n"*
-            " areas:    $(length(grid.areas))-element $(typeof(grid.areas))\n"*
-            "             min: $(min(grid.areas...))\n"*
-            "             max: $(max(grid.areas...))\n")
-
-Base.show(io::IO, ::MIME"text/plain", grid::Spherical2DGrid_Reduced_EqSim) =
-    print(io, "$(typeof(grid)):\n"*
-            " r:        $(grid.r)\n"*
-            " lonrange: $(grid.lonrange)\n"*
-            " latrange: $(grid.latrange)\n"*
-            " N_lon:    $(length(grid.N_lon))-element Vector{Int64}\n"*
-            "             [$(grid.N_lon[1]) .. $(grid.N_lon[end])]\n"*
-            # "             @ equator: $(grid.N_lon[1])\n"*
-            # "             @ poles:  $(grid.N_lon[end])\n"*
             " N_lat:    $(grid.N_lat)\n"*
             " coords:   $(length(grid.coords))-element $(typeof(coords(grid)))\n"*
             " areas:    $(length(grid.areas))-element $(typeof(grid.areas))\n"*

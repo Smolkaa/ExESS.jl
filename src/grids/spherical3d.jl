@@ -463,16 +463,6 @@ function coord2idx(grid::Spherical3DGrid_Reduced_EqSim, r::T, lon::T, lat::T)::I
     idxlon = max(1,ceil(Int64, (lon-lonrange[1])/(lonrange[2]-lonrange[1])*grid.N_lon[idxlat]))
     if idxlat == 1; return (idxr-1) * sum(grid.N_lon) + idxlon; end
     return (idxr-1) * sum(grid.N_lon) + idxlon + accumulate(+, grid.N_lon[1:idxlat])[end-1]
-
-    # if !(grid.r0 <= r <= grid.r0 + grid.h[end]); return 0; end
-    # PI       = T(pi) # to prevent numerical cutoff/rounding mistakes
-    # lon    = pclamp(lon, -PI, PI - eps(T)) + eps(T)
-    # lat      = clamp(lat, -PI/2, PI/2 - eps(T)) + eps(T)
-    # idxr     = findfirst(grid.h .+ grid.r0 .> r)
-    # idxlat   = ceil(Int64, abs(lat)*grid.N_lat*2/pi)
-    # idxlon = ceil(Int64, (lon+pi)/2/pi*grid.N_lon[idxlat])
-    # if idxlat == 1; return (idxr-1) * sum(grid.N_lon) + idxlon; end
-    # return (idxr-1) * sum(grid.N_lon) + idxlon + accumulate(+, grid.N_lon[1:idxlat])[end-1]
 end
 function coord2idx(grid::AbstractSpherical3DGrid, r::Real, lon::Real, lat::Real)::Int64
     return coord2idx(grid, promote(r, lon, lat)...)
@@ -501,7 +491,7 @@ Base.show(io::IO, ::MIME"text/plain", grid::AbstractSpherical3DGrid) =
             " r0:      $(grid.r0)\n"*
             " h:       $([h for h in grid.h])\n"*
             " N_r:     $(grid.N_r)\n"*
-            " N_lon: $(grid.N_lon)\n"*
+            " N_lon:   $(grid.N_lon)\n"*
             " N_lat:   $(grid.N_lat)\n"*
             " coords:  $(length(grid.coords))-element $(typeof(coords(grid)))\n"*
             " areas:   $(length(grid.areas))-element $(typeof(grid.areas))\n"*
@@ -511,13 +501,12 @@ Base.show(io::IO, ::MIME"text/plain", grid::AbstractSpherical3DGrid) =
             "            min: $(min(grid.volumes...))\n"*
             "            max: $(max(grid.volumes...))\n")
 
-Base.show(io::IO, ::MIME"text/plain", grid::Spherical3DGrid_Reduced) =
+Base.show(io::IO, ::MIME"text/plain", grid::Union{Spherical3DGrid_Reduced, Spherical3DGrid_Reduced_EqSim}) =
     print(io, "$(typeof(grid)):\n"*
             " r0:      $(grid.r0)\n"*
             " h:       $([h for h in grid.h])\n"*
-            " N_lon: $(length(grid.N_lon))-element Vector{Int64}\n"*
-            "            @ quator: $(grid.N_lon[1])\n"*
-            "            @ poles:  $(grid.N_lon[end])\n"*
+            " N_lon:   $(length(grid.N_lon))-element Vector{Int64}\n"*
+            "             [$(grid.N_lon[1]) .. $(grid.N_lon[end])]\n"*
             " N_lat:   $(grid.N_lat)\n"*
             " coords:  $(length(grid.coords))-element $(typeof(coords(grid)))\n"*
             " areas:   $(length(grid.areas))-element $(typeof(grid.areas))\n"*
