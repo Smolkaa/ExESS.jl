@@ -2,7 +2,7 @@
     print("TESTING: grids > spherical3d.jl")
 
     #::. tests
-    # include(joinpath(@__DIR__, "spherical3d", "type_stability.jl"))
+    include(joinpath(@__DIR__, "spherical3d", "type_stability.jl"))
     include(joinpath(@__DIR__, "spherical3d", "behaviour.jl"))
 
 
