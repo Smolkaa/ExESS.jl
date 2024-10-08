@@ -404,9 +404,6 @@ end
 #::. UTILITY FUNCTIONS
 ############################################################################################
 function coord2idx(grid::Spherical3DGrid, r::T, lon::T, lat::T)::Int64 where {T<:AbstractFloat}
-    # PI     = T(pi) # to prevent numerical cutoff/rounding mistakes
-    # lon    = pclamp(lon, -PI, PI)
-    # lat    = clamp(lat, -PI/2, PI/2)
     lon    = pclamp(lon, -pi, pi)
     lat    = clamp(lat, -pi/2, pi/2)
 
@@ -421,9 +418,6 @@ function coord2idx(grid::Spherical3DGrid, r::T, lon::T, lat::T)::Int64 where {T<
     return (idxr-1) * grid.N_lat*grid.N_lon + (idxlon-1) * grid.N_lat + idxlat
 end
 function coord2idx(grid::Spherical3DGrid_EqSim, r::T, lon::T, lat::T)::Int64 where {T<:AbstractFloat}
-    # PI     = T(pi) # to prevent numerical cutoff/rounding mistakes
-    # lon    = pclamp(lon, -PI, PI)
-    # lat    = clamp(lat, -PI/2, PI/2)
     lon    = pclamp(lon, -pi, pi)
     lat    = clamp(lat, -pi/2, pi/2)
 
@@ -438,9 +432,6 @@ function coord2idx(grid::Spherical3DGrid_EqSim, r::T, lon::T, lat::T)::Int64 whe
     return (idxr-1) * grid.N_lat*grid.N_lon + (idxlon-1) * grid.N_lat + idxlat
 end
 function coord2idx(grid::Spherical3DGrid_Reduced, r::T, lon::T, lat::T)::Int64 where {T<:AbstractFloat}
-    # PI     = T(pi) # to prevent numerical cutoff/rounding mistakes
-    # lon    = pclamp(lon, -PI, PI)
-    # lat    = clamp(lat, -PI/2, PI/2)
     lon    = pclamp(lon, -pi, pi)
     lat    = clamp(lat, -pi/2, pi/2)
 
@@ -456,9 +447,6 @@ function coord2idx(grid::Spherical3DGrid_Reduced, r::T, lon::T, lat::T)::Int64 w
     return (idxr-1) * sum(grid.N_lon) + idxlon + accumulate(+, grid.N_lon[1:idxlat])[end-1]
 end
 function coord2idx(grid::Spherical3DGrid_Reduced_EqSim, r::T, lon::T, lat::T)::Int64 where {T<:AbstractFloat}
-    # PI     = T(pi) # to prevent numerical cutoff/rounding mistakes
-    # lon    = pclamp(lon, -PI, PI)
-    # lat    = clamp(lat, -PI/2, PI/2)
     lon    = pclamp(lon, -pi, pi)
     lat    = clamp(lat, -pi/2, pi/2)
 
