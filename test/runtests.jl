@@ -11,7 +11,7 @@ end
     @testset verbose=true "BASE ----------------------------" begin
 
         include(joinpath(@__DIR__, "base", "constants.jl"))
-        include(joinpath(@__DIR__, "base", "coordinates.jl"))
+        include(joinpath(@__DIR__, "base", "vectors.jl"))
         # TODO: statistics test?
         include(joinpath(@__DIR__, "base", "utils.jl"))
     end
@@ -46,6 +46,7 @@ end
     # moon
     @testset verbose=true "MOON ----------------------------" begin
         include(joinpath(@__DIR__, "moon", "constants.jl"))
+        include(joinpath(@__DIR__, "moon", "temperatures.jl"))
     end
     # trajectories
     @testset verbose=true "TRAJECTORIES --------------------" begin
