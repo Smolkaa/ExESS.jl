@@ -52,7 +52,7 @@ include(joinpath(@__DIR__, "mercury", "constants.jl"))
 # moon
 include(joinpath(@__DIR__, "moon", "constants.jl"))
 include(joinpath(@__DIR__, "moon", "lunar_surface_temperatures_DIVINER.jl"))
-include(joinpath(@__DIR__, "moon", "lunar_surface_temperatures_BUTLER1997.jl"))
+include(joinpath(@__DIR__, "moon", "lunar_surface_temperatures_CRIDER2002.jl"))
 include(joinpath(@__DIR__, "moon", "lunar_surface_temperatures_HURLEY2015.jl"))
 
 # misc

@@ -35,6 +35,9 @@ print("TESTING: misc > solar_angle.jl")
     @test all(r -> isapprox(solar_angle(r, pi/2), pi/2; rtol=1e-4), rand(1000)*pi .- pi/2)
     @test all(r -> isapprox(solar_angle(pi/2, r), pi/2; rtol=1e-4), rand(1000)*2*pi .- pi)
 
+    # testing special positions & types
+    @test solar_angle(pi, pi) == 0
+
 end
 
 println("\rTESTING: misc > solar_angle.jl - DONE")
