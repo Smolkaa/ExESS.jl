@@ -1,5 +1,12 @@
 # ExESS -- CHANGELOG
 
+## v0.1.12 (2024/??/??)
+
+- FEATURE/HOUSEKEEPING: Changed `lunar_surface_temperatue_BUTLER1997` to 
+  `lunar_surface_temperature_CRIDER2002` and added the optional for a single input of a
+  solar zenith angle. Adjusted the `solar_angle` function as well as tests accordingly.
+
+
 ## v0.1.11 (2024/10/08)
 
 - BUGFIX: `landing_position` and `time_of_flight` functions in `trajectory.jl` now handle
