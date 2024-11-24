@@ -7,12 +7,14 @@ using LinearAlgebra
     #=====================================================================#
     #::. type stability
     #=====================================================================#
-    types = [Int16, Int32, Int64, BigInt, Float16, Float32, Float64, BigFloat]
-    for t1 in types, t2 in types, _ in 1:10
+    TYPES = [Int32, Int64, BigInt, Float32, Float64, BigFloat]
+    for t1 in TYPES, t2 in TYPES, _ in 1:25
 
         # setup inputs
-        x0_v = t1 <: Integer ? rand(10_000:20_000, 3) |> Vector{t1} : 10_000 .+ rand(t1, 3) * 10_000
-        v0_v = t2 <: Integer ? rand(1:20, 3) |> Vector{t2} : rand(t2, 3) * 20
+        x0 = rand(GlobalSphericalPosition, EqualSurfaceDistribution(LUNAR_RADIUS))
+        v0 = rand(LocalCartesianVelocity, MBFluxVelocityDistribution(100 + rand()*300, amu2kg(rand()*20)))
+        x0_v = t1 <: Integer ? ceil.(vec(x0)) |> Vector{t1} : t1.(vec(x0))
+        v0_v = t2 <: Integer ? ceil.(vec(v0)) |> Vector{t2} : t2.(vec(v0))
         x0_t = Tuple(x0_v)
         v0_t = Tuple(v0_v)
         x0_gc = GlobalCartesianPosition(x0_t)
@@ -28,20 +30,20 @@ using LinearAlgebra
 
         # check main functions
         if !isnan(Tuple(landing_position(x0_t, v0_t))[1])
-            @test typeof(landing_position(x0_t, v0_t)) == Tuple{t_out, t_out, t_out}
-            @test typeof(time_of_flight(x0_t, v0_t)) == t_out
+            @test landing_position(x0_t, v0_t) isa Tuple{t_out, t_out, t_out}
+            @test time_of_flight(x0_t, v0_t) isa t_out
         end
         if !isnan(Tuple(landing_position(x0_v, v0_v))[1])
-            @test typeof(landing_position(x0_v, v0_v)) == Tuple{t_out, t_out, t_out}
-            @test typeof(time_of_flight(x0_v, v0_v)) == t_out
+            @test landing_position(x0_v, v0_v) isa Tuple{t_out, t_out, t_out}
+            @test time_of_flight(x0_v, v0_v) isa t_out
         end
         if !isnan(Tuple(landing_position(x0_gc, v0_lc))[1])
-            @test typeof(landing_position(x0_gc, v0_lc)) == GlobalSphericalPosition{t_out_int}
-            @test typeof(time_of_flight(x0_gc, v0_lc)) == t_out_int
+            @test landing_position(x0_gc, v0_lc) isa GlobalSphericalPosition{t_out_int}
+            @test time_of_flight(x0_gc, v0_lc) isa t_out_int
         end
         if !isnan(Tuple(landing_position(x0_gs, v0_lc))[1])
-            @test typeof(landing_position(x0_gs, v0_lc)) == GlobalSphericalPosition{t_out_int}
-            @test typeof(time_of_flight(x0_gs, v0_lc)) == t_out_int
+            @test landing_position(x0_gs, v0_lc) isa GlobalSphericalPosition{t_out_int}
+            @test time_of_flight(x0_gs, v0_lc) isa t_out_int
         end
     end
 
