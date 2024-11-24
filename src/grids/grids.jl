@@ -60,14 +60,14 @@ end
 Calculates the index of the grid element containing the given coordinates.
 """
 function coord2idx(grid::AbstractGrid, coord::AbstractPosition)::Int64
-    return coord2idx(grid, _get(coord)...)
+    return coord2idx(grid, Tuple(coord)...)
 end
 function coord2idx(grid::AbstractGrid, coords::Vector{T}) where {T <: AbstractPosition}
     return [coord2idx(grid, coord) for coord in coords]
 end
 function coord2idx(grid::AbstractSphericalGrid, coord::AbstractGlobalPosition)::Int64
     #TODO: Do not use AbstractGloablPosition union type, but why?
-    return coord2idx(grid, _get(GlobalSphericalPosition(coord))...)
+    return coord2idx(grid, Tuple(GlobalSphericalPosition(coord))...)
 end
 function coord2idx(grid::AbstractSphericalGrid, r::AbstractVector, theta::AbstractVector,
                    phi::AbstractVector)

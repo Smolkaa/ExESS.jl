@@ -10,8 +10,8 @@ using LinearAlgebra
         traj = trajectory(x0, v0, ddx_gravity)
 
         # test launch
-        @test isapprox(ExESS._get(traj(0)[1:3]), ExESS._get(GlobalCartesianVelocity(x0, v0)); rtol=1e-6)
-        @test isapprox(ExESS._get(traj(0)[4:6]), ExESS._get(GlobalCartesianPosition(x0)); rtol=1e-6)
+        @test isapprox(ExESS.Tuple(traj(0)[1:3]), ExESS.Tuple(GlobalCartesianVelocity(x0, v0)); rtol=1e-6)
+        @test isapprox(ExESS.Tuple(traj(0)[4:6]), ExESS.Tuple(GlobalCartesianPosition(x0)); rtol=1e-6)
         @test isapprox(norm(traj(0)[4:6]), LUNAR_RADIUS; rtol=1e-6)
 
         # test landing/escape

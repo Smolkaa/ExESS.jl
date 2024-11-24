@@ -65,7 +65,7 @@ areas(grid::AbstractSpherical2DGrid_Spiral) = repeat([grid.area], grid.N)
 
 
 function coord2idx(grid::Spherical2DGrid_Spiral, theta::Real, phi::Real)::Int64
-    x, y, z = _get(GlobalCartesianPosition(GlobalSphericalPosition(1.0, theta, phi)))
+    x, y, z = Tuple(GlobalCartesianPosition(GlobalSphericalPosition(1.0, theta, phi)))
     idxs, _ = knn(grid.tree, [x, y, z], 1, true)
     return idxs[1]
 end

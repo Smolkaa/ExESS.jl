@@ -315,11 +315,6 @@ end
 ############################################################################################
 #::. INTERNAL UTILITY FUNCTIONS
 ############################################################################################
-_get(a::T) where {T<:AbstractCartesianVector} = (a.x, a.y, a.z)
-_get(a::T) where {T<:AbstractSphericalVector} = (a.r, a.theta, a.phi)
-_get(a::Tuple) = a
-_get(a::AbstractVector) = Tuple(a)
-
 _getx(a::T) where {T<:AbstractCartesianVector} = a.x
 _getx(a::Union{Tuple, AbstractVector}) = a[1]
 
@@ -376,8 +371,8 @@ Rotates a cartesian tuple/vector `x` around the x-axis by the angle `a` in (rad)
 function rotate_x(x::Tuple, a::Real)
     return (x[1], x[2]*cos(a) - x[3]*sin(a), x[2]*sin(a) + x[3]*cos(a))
 end
-rotate_x(x::AbstractVector, a::Real) = [rotate_x(_get(x), a)...]
-rotate_x(x::T, a::Real) where {T<:AbstractCartesianVector} = T(rotate_x(_get(x), a)...)
+rotate_x(x::AbstractVector, a::Real) = [rotate_x(Tuple(x), a)...]
+rotate_x(x::T, a::Real) where {T<:AbstractCartesianVector} = T(rotate_x(Tuple(x), a)...)
 
 
 
@@ -389,8 +384,8 @@ Rotates a cartesian tuple/vector `x` around the y-axis by the angle `a` in (rad)
 function rotate_y(x::Tuple, a::Real)
     return (x[1]*cos(a) + x[3]*sin(a), x[2], -x[1]*sin(a) + x[3]*cos(a))
 end
-rotate_y(x::AbstractVector, a::Real) = [rotate_y(_get(x), a)...]
-rotate_y(x::T, a::Real) where {T<:AbstractCartesianVector} = T(rotate_y(_get(x), a)...)
+rotate_y(x::AbstractVector, a::Real) = [rotate_y(Tuple(x), a)...]
+rotate_y(x::T, a::Real) where {T<:AbstractCartesianVector} = T(rotate_y(Tuple(x), a)...)
 
 
 
@@ -402,8 +397,8 @@ Rotates a cartesian tuple/vector `x` around the z-axis by the angle `a` in (rad)
 function rotate_z(x::Tuple, a::Real)
     return (x[1]*cos(a) - x[2]*sin(a), x[1]*sin(a) + x[2]*cos(a), x[3])
 end
-rotate_z(x::AbstractVector, a::Real) = [rotate_z(_get(x), a)...]
-rotate_z(x::T, a::Real) where {T<:AbstractCartesianVector} = T(rotate_z(_get(x), a)...)
+rotate_z(x::AbstractVector, a::Real) = [rotate_z(Tuple(x), a)...]
+rotate_z(x::T, a::Real) where {T<:AbstractCartesianVector} = T(rotate_z(Tuple(x), a)...)
 
 
 
@@ -438,7 +433,7 @@ zenith(S::Type{<:AbstractFloat}, args...) = S(zenith(args...))
 #::. EXTENSIONS
 ############################################################################################
 Base.:+(a::AbstractEVector) = a
-Base.:+(a::T, b::Tuple) where {T<:AbstractEVector} = T(_get(a) .+ b ...)
+Base.:+(a::T, b::Tuple) where {T<:AbstractEVector} = T(Tuple(a) .+ b ...)
 Base.:+(a::T, b::AbstractVector) where {T<:AbstractEVector} = T(vec(a) .+ b ...)
 Base.:+(a::Tuple, b::AbstractEVector) = b + a
 Base.:+(a::AbstractVector, b::AbstractEVector) = b + a
@@ -451,27 +446,27 @@ Base.:+(a::LocalSphericalVelocity, b::LocalSphericalVelocity) = LocalSphericalVe
 Base.:+(a::LocalSphericalVelocity, b::LocalCartesianVelocity) = LocalSphericalVelocity(LocalCartesianVelocity(a) + b)
 
 
-Base.:-(a::T) where {T<:AbstractEVector} = T( .- _get(a) ...)
+Base.:-(a::T) where {T<:AbstractEVector} = T( .- Tuple(a) ...)
 Base.:-(a::AbstractEVector, b::Any) = a + (-b)
 Base.:-(a::AbstractEVector, b::Tuple) = a + (.-b)
 Base.:-(a::AbstractVector, b::AbstractEVector) = b + (-a)
 Base.:-(a::Tuple, b::AbstractEVector) = b + (.-a)
 
 
-Base.:*(a::T, b::Real) where {T<:AbstractEVector} = T(_get(a) .* b ... )
-Base.:*(a::T, b::Tuple) where {T<:AbstractEVector} = T(_get(a) .* b ... )
+Base.:*(a::T, b::Real) where {T<:AbstractEVector} = T(Tuple(a) .* b ... )
+Base.:*(a::T, b::Tuple) where {T<:AbstractEVector} = T(Tuple(a) .* b ... )
 Base.:*(a::T, b::AbstractVector) where {T<:AbstractEVector} = T(vec(a) .* b ... )
 Base.:*(a::Real, b::AbstractEVector) = b * a
 Base.:*(a::Tuple, b::AbstractEVector) = b * a
 Base.:*(a::AbstractVector, b::AbstractEVector) = b * a
-Base.:*(a::GlobalCartesianPosition, b::GlobalCartesianPosition) = norm(_get(a) .* _get(b))
+Base.:*(a::GlobalCartesianPosition, b::GlobalCartesianPosition) = norm(Tuple(a) .* Tuple(b))
 Base.:*(a::GlobalCartesianPosition, b::GlobalSphericalPosition) = a * GlobalCartesianPosition(b)
-Base.:*(a::LocalCartesianPosition, b::LocalCartesianPosition) = norm(_get(a) .* _get(b))
+Base.:*(a::LocalCartesianPosition, b::LocalCartesianPosition) = norm(Tuple(a) .* Tuple(b))
 Base.:*(a::GlobalSphericalPosition, b::Real) = GlobalSphericalPosition(a.r * b, a.theta, a.phi)
 Base.:*(a::GlobalSphericalPosition, b::GlobalCartesianPosition) = GlobalCartesianPosition(a) * b
 Base.:*(a::GlobalSphericalPosition, b::GlobalSphericalPosition) = GlobalCartesianPosition(a) * GlobalCartesianPosition(b)
-Base.:*(a::GlobalCartesianVelocity, b::GlobalCartesianVelocity) = norm(_get(a) .* _get(b))
-Base.:*(a::LocalCartesianVelocity, b::LocalCartesianVelocity) = norm(_get(a) .* _get(b))
+Base.:*(a::GlobalCartesianVelocity, b::GlobalCartesianVelocity) = norm(Tuple(a) .* Tuple(b))
+Base.:*(a::LocalCartesianVelocity, b::LocalCartesianVelocity) = norm(Tuple(a) .* Tuple(b))
 Base.:*(a::LocalCartesianVelocity, b::LocalSphericalVelocity) = a * LocalCartesianVelocity(b)
 Base.:*(a::LocalSphericalVelocity, b::Real) = LocalSphericalVelocity(a.r * b, a.theta, a.phi)
 Base.:*(a::LocalSphericalVelocity, b::LocalCartesianVelocity) = LocalCartesianVelocity(a) * b
@@ -484,19 +479,31 @@ Base.:/(a::AbstractEVector, b::Tuple) = a * (1 ./ b)
 Base.:/(a::AbstractEVector, b::AbstractVector) = a * (1 ./ b)
 
 
-Base.eltype(a::T) where {T<:AbstractEVector} = typeof(_get(a)[1])
+Base.eltype(a::T) where {T<:AbstractEVector} = eltype(Tuple(a))
 
 
-Base.isapprox(a::T, b::T; kwargs...) where {T<:AbstractEVector} = isapprox(_get(a), _get(b); kwargs...)
+Base.isapprox(a::T, b::T; kwargs...) where {T<:AbstractEVector} = isapprox(Tuple(a), Tuple(b); kwargs...)
+Base.isapprox(a::AbstractEVector, b::Tuple; kwargs...) = isapprox(Tuple(a), b; kwargs...)
+Base.isapprox(a::Tuple, b::AbstractEVector; kwargs...) = isapprox(a, Tuple(b); kwargs...)
+Base.isapprox(a::AbstractEVector, b::AbstractVector; kwargs...) = isapprox(vec(a), b; kwargs...)
+Base.isapprox(a::AbstractVector, b::AbstractEVector; kwargs...) = isapprox(a, vec(b); kwargs...)
 
 
-Base.isequal(a::T, b::T; kwargs...) where {T<:AbstractEVector} = isapprox(_get(a), _get(b); kwargs...)
+Base.isequal(a::T, b::T; kwargs...) where {T<:AbstractEVector} = isapprox(Tuple(a), Tuple(b); kwargs...)
+Base.isequal(a::AbstractEVector, b::Tuple; kwargs...) = isequal(Tuple(a), b; kwargs...)
+Base.isequal(a::Tuple, b::AbstractEVector; kwargs...) = isequal(a, Tuple(b); kwargs...)
+Base.isequal(a::AbstractEVector, b::AbstractVector; kwargs...) = isequal(vec(a), b; kwargs...)
+Base.isequal(a::AbstractVector, b::AbstractEVector; kwargs...) = isequal(a, vec(b); kwargs...)
 
 
 Base.length(::T) where {T<:AbstractEVector} = 3
 
 
 Base.size(::T) where {T<:AbstractEVector} = (3,)
+
+
+Base.Tuple(a::T) where {T<:AbstractCartesianVector} = (a.x, a.y, a.z)
+Base.Tuple(a::T) where {T<:AbstractSphericalVector} = (a.r, a.theta, a.phi)
 
 
 Base.vec(a::T) where {T<:AbstractCartesianVector} = [a.x, a.y, a.z]
@@ -508,6 +515,7 @@ LinearAlgebra.dot(a::T, b::S) where {T<:AbstractEVector, S<:AbstractEVector} = a
 
 LinearAlgebra.norm(a::T) where {T<:AbstractCartesianVector} = sqrt(a.x^2 + a.y^2 + a.z^2)
 LinearAlgebra.norm(x::AbstractSphericalVector) = x.r
+# LinearAlgebra.normalize is automatically defined now.
 
 
 ############################################################################################

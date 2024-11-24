@@ -19,7 +19,7 @@
         v0_t = rand(MBFluxVelocityDistribution(rand()*200, amu2kg(rand()*100)))
         v0_t = t2 <: Integer ? t2.(round.(t2, v0_t)) : t2.(v0_t)
         v0_lcv = LocalCartesianVelocity(v0_t)
-        v0_gcv = GlobalCartesianVelocity{eltype(v0_lcv)}(ExESS._get(GlobalCartesianVelocity(x0_gsp, v0_lcv))...)
+        v0_gcv = GlobalCartesianVelocity{eltype(v0_lcv)}(ExESS.Tuple(GlobalCartesianVelocity(x0_gsp, v0_lcv))...)
         v0_v = [v0_t...]
 
         # prepare output type
@@ -47,7 +47,7 @@
         @test GlobalCartesianVelocity(traj, rand(t_rand)) isa GlobalCartesianVelocity{t_out_rand}
         @test LocalCartesianVelocity(traj, rand(t_rand)) isa LocalCartesianVelocity{t_out_rand}
 
-        
+
         # trajectory w/ custom types
         t_out = t1 <: Integer || t2 <: Integer ? promote_type(t_out, Float64) : t_out
         t_out_rand = promote_type(t_out, t_rand)

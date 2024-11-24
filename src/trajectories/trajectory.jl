@@ -57,11 +57,11 @@ function trajectory(x0::Tuple{<:Integer, <:Integer, <:Integer},
     return trajectory(float.(x0), float.(v0), args...; kwargs...)
 end
 function trajectory(x0::AbstractVector, v0::AbstractVector, args...; kwargs...)
-    return trajectory(_get(x0), _get(v0), args...; kwargs...)
+    return trajectory(Tuple(x0), Tuple(v0), args...; kwargs...)
 end
 function trajectory(x0::GlobalCartesianPosition, v0::GlobalCartesianVelocity, args...;
                     kwargs...)
-    return trajectory(_get(x0), _get(v0), args...; kwargs...)
+    return trajectory(Tuple(x0), Tuple(v0), args...; kwargs...)
 end
 function trajectory(x0::AbstractPosition, v0::AbstractVelocity, args...; kwargs...)
     return trajectory(GlobalCartesianPosition(x0), GlobalCartesianVelocity(x0, v0), args...;

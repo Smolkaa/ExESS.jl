@@ -74,10 +74,10 @@ function landing_position(x0::Tuple{<:Integer, <:Integer, <:Integer},
     return landing_position((x0_r, x0_theta, x0_phi), (v0_x, v0_y, v0_z); kwargs...)
 end
 function landing_position(x0::AbstractVector, v0::AbstractVector; kwargs...)
-    return landing_position(_get(x0), _get(v0); kwargs...)
+    return landing_position(Tuple(x0), Tuple(v0); kwargs...)
 end
 function landing_position(x0::GlobalSphericalPosition, v0::LocalCartesianVelocity; kwargs...)
-    return GlobalSphericalPosition(landing_position(_get(x0), _get(v0); kwargs...))
+    return GlobalSphericalPosition(landing_position(Tuple(x0), Tuple(v0); kwargs...))
 end
 function landing_position(x0::AbstractPosition, v0::AbstractVelocity; kwargs...)
     return landing_position(GlobalSphericalPosition(x0), LocalCartesianVelocity(x0, v0); kwargs...)
@@ -147,10 +147,10 @@ function time_of_flight(x0::Tuple{<:Integer, <:Integer, <:Integer},
     return time_of_flight((x0_r, x0_theta, x0_phi), (v0_x, v0_y, v0_z); kwargs...)
 end
 function time_of_flight(x0::AbstractVector, v0::AbstractVector; kwargs...)
-    return time_of_flight(_get(x0), _get(v0); kwargs...)
+    return time_of_flight(Tuple(x0), Tuple(v0); kwargs...)
 end
 function time_of_flight(x0::GlobalSphericalPosition, v0::LocalCartesianVelocity; kwargs...)
-    return time_of_flight(_get(x0), _get(v0); kwargs...)
+    return time_of_flight(Tuple(x0), Tuple(v0); kwargs...)
 end
 function time_of_flight(x0::AbstractPosition, v0::AbstractVelocity; kwargs...)
     return time_of_flight(GlobalSphericalPosition(x0), LocalCartesianVelocity(x0, v0); kwargs...)
@@ -233,7 +233,7 @@ function _relative_kinetic_energy(vesc::Real, v::Union{Tuple, AbstractVector})
     return (norm((v1, v2, v3)) / vesc)^2
 end
 function _relative_kinetic_energy(vesc::Real, v::LocalCartesianVelocity)
-    return _relative_kinetic_energy(vesc, _get(v))
+    return _relative_kinetic_energy(vesc, Tuple(v))
 end
 
 

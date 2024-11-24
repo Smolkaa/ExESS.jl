@@ -5,6 +5,9 @@
 - FEATURE/HOUSEKEEPING: Changed `lunar_surface_temperatue_BUTLER1997` to 
   `lunar_surface_temperature_CRIDER2002` and added the optional for a single input of a
   solar zenith angle. Adjusted the `solar_angle` function as well as tests accordingly.
+- HOUSEKEEPING: Changed the internal `_get` function to the `Base` extension of the Tuple
+  function: `Base.Tuple`, as well as all occurences of `_get` in the code base. Note that
+  the field specific getter functions are still available and can be used as before.
 
 
 ## v0.1.11 (2024/10/08)
