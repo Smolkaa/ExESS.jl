@@ -19,7 +19,7 @@
         v0_t = rand(MBFluxVelocityDistribution(rand()*200, amu2kg(rand()*100)))
         v0_t = t2 <: Integer ? t2.(round.(t2, v0_t)) : t2.(v0_t)
         v0_lcv = LocalCartesianVelocity(v0_t)
-        v0_gcv = GlobalCartesianVelocity{eltype(v0_lcv)}(ExESS.Tuple(GlobalCartesianVelocity(x0_gsp, v0_lcv))...)
+        v0_gcv = GlobalCartesianVelocity{eltype(v0_lcv)}(Tuple(GlobalCartesianVelocity(x0_gsp, v0_lcv))...)
         v0_v = [v0_t...]
 
         # prepare output type

@@ -27,19 +27,19 @@ using LinearAlgebra
 
 
         # check main functions
-        if !isnan(ExESS.Tuple(landing_position(x0_t, v0_t))[1])
+        if !isnan(Tuple(landing_position(x0_t, v0_t))[1])
             @test typeof(landing_position(x0_t, v0_t)) == Tuple{t_out, t_out, t_out}
             @test typeof(time_of_flight(x0_t, v0_t)) == t_out
         end
-        if !isnan(ExESS.Tuple(landing_position(x0_v, v0_v))[1])
+        if !isnan(Tuple(landing_position(x0_v, v0_v))[1])
             @test typeof(landing_position(x0_v, v0_v)) == Tuple{t_out, t_out, t_out}
             @test typeof(time_of_flight(x0_v, v0_v)) == t_out
         end
-        if !isnan(ExESS.Tuple(landing_position(x0_gc, v0_lc))[1])
+        if !isnan(Tuple(landing_position(x0_gc, v0_lc))[1])
             @test typeof(landing_position(x0_gc, v0_lc)) == GlobalSphericalPosition{t_out_int}
             @test typeof(time_of_flight(x0_gc, v0_lc)) == t_out_int
         end
-        if !isnan(ExESS.Tuple(landing_position(x0_gs, v0_lc))[1])
+        if !isnan(Tuple(landing_position(x0_gs, v0_lc))[1])
             @test typeof(landing_position(x0_gs, v0_lc)) == GlobalSphericalPosition{t_out_int}
             @test typeof(time_of_flight(x0_gs, v0_lc)) == t_out_int
         end
