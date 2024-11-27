@@ -43,7 +43,7 @@ function lunar_surface_temperatures_CRIDER2002(x::Integer; kwargs...)
     return lunar_surface_temperatures_CRIDER2002(float(x); kwargs...)
 end
 function lunar_surface_temperatures_CRIDER2002(X::AbstractVector; kwargs...)
-    return lunar_surface_temperatures_CRIDER2002.(X; kwargs...)inc
+    return lunar_surface_temperatures_CRIDER2002.(X; kwargs...)
 end
 function lunar_surface_temperatures_CRIDER2002(grid::AbstractGrid; kwargs...)
     return lunar_surface_temperatures_CRIDER2002(surfacecoords(grid); kwargs...)
