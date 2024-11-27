@@ -42,11 +42,24 @@
         grid = Spherical2DGrid(1, rand(10:100), rand(10:50))
         @test lunar_surface_temperatures_CRIDER2002(grid) isa Vector{Float64}
         @test lunar_surface_temperatures_CRIDER2002(t, grid) isa Vector{t}
+
+        grid = Spherical3DGrid([1,2,3,4,5], rand(10:100), rand(10:50))
+        @test lunar_surface_temperatures_CRIDER2002(grid) isa Vector{Float64}
+        @test lunar_surface_temperatures_CRIDER2002(t, grid) isa Vector{t}
     end
 
     ########################################################################################
     #::. BEHAVIOR
     ########################################################################################
+
+    # test supported input types
+    @test lunar_surface_temperatures_CRIDER2002(rand()) isa Float64
+    @test lunar_surface_temperatures_CRIDER2002(rand(10)) isa Vector{Float64}
+    @test lunar_surface_temperatures_CRIDER2002(rand(), rand()) isa Float64
+    @test lunar_surface_temperatures_CRIDER2002(rand(100), rand(100)) isa Vector{Float64}
+    @test lunar_surface_temperatures_CRIDER2002(GlobalCartesianPosition(rand(3))) isa Float64
+    @test lunar_surface_temperatures_CRIDER2002(GlobalSphericalPosition(rand(3))) isa Float64
+    @test lunar_surface_temperatures_CRIDER2002(Spherical2DGrid(1, rand(10:100), rand(10:50))) isa Vector{Float64}
 
     # daytime temperature: lower for higher sza (at default kwargs)
     @test all(x -> lunar_surface_temperatures_CRIDER2002(x) > lunar_surface_temperatures_CRIDER2002(1.1*x), rand(1000))
@@ -56,6 +69,9 @@
     @test all(T0 -> lunar_surface_temperatures_CRIDER2002(pi/2+0.1; T0=T0) == T0, rand(1000)*300)
 
     # same output for sza and (lon, lat) inputs at same angular positions
-    @test all(x -> lunar_surface_temperatures_CRIDER2002(x) == lunar_surface_temperatures_CRIDER2002(0, x), rand(1000))
-    @test all(x -> lunar_surface_temperatures_CRIDER2002(x) == lunar_surface_temperatures_CRIDER2002(x, 0), rand(1000))
+    @test all(x -> isapprox(lunar_surface_temperatures_CRIDER2002(x), lunar_surface_temperatures_CRIDER2002(0, x); rtol=1e-6), rand(1000))
+    @test all(x -> isapprox(lunar_surface_temperatures_CRIDER2002(x), lunar_surface_temperatures_CRIDER2002(x, 0); rtol=1e-6), rand(1000))
+
+    # errors if sza is outside (-π, π)
+    @test_throws AssertionError lunar_surface_temperatures_CRIDER2002(pi + rand())
 end
