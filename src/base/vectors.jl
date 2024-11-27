@@ -316,21 +316,27 @@ end
 #::. INTERNAL UTILITY FUNCTIONS
 ############################################################################################
 _getx(a::T) where {T<:AbstractCartesianVector} = a.x
+_getx(a::GlobalSphericalPosition) = _getx(GlobalCartesianPosition(a))
 _getx(a::Union{Tuple, AbstractVector}) = a[1]
 
 _gety(a::T) where {T<:AbstractCartesianVector} = a.y
+_gety(a::GlobalSphericalPosition) = _gety(GlobalCartesianPosition(a))
 _gety(a::Union{Tuple, AbstractVector}) = a[2]
 
 _getz(a::T) where {T<:AbstractCartesianVector} = a.z
+_getz(a::GlobalSphericalPosition) = _getz(GlobalCartesianPosition(a))
 _getz(a::Union{Tuple, AbstractVector}) = a[3]
 
 _getr(a::T) where {T<:AbstractSphericalVector} = a.r
+_getr(a::GlobalCartesianPosition) = _getr(GlobalSphericalPosition(a))
 _getr(a::Union{Tuple, AbstractVector}) = a[1]
 
 _gettheta(a::T) where {T<:AbstractSphericalVector} = a.theta
+_gettheta(a::GlobalCartesianPosition) = _gettheta(GlobalSphericalPosition(a))
 _gettheta(a::Union{Tuple, AbstractVector}) = a[2]
 
 _getphi(a::T) where {T<:AbstractSphericalVector} = a.phi
+_getphi(a::GlobalCartesianPosition) = _getphi(GlobalSphericalPosition(a))
 _getphi(a::Union{Tuple, AbstractVector}) = a[3]
 
 
