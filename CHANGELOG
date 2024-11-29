@@ -8,6 +8,8 @@
 - HOUSEKEEPING: Changed the internal `_get` function to the `Base` extension of the Tuple
   function: `Base.Tuple`, as well as all occurences of `_get` in the code base. Note that
   the field specific getter functions are still available and can be used as before.
+- FEATURE: added `PSDSpeedDistribution` to model particle speed distributions following
+  photon-stimulated-desorption (PSD), based on the works of Gamborino et al. (2018).
 
 
 ## v0.1.11 (2024/10/08)
