@@ -26,6 +26,7 @@ include(joinpath(@__DIR__, "base", "utils.jl"))
 
 # drivers
 include(joinpath(@__DIR__, "drivers", "maxwellian.jl"))
+include(joinpath(@__DIR__, "drivers", "photon_stimulated_desorption.jl"))
 include(joinpath(@__DIR__, "drivers", "physical_chemistry.jl"))
 include(joinpath(@__DIR__, "drivers", "surface_distributions.jl"))
 include(joinpath(@__DIR__, "drivers", "thermal_sorption.jl"))
