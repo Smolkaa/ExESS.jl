@@ -49,8 +49,8 @@ type `S` can be used to convert the output to the desired type.
 Note that all inputs (but the type `S`) can be used as vectors.
 
 # References
-- Duffie et al. (1985). Solar Engineering of Thermal Processes. Am. J. Phys. 53 (4), 382.
-  DOI: 10.1119/1.14178
+- Duffie, J. A., & Beckman, W. A. (2013). Solar Engineering of Thermal Processes
+  (No. 4; Fourth Ed.). Hoboken: Wiley.
 - Gallinger et al. (2024). Thermophysical Diversity of Young Lunar Crater Ejecta Revealed
   with LRO Diviner Observations. The Planetary Science Journal, 5(11), 261.
   DOI: 10.3847/psj/ad84e3
