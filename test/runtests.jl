@@ -30,7 +30,7 @@ end
     # misc
     @testset verbose=true "MISC ----------------------------" begin
         include(joinpath(@__DIR__, "misc", "projection_CHAMBERLAIN1963.jl"))
-        include(joinpath(@__DIR__, "misc", "solar_angle.jl"))
+        include(joinpath(@__DIR__, "misc", "solar_incidence_angle.jl"))
     end
 
     # ceres
