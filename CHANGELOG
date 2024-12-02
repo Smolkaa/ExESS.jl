@@ -10,6 +10,10 @@
   the field specific getter functions are still available and can be used as before.
 - FEATURE: added `PSDSpeedDistribution` to model particle speed distributions following
   photon-stimulated-desorption (PSD), based on the works of Gamborino et al. (2018).
+- HOUSEKEEPING: renamed `solar_angle` to `solar_incidence_angle` to clarify the function's
+  purpose and usage 
+- FEATURE: added `local_solar_incidence_angle` as an extension to the `solar_incidence_angle`
+  function, which now also accepts a local slopes and azimuths as input
 
 
 ## v0.1.11 (2024/10/08)
