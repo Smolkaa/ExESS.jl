@@ -10,36 +10,43 @@ abstract type AbstractSphericalGrid <: AbstractGrid end
 ############################################################################################
 #::. FUNCTIONS
 ############################################################################################
-(grid::AbstractGrid)(idx::Integer) = grid.coords[idx]
+(grid::AbstractGrid)(idx::Integer) = grid.coords[idx] # get grid element by index
+
 
 """
-    [1] areas([T::Type,] grid::AbstractGrid)
+    areas([T], grid)
 
-For 2D grids, returns the surface area of each grid element. For 3D grids, returns the
-base area of each grid element.
+Returns the surface area of each grid element in `grid`. If `grid` is three-dimensional,
+the function returns the base area of each grid element. The optional type `T` can be used
+to control the output type of the areas.
 """
-areas(T::Type, grid::AbstractGrid) = T.(areas(grid))
 areas(grid::AbstractGrid) = grid.areas
+areas(T::Type{<:AbstractFloat}, grid::AbstractGrid) = T.(areas(grid))
 
 
 """
-    [1] coords([T::Type,] grid::AbstractGrid)
+    coords([T], grid)
 
-Returns the coordinates of each grid element.
+Returns the coordinates of each grid element in `grid`. The optional type `T` can be used to
+control the output type of the coordinates.
 """
-coords(T::Type, grid::AbstractGrid) = T.(coords(grid))
 coords(grid::AbstractGrid) = grid.coords
+coords(T::Type{<:AbstractFloat}, grid::AbstractGrid) = T.(coords(grid))
 
 
 """
-    [1] mapgrid(x::AbstractVector, grid_from::AbstractGrid, grid_to::AbstractGrid)
+    mapgrid(x, grid_from, grid_to)
 
 Maps the values of `x` at the coordinates defined on `grid_from` to the coordinates defined
 on `grid_to`. The output is a vector of the same length as `grid_to` with the values of `x`.
 The function **does not** interpolate the values of `x` between the grid elements.
 
-**Notes**
+# Arguments
+- `x::AbstractVector`: Values to map.
+- `grid_from::AbstractGrid`: Grid of the input values.
+- `grid_to::AbstractGrid`: Grid of the output values.
 
+# Notes
 - There may be unexpected behaviour if the grids are of different dimensions, i.e. a 2D grid
   mapped to a 3D grid, or vice versa. The function does not assume any mathematical or
   physical meaning to the mapping or reduction of an additional dimension.
@@ -52,16 +59,24 @@ end
 
 
 """
-    [1] coord2idx(grid::AbstractGrid, coord::AbstractPosition)
-    [2] coord2idx(grid::AbstractGrid, coords::Vector{T}) where {T <: AbstractPosition}
-    [3] coord2idx(grid::AbstractSphericalGrid, r::AbstractVector, theta::AbstractVector,
-                  phi::AbstractVector)
+    coord2idx(grid, coord)
+    coord2idx(grid, [r], lon, lat)
 
-Calculates the index of the grid element containing the given coordinates.
+Calculates the index of the grid element in `grid` containing the given coordinates defined
+in `coord` or `r`, `lon`, and `lat`.
+
+# Arguments
+- `grid::AbstractGrid`: Grid to calculate the index.
+- `coord::AbstractPosition` or `coord::Tuple`: Coordinates to calculate the index.
+- `r::Real`: Radial coordinate. Can be omitted for 2D grids.
+- `lon::Real`: Longitude coordinate.
+- `lat::Real`: Latitude coordinate.
+
+The coordinate `coord` or the individual coordinates `r`, `lon`, and `lat` can also be
+vectors of the same length.
 """
-function coord2idx(grid::AbstractGrid, coord::AbstractPosition)::Int64
-    return coord2idx(grid, Tuple(coord)...)
-end
+coord2idx(grid::AbstractGrid, coord::Tuple)::Int64 = coord2idx(grid, coord...)
+coord2idx(grid::AbstractGrid, coord::AbstractPosition)::Int64 = coord2idx(grid, Tuple(coord))
 function coord2idx(grid::AbstractGrid, coords::Vector{T}) where {T <: AbstractPosition}
     return [coord2idx(grid, coord) for coord in coords]
 end
@@ -76,21 +91,25 @@ end
 
 
 """
-    [1] surfacecoords([T::Type,] grid::AbstractGrid)
+    surfacecoords([T], grid)
 
-Returns only the coordinates of the surface (i.e. the base) of the discretized geometry.
+Returns the surface coordinates of each grid element in `grid`. The optional type `T` can be
+used to control the output type of the coordinates.
 """
-surfacecoords(T::Type, grid::AbstractGrid) = T.(surfacecoords(grid))
+surfacecoords(T::Type{<:AbstractFloat}, grid::AbstractGrid) = T.(surfacecoords(grid))
 
 
 """
-    [1] volumes([T::Type,] grid::AbstractGrid)
+    volumes([T], grid)
 
-For 2D grids, returns a vector of `zeros(T)` for each grid element. For 3D grids, returns the
-volume of each grid element.
+Returns the volume of each grid element in `grid`. The optional type `T` can be used to
+control the output type of the volumes.
+
+# Notes
+- returns `zeros(T)` for 2D grids.
 """
-volumes(T::Type, grid::AbstractGrid) = T.(volumes(grid))
 volumes(grid::AbstractGrid) = grid.volumes
+volumes(T::Type{<:AbstractFloat}, grid::AbstractGrid) = T.(volumes(grid))
 
 
 ############################################################################################
