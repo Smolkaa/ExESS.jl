@@ -26,10 +26,7 @@ Defined following functions are defined for the distribution: `pdf`, `cdf`, `ran
   DOI: 10.1016/j.pss.2018.04.021
 """
 struct PSDSpeedDistribution{S<:AbstractFloat} <: AbstractDistribution
-    T::S    # surface temperature (K)
-    m::S    # mass (kg)
-    v0::S   # offset speed (m s-1)
-    k::S    # shape parameter (-)
+    T::S; m::S; v0::S; k::S
 end
 function PSDSpeedDistribution(T::Real, m::Real, v0::Real, k::Real)
     return PSDSpeedDistribution(promote(T, m, v0, k)...)
