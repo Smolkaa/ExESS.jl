@@ -42,7 +42,7 @@ type `S` can be used to convert the output to the desired type.
 - `lon::Real`: Longitude in the range (-π, π).
 - `lat::Real`: Latitude in the range (-π/2, π/2).
 - `slope::Real`: Local slope in radians.
-- `az::Real`: Local slope azimuth in radians.
+- `az::Real`: Local slope azimuth in radians (0 towards south - negative towards east).
 - `decl::Real`: Solar declination in radians.
 - (optional) `S::Type{<:AbstractFloat}`: Output type.
 
@@ -78,6 +78,7 @@ end
 function local_solar_incidence_angle(args...) # for vectorized inputs
     return local_solar_incidence_angle.(args...)
 end
+
 
 ############################################################################################
 #::. EXPORTS
