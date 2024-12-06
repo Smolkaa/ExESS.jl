@@ -1,4 +1,4 @@
-@testset verbose=true "vectors.jl ................" begin
+@testset verbose=true "vectors.jl ..............................." begin
     print("TESTING: base > vectors.jl")
 
     # type stabilities

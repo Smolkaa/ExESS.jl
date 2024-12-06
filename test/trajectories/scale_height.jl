@@ -1,6 +1,6 @@
 print("TESTING: trajectories > scale_height.jl")
 
-@testset verbose=true "scale_height.jl ............" begin
+@testset verbose=true "scale_height.jl .........................." begin
 
     #::. type_stability
     types = [Int32, Int64, BigInt, Float32, Float64, BigFloat]

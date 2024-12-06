@@ -1,6 +1,6 @@
 print("TESTING: misc > solar_incidence_angle.jl")
 
-@testset verbose=true "solar_incidence_angle.jl ............." begin
+@testset verbose=true "solar_incidence_angle.jl ................." begin
 
     #::. type-stability
     types = [Int32, Int64, BigInt, Float16, Float32, Float64, BigFloat]
