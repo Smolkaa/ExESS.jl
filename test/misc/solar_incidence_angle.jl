@@ -38,6 +38,22 @@ print("TESTING: misc > solar_incidence_angle.jl")
     # testing special positions & types
     @test solar_incidence_angle(pi, pi) == 0
 
+    # subsolar point: local angle equals slope
+    @test all(s -> isapprox(local_solar_incidence_angle(0,0,s,rand()), s; rtol=1e-4), rand(1000)*pi)
+
+    # correct rotation effects
+    @test all(t -> isapprox(local_solar_incidence_angle(-t, 0, t, 0), 0; atol=1e-4), rand(1000)*2pi .- pi)
+    @test all(p -> isapprox(local_solar_incidence_angle(0, p, p, -pi/2), 0; atol=1e-4), rand(1000)*pi/2)
+    @test all(p -> isapprox(local_solar_incidence_angle(0, -p, p, pi/2), 0; atol=1e-4), rand(1000)*pi/2)
+
+    # no slope: local angle equals global angle
+    @test all(_ -> begin
+        t, p, r = (rand(3) * 2pi .- pi) .* [1, 0.5, 0.5]
+        return isapprox(solar_incidence_angle(t, p), local_solar_incidence_angle(t, p, 0, r); rtol=1e-4)
+    end, 1:1000)
+
+    # TODO: decl?
+
 end
 
 println("\rTESTING: misc > solar_incidence_angle.jl - DONE")
