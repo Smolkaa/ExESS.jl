@@ -1,4 +1,4 @@
-@testset verbose=true "spherical3d.jl ................" begin
+@testset verbose=true "spherical3d.jl ..........................." begin
     print("TESTING: grids > spherical3d.jl")
 
     #::. tests

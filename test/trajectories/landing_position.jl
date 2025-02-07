@@ -1,6 +1,6 @@
 using LinearAlgebra
 
-@testset verbose=true "landing_position.jl ........" begin
+@testset verbose=true "landing_position.jl ......................" begin
 
     print("TESTING: trajectories > landing_position.jl")
 

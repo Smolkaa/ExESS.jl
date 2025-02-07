@@ -15,7 +15,7 @@ optional type `S` can be used to convert the output to the desired type.
     -  OR Vectors of `lon`s, if `lat` is also a vector.
 - `lat::Real` or `lat::AbstractVector`: Latitude(s) in the range (-π/2, π/2).
     -  OR Vectors of `lat`s, if `lon` is also a vector.
-- `x::GlobalSphericalPosition` or `x::AbstractGlobalPosition`
+- `x::GlobalSphericalPosition` or `x::AbstractGlobalPosition`: Position of the point.
     - OR `AbstractVector`'s `x`s.
 - `grid::AbstractGrid`: Spherical grid.
 - (optional) `S::Type{<:AbstractFloat}`: Output type.
