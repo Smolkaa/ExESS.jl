@@ -42,7 +42,7 @@ type `S` can be used to convert the output to the desired type.
 - `lon::Real`: Longitude in the range (-π, π).
 - `lat::Real`: Latitude in the range (-π/2, π/2).
 - `slope::Real`: Local slope in radians.
-- `az::Real`: Local slope azimuth in radians (0 towards south - negative towards east).
+- `az::Real`: Local slope azimuth in radians (0 towards east - positive towards north).
 - `decl::Real`: Solar declination in radians.
 - (optional) `S::Type{<:AbstractFloat}`: Output type.
 
@@ -56,15 +56,15 @@ Note that all inputs (but the type `S`) can be used as vectors.
   DOI: 10.3847/psj/ad84e3
 """
 function local_solar_incidence_angle(lon::Real, lat::Real, slope::Real, az::Real)
-    S = eltype(promote(lon, lat, slope, az)) # for type-stability
-    return S(acos(cos(lat)   * cos(slope)            * cos(lon) +
-                  sin(lat)   * sin(slope) * cos(az)  * cos(lon) +
-                               sin(slope) * sin(az)  * sin(lon) ))
+    az = typeof(float(az))(-pi/2 - az)
+    return limit_acos(cos(lat)   * cos(slope)            * cos(lon) +
+                      sin(lat)   * sin(slope) * cos(az)  * cos(lon) +
+                                   sin(slope) * sin(az)  * sin(lon) )
 end
 function local_solar_incidence_angle(lon::Real, lat::Real, slope::Real, az::Real, decl::Real)
-    S = eltype(promote(lon, lat, slope, az, decl)) # for type-stability
-    return S(acos(sin(decl) * (sin(lat) * cos(slope) - cos(lat) * sin(slope) * cos(az)) +
-                  cos(decl) * cos(local_solar_incidence_angle(lon, lat, slope, az))))
+    az = typeof(float(az))(-pi/2 - az)
+    return limit_acos(sin(decl) * (sin(lat) * cos(slope) - cos(lat) * sin(slope) * cos(az))+
+                      cos(decl) * cos(local_solar_incidence_angle(lon, lat, slope, az)))
 end
 function local_solar_incidence_angle(x::GlobalSphericalPosition, args...)
     return local_solar_incidence_angle(x.theta, x.phi, args...)
