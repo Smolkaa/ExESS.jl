@@ -111,7 +111,7 @@ seconds. Returns `NaN` if the particle escapes.
 function time_of_flight(x0::NTuple{3, T}, v0::NTuple{3, T};
                         m::Real=LUNAR_MASS) where {T<:AbstractFloat}
     # extract input, check for escape
-    r = _getr(x0)
+    r = x0[1]
     v_esc = escape_velocity(r, T(m))
     if norm(v0) > v_esc; return NaN; end
     if norm(v0)*v0[3] <= 0; return zero(T); end
