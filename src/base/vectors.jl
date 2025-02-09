@@ -65,18 +65,6 @@ function LocalCartesianVelocity(x::Integer, y::Integer, z::Integer)
     LocalCartesianVelocity(promote(x, y, z, 1.0)[1:3]...)
 end
 
-struct LocalSphericalVelocity{T<:AbstractFloat} <: AbstractVelocity{T}
-    r::T
-    theta::T
-    phi::T
-end
-function LocalSphericalVelocity(r::Real, theta::Real, phi::Real)
-    LocalSphericalVelocity(promote(r, theta, phi)...)
-end
-function LocalSphericalVelocity(r::Integer, theta::Integer, phi::Integer)
-    LocalSphericalVelocity(promote(r, theta, phi, 1.0)[1:3]...)
-end
-
 
 ############################################################################################
 #::. INTERNAL UNIONS
@@ -87,14 +75,13 @@ const AbstractGlobalVector = Union{
     GlobalCartesianVelocity,}
 const AbstractLocalVector = Union{
     LocalCartesianPosition,
-    LocalCartesianVelocity,
-    LocalSphericalVelocity}
+    LocalCartesianVelocity,}
 
 const AbstractGlobalPosition = Union{GlobalCartesianPosition, GlobalSphericalPosition}
 const AbstractGlobalVelocity = Union{GlobalCartesianVelocity}
 
 const AbstractLocalPosition = Union{LocalCartesianPosition}
-const AbstractLocalVelocity = Union{LocalCartesianVelocity, LocalSphericalVelocity}
+const AbstractLocalVelocity = Union{LocalCartesianVelocity}
 
 const AbstractCartesianVector = Union{
     GlobalCartesianPosition,
@@ -102,8 +89,7 @@ const AbstractCartesianVector = Union{
     GlobalCartesianVelocity,
     LocalCartesianVelocity,}
 const AbstractSphericalVector = Union{
-    GlobalSphericalPosition,
-    LocalSphericalVelocity}
+    GlobalSphericalPosition,}
 
 
 ############################################################################################
@@ -208,9 +194,6 @@ GlobalCartesianVelocity(::AbstractPosition, v::GlobalCartesianVelocity) = v
 function GlobalCartesianVelocity(x::AbstractPosition, v::AbstractVelocity)
     return GlobalCartesianVelocity(GlobalSphericalPosition(x), v)
 end
-function GlobalCartesianVelocity(x::AbstractPosition, v::LocalSphericalVelocity)
-    return GlobalCartesianVelocity(x, LocalCartesianVelocity(v))
-end
 function GlobalCartesianVelocity(x::GlobalSphericalPosition, v::LocalCartesianVelocity)
     return GlobalCartesianVelocity(
       - v.x*sin(x.theta) - v.y*cos(x.theta)*sin(x.phi) + v.z*cos(x.theta)*cos(x.phi),
@@ -226,7 +209,6 @@ end
     [2] LocalCartesianVelocity(V::Tuple)
     [3] LocalCartesianVelocity(V::AbstractVector)
     [4] LocalCartesianVelocity(v::LocalCartesianVelocity)
-    [5] LocalCartesianVelocity(v::LocalSphericalVelocity)
     [6] LocalCartesianVelocity(x::AbstractGlobalPosition, v::AbstractVelocity)
 
 Three dimensional velocity vector in a local cartesian coordinate system [1].
@@ -262,54 +244,7 @@ function LocalCartesianVelocity(x::GlobalSphericalPosition, v::GlobalCartesianVe
         v.x*cos(x.theta)*cos(x.phi) + v.y*sin(x.theta)*cos(x.phi) + v.z*sin(x.phi)
     )
 end
-function LocalCartesianVelocity(v::LocalSphericalVelocity{T}) where {T<:AbstractFloat}
-    return LocalCartesianVelocity{T}(
-        v.r * cos(v.theta) * cos(v.phi),
-        v.r * sin(v.theta) * cos(v.phi),
-        v.r * sin(v.phi),
-    )
-end
-function LocalCartesianVelocity(::AbstractPosition, v::LocalSphericalVelocity)
-    return LocalCartesianVelocity(v)
-end
 
-
-
-
-"""
-    [1] LocalSphericalVelocity(r::Real, theta::Real, phi::Real)
-    [2] LocalSphericalVelocity(V::Tuple)
-    [3] LocalSphericalVelocity(V::AbstractVector)
-    [4] LocalSphericalVelocity(v::LocalCartesianlVelocity)
-    [5] LocalSphericalVelocity(v::LocalSphericalVelocity)
-    [6] LocalSphericalVelocity(x::AbstractPosition, v::AbstractVelocity)
-
-Three dimensional velocity vector in a local spherical coordinate system [1].
-Converts tuples, vector or other velocity type into `LocalSphericalVelocity` [2,3,4,5,6].
-
-In planetary contexts, local spherical coordinates are defined as follows:
-- the r-axis is along the velocity vector, i.e. is the speed of the velocity vector
-- the theta-angle describes the azimuth angle (positive longitudes, east), between the
-  local x axis and the projection of the velocity vector onto the x-y plane
-- the phi-angle describes the elevation angle (positive latitudes, north), between the
-  velocity vector and the x-y plane
-"""
-LocalSphericalVelocity(V::Tuple) = LocalSphericalVelocity(V...)
-LocalSphericalVelocity(V::AbstractVector) = LocalSphericalVelocity(V...)
-LocalSphericalVelocity(v::LocalSphericalVelocity) = v
-LocalSphericalVelocity(::AbstractPosition, v::LocalSphericalVelocity) = v
-function LocalSphericalVelocity(x::AbstractPosition, v::AbstractVelocity)
-    return LocalSphericalVelocity(LocalCartesianVelocity(x, v))
-end
-function LocalSphericalVelocity(v::LocalCartesianVelocity{T}) where {T<:AbstractFloat}
-    r     = norm(v)
-    theta = atan(v.y / v.x)
-    phi   = asin(v.z / r)
-    if isnan(theta); theta = 0;    end
-    if v.x < 0;      theta += pi;  end
-    if theta > pi;   theta -= 2pi; end
-    return LocalSphericalVelocity{T}(r, theta, phi)
-end
 
 
 ############################################################################################
@@ -415,7 +350,6 @@ Calculate the speed in (m s-1) of the velocity vector `v` in (m s-1). The option
 `S` can be provided to cast the result to a specific type.
 """
 speed(v::Union{Tuple, AbstractVector, LocalCartesianVelocity, GlobalCartesianVelocity}) = norm(v)
-speed(v::LocalSphericalVelocity) = v.r
 speed(S::Type{<:AbstractFloat}, args...) = S(speed(args...))
 
 
@@ -447,9 +381,6 @@ Base.:+(a::T, b::T) where {T<:AbstractCartesianVector} = T(a.x + b.x, a.y + b.y,
 Base.:+(a::GlobalCartesianPosition, b::GlobalSphericalPosition) = a + GlobalCartesianPosition(b)
 Base.:+(a::GlobalSphericalPosition, b::GlobalSphericalPosition) = GlobalSphericalPosition(GlobalCartesianPosition(a) + GlobalCartesianPosition(b))
 Base.:+(a::GlobalSphericalPosition, b::GlobalCartesianPosition) = GlobalSphericalPosition(GlobalCartesianPosition(a) + b)
-Base.:+(a::LocalCartesianVelocity, b::LocalSphericalVelocity) = a + LocalCartesianVelocity(b)
-Base.:+(a::LocalSphericalVelocity, b::LocalSphericalVelocity) = LocalSphericalVelocity(LocalCartesianVelocity(a) + LocalCartesianVelocity(b))
-Base.:+(a::LocalSphericalVelocity, b::LocalCartesianVelocity) = LocalSphericalVelocity(LocalCartesianVelocity(a) + b)
 
 
 Base.:-(a::T) where {T<:AbstractEVector} = T( .- Tuple(a) ...)
@@ -473,10 +404,6 @@ Base.:*(a::GlobalSphericalPosition, b::GlobalCartesianPosition) = GlobalCartesia
 Base.:*(a::GlobalSphericalPosition, b::GlobalSphericalPosition) = GlobalCartesianPosition(a) * GlobalCartesianPosition(b)
 Base.:*(a::GlobalCartesianVelocity, b::GlobalCartesianVelocity) = norm(Tuple(a) .* Tuple(b))
 Base.:*(a::LocalCartesianVelocity, b::LocalCartesianVelocity) = norm(Tuple(a) .* Tuple(b))
-Base.:*(a::LocalCartesianVelocity, b::LocalSphericalVelocity) = a * LocalCartesianVelocity(b)
-Base.:*(a::LocalSphericalVelocity, b::Real) = LocalSphericalVelocity(a.r * b, a.theta, a.phi)
-Base.:*(a::LocalSphericalVelocity, b::LocalCartesianVelocity) = LocalCartesianVelocity(a) * b
-Base.:*(a::LocalSphericalVelocity, b::LocalSphericalVelocity) = LocalCartesianVelocity(a) * LocalCartesianVelocity(b)
 
 
 
@@ -533,7 +460,6 @@ export
     GlobalSphericalPosition,
     GlobalCartesianVelocity,
     LocalCartesianVelocity,
-    LocalSphericalVelocity,
 
     azimuth,
     elevation,

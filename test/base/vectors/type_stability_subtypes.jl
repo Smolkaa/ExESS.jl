@@ -34,10 +34,8 @@
         x = Tuple(t1 <: Integer ? rand(1:100, 3) |> Vector{t1} : rand(t1, 3) * 100)
         v = Tuple(t2 <: Integer ? rand(1:100, 3) |> Vector{t2} : rand(t2, 3) * 100)
         xc, xlc, xs = GlobalCartesianPosition(x), LocalCartesianPosition(x), GlobalSphericalPosition(x)
-        vc, vlc, vls = GlobalCartesianVelocity(v), LocalCartesianVelocity(v), LocalSphericalVelocity(v)
         @test typeof(vc) == GlobalCartesianVelocity{t_out_2}
         @test typeof(vlc) == LocalCartesianVelocity{t_out_2}
-        @test typeof(vls) == LocalSphericalVelocity{t_out_2}
 
         @test typeof(GlobalCartesianVelocity(vc)) == GlobalCartesianVelocity{t_out_2}
         @test typeof(GlobalCartesianVelocity(xc, vc)) == GlobalCartesianVelocity{t_out_2}
@@ -46,9 +44,6 @@
         @test typeof(GlobalCartesianVelocity(xc, vlc)) == GlobalCartesianVelocity{t_out_12}
         @test_throws MethodError typeof(GlobalCartesianVelocity(xlc, vlc))
         @test typeof(GlobalCartesianVelocity(xs, vlc)) == GlobalCartesianVelocity{t_out_12}
-        @test typeof(GlobalCartesianVelocity(xc, vls)) == GlobalCartesianVelocity{t_out_12}
-        @test_throws MethodError typeof(GlobalCartesianVelocity(xlc, vls))
-        @test typeof(GlobalCartesianVelocity(xs, vls)) == GlobalCartesianVelocity{t_out_12}
 
         @test typeof(LocalCartesianVelocity(xc, vc)) == LocalCartesianVelocity{t_out_12}
         @test_throws MethodError typeof(LocalCartesianVelocity(xlc, vc))
@@ -57,20 +52,6 @@
         @test typeof(LocalCartesianVelocity(xc, vlc)) == LocalCartesianVelocity{t_out_2}
         @test typeof(LocalCartesianVelocity(xlc, vlc)) == LocalCartesianVelocity{t_out_2}
         @test typeof(LocalCartesianVelocity(xs, vlc)) == LocalCartesianVelocity{t_out_2}
-        @test typeof(LocalCartesianVelocity(xc, vls)) == LocalCartesianVelocity{t_out_2}
-        @test typeof(LocalCartesianVelocity(xlc, vls)) == LocalCartesianVelocity{t_out_2}
-        @test typeof(LocalCartesianVelocity(xs, vls)) == LocalCartesianVelocity{t_out_2}
-
-        @test LocalSphericalVelocity(xc, vc) isa LocalSphericalVelocity{t_out_12}
-        @test_throws MethodError LocalSphericalVelocity(xlc, vc) isa LocalSphericalVelocity{t_out_12}
-        @test LocalSphericalVelocity(xs, vc) isa LocalSphericalVelocity{t_out_12}
-        @test LocalSphericalVelocity(vlc) isa LocalSphericalVelocity{t_out_2}
-        @test LocalSphericalVelocity(xc, vlc) isa LocalSphericalVelocity{t_out_2}
-        @test LocalSphericalVelocity(xlc, vlc) isa LocalSphericalVelocity{t_out_2}
-        @test LocalSphericalVelocity(xs, vlc) isa LocalSphericalVelocity{t_out_2}
-        @test LocalSphericalVelocity(xc, vls) isa LocalSphericalVelocity{t_out_2}
-        @test LocalSphericalVelocity(xlc, vls) isa LocalSphericalVelocity{t_out_2}
-        @test LocalSphericalVelocity(xs, vls) isa LocalSphericalVelocity{t_out_2}
 
     end
 
