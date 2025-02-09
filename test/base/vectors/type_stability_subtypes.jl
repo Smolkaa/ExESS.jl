@@ -34,6 +34,7 @@
         x = Tuple(t1 <: Integer ? rand(1:100, 3) |> Vector{t1} : rand(t1, 3) * 100)
         v = Tuple(t2 <: Integer ? rand(1:100, 3) |> Vector{t2} : rand(t2, 3) * 100)
         xc, xlc, xs = GlobalCartesianPosition(x), LocalCartesianPosition(x), GlobalSphericalPosition(x)
+        vc, vlc = GlobalCartesianVelocity(v), LocalCartesianVelocity(v)
         @test typeof(vc) == GlobalCartesianVelocity{t_out_2}
         @test typeof(vlc) == LocalCartesianVelocity{t_out_2}
 
