@@ -14,7 +14,8 @@
   purpose and usage 
 - FEATURE: added `local_solar_incidence_angle` as an extension to the `solar_incidence_angle`
   function, which now also accepts a local slopes and azimuths as input
-
+  - adjusted function to work with common coordinate system (azimuth starts at zero
+    towards east and is defined mathematically positive)
 
 ## v0.1.11 (2024/10/08)
 
