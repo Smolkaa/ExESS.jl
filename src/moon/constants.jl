@@ -22,7 +22,7 @@ const LUNAR_RADIUS = 1737400e0 # (m)
 
 
 """
-    LUNAR_ROTATIONA_PERIOD::Float64 = 2.36059488e6
+    LUNAR_ROTATION_PERIOD::Float64 = 2.36059488e6
 
 Length of the revolution period of the Moon in (s).
 

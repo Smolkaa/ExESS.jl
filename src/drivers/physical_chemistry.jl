@@ -4,18 +4,17 @@
 """
     arrhenius([S], [A], T, Ea)
 
-Calculation of the rate constant based on the
-[Arrhenius Equation](https://en.wikipedia.org/wiki/Arrhenius_equation), with parameters `A`
-as the pre-exponential factor in (s-1), `T` as the temperature in (K), and `Ea` as the
-activation energy in (J). The function returns the rate constant in (s-1). Additionally,
-the function takes an optional type parameter `S` to specify the output type of the function.
+Implementation of the Arrhenius Equation, with the pre-exponential factor `A`, the 
+temperature `T`, and the activation energy `Ea`. The function returns the rate constant in
+units of `A`. Additionally, the function takes an optional type parameter `S` to specify the 
+output type of the function.
 
-The pre-exponential factor `A` is also an optional input. If not given, the function will
-calculate the pre-exponential factor based on `A = k_B * T / h`, with Boltzmann's constant
-`k_B`, and Planck's constant `h`.
+The pre-exponential factor `A` can also be an optional input. If not given, the function 
+will calculate the pre-exponential factor based on `A = k_B * T / h`, with Boltzmann's 
+constant `k_B`, and Planck's constant `h`.
 
 # Arguments
-- (optional) `A::Real`: pre-exponential factor (s-1)
+- (optional) `A::Real`: pre-exponential factor
 - `T::Real`: temperature (K)
 - `Ea::Real`: activation energy (J)
 - (optional) `S::Type{<:AbstractFloat}`: output type
