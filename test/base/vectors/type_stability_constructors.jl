@@ -5,7 +5,6 @@
     xs = GlobalSphericalPosition(rand(3))
     vc = GlobalCartesianVelocity(rand(3))
     vlc = LocalCartesianVelocity(rand(3))
-    vls = LocalSphericalVelocity(rand(3))
 
     @test typeof(GlobalCartesianPosition(rand(3)...)) <: GlobalCartesianPosition
     @test typeof(GlobalCartesianPosition(rand(3))) <: GlobalCartesianPosition
@@ -38,9 +37,6 @@
     @test typeof(GlobalCartesianVelocity(xc, vlc)) <: GlobalCartesianVelocity
     @test_throws MethodError typeof(GlobalCartesianVelocity(xlc, vlc)) <: GlobalCartesianVelocity
     @test typeof(GlobalCartesianVelocity(xs, vlc)) <: GlobalCartesianVelocity
-    @test typeof(GlobalCartesianVelocity(xc, vls)) <: GlobalCartesianVelocity
-    @test_throws MethodError typeof(GlobalCartesianVelocity(xlc, vls)) <: GlobalCartesianVelocity
-    @test typeof(GlobalCartesianVelocity(xs, vls)) <: GlobalCartesianVelocity
 
     @test LocalCartesianVelocity(rand(3)...) isa LocalCartesianVelocity
     @test LocalCartesianVelocity(rand(3)) isa LocalCartesianVelocity
@@ -52,24 +48,5 @@
     @test LocalCartesianVelocity(xc, vlc) isa LocalCartesianVelocity
     @test LocalCartesianVelocity(xlc, vlc) isa LocalCartesianVelocity
     @test LocalCartesianVelocity(xs, vlc) isa LocalCartesianVelocity
-    @test LocalCartesianVelocity(vls) isa LocalCartesianVelocity
-    @test LocalCartesianVelocity(xc, vls) isa LocalCartesianVelocity
-    @test LocalCartesianVelocity(xlc, vls) isa LocalCartesianVelocity
-    @test LocalCartesianVelocity(xs, vls) isa LocalCartesianVelocity
-
-    @test LocalSphericalVelocity(rand(3)...) isa LocalSphericalVelocity
-    @test LocalSphericalVelocity(rand(3)) isa LocalSphericalVelocity
-    @test LocalSphericalVelocity(rand(3) |> Tuple) isa LocalSphericalVelocity
-    @test LocalSphericalVelocity(vls) isa LocalSphericalVelocity
-    @test LocalSphericalVelocity(xc, vc) isa LocalSphericalVelocity
-    @test_throws MethodError LocalSphericalVelocity(xlc, vc) isa LocalSphericalVelocity
-    @test LocalSphericalVelocity(xs, vc) isa LocalSphericalVelocity
-    @test LocalSphericalVelocity(xc, vlc) isa LocalSphericalVelocity
-    @test LocalSphericalVelocity(xlc, vlc) isa LocalSphericalVelocity
-    @test LocalSphericalVelocity(xs, vlc) isa LocalSphericalVelocity
-    @test LocalSphericalVelocity(vls) isa LocalSphericalVelocity
-    @test LocalSphericalVelocity(xc, vls) isa LocalSphericalVelocity
-    @test LocalSphericalVelocity(xlc, vls) isa LocalSphericalVelocity
-    @test LocalSphericalVelocity(xs, vls) isa LocalSphericalVelocity
 
 end
