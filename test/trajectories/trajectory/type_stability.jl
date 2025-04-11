@@ -31,7 +31,7 @@
 
 
         # trajectory w/ tuples & vectors
-        traj = trajectory(x0_t, v0_t, ddx_gravity)
+        traj = trajectory(x0_t, v0_t; ddx=ddx_gravity)
         @test traj[rand(1:length(traj))][1:6] isa Vector{t_out}
         @test traj(rand(t_rand))[1:6] isa Vector{t_out_rand}
         @test GlobalCartesianPosition(traj, rand(t_rand)) isa GlobalCartesianPosition{t_out_rand}
@@ -39,7 +39,7 @@
         @test GlobalCartesianVelocity(traj, rand(t_rand)) isa GlobalCartesianVelocity{t_out_rand}
         @test LocalCartesianVelocity(traj, rand(t_rand)) isa LocalCartesianVelocity{t_out_rand}
 
-        traj = trajectory(x0_v, v0_v, ddx_gravity)
+        traj = trajectory(x0_v, v0_v; ddx=ddx_gravity)
         @test traj[rand(1:length(traj))][1:6] isa Vector{t_out}
         @test traj(rand(t_rand))[1:6] isa Vector{t_out_rand}
         @test GlobalCartesianPosition(traj, rand(t_rand)) isa GlobalCartesianPosition{t_out_rand}
@@ -52,7 +52,7 @@
         t_out = t1 <: Integer || t2 <: Integer ? promote_type(t_out, Float64) : t_out
         t_out_rand = promote_type(t_out, t_rand)
 
-        traj = trajectory(x0_gsp, v0_lcv, ddx_gravity)
+        traj = trajectory(x0_gsp, v0_lcv; ddx=ddx_gravity)
         @test traj[rand(1:length(traj))][1:6] isa Vector{t_out}
         @test traj(rand(t_rand))[1:6] isa Vector{t_out_rand}
         @test GlobalCartesianPosition(traj, rand(t_rand)) isa GlobalCartesianPosition{t_out_rand}
@@ -60,7 +60,7 @@
         @test GlobalCartesianVelocity(traj, rand(t_rand)) isa GlobalCartesianVelocity{t_out_rand}
         @test LocalCartesianVelocity(traj, rand(t_rand)) isa LocalCartesianVelocity{t_out_rand}
 
-        traj = trajectory(x0_gsp, v0_gcv, ddx_gravity)
+        traj = trajectory(x0_gsp, v0_gcv; ddx=ddx_gravity)
         @test traj[rand(1:length(traj))][1:6] isa Vector{t_out}
         @test traj(rand(t_rand))[1:6] isa Vector{t_out_rand}
         @test GlobalCartesianPosition(traj, rand(t_rand)) isa GlobalCartesianPosition{t_out_rand}
@@ -68,7 +68,7 @@
         @test GlobalCartesianVelocity(traj, rand(t_rand)) isa GlobalCartesianVelocity{t_out_rand}
         @test LocalCartesianVelocity(traj, rand(t_rand)) isa LocalCartesianVelocity{t_out_rand}
 
-        traj = trajectory(x0_gcp, v0_lcv, ddx_gravity)
+        traj = trajectory(x0_gcp, v0_lcv; ddx=ddx_gravity)
         @test traj[rand(1:length(traj))][1:6] isa Vector{t_out}
         @test traj(rand(t_rand))[1:6] isa Vector{t_out_rand}
         @test GlobalCartesianPosition(traj, rand(t_rand)) isa GlobalCartesianPosition{t_out_rand}
@@ -76,7 +76,7 @@
         @test GlobalCartesianVelocity(traj, rand(t_rand)) isa GlobalCartesianVelocity{t_out_rand}
         @test LocalCartesianVelocity(traj, rand(t_rand)) isa LocalCartesianVelocity{t_out_rand}
 
-        traj = trajectory(x0_gcp, v0_gcv, ddx_gravity)
+        traj = trajectory(x0_gcp, v0_gcv; ddx=ddx_gravity)
         @test traj[rand(1:length(traj))][1:6] isa Vector{t_out}
         @test traj(rand(t_rand))[1:6] isa Vector{t_out_rand}
         @test GlobalCartesianPosition(traj, rand(t_rand)) isa GlobalCartesianPosition{t_out_rand}

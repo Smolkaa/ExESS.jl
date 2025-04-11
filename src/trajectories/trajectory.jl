@@ -2,7 +2,7 @@
 #::. FUNCTIONS
 ############################################################################################
 """
-    trajectory(x0, v0, [ddx]; kwargs...)
+    trajectory(x0, v0; kwargs...)
 
 Calculate the trajectory of a particle starting at position `x0` (global cartesian
 coordinates), with initial velocity `v0` (global cartesian coordinates), given the
@@ -14,10 +14,10 @@ as the trajectory.
   particle in global cartesian coordinates.
 - `v0::Tuple` or `v0::AbstractVector` or `v0::AbstractVelocity`: Initial velocity of the
   particle in global cartesian coordinates.
-- `ddx::Function`: Acceleration function of the particle in global cartesian coordinates.
 
 # Key-Word Arguments
 - `alg=Tsit5()`: Numerical solver algorithm.
+- `ddx::Function=ddx_gravity`: Acceleration function of the particle in glob. cart. coords.
 - `rmin::Real=LUNAR_RADIUS`: Minimum radius of computational domain (m).
 - `rmax::Real=1e9`: Maximum radius of computational domain (m).
 - `tspan::Tuple=(0f0,1f10)`: Time span of the integration ((s), (s)).
@@ -27,7 +27,7 @@ as the trajectory.
 - The integration terminates if either the minimum or maximum radius is exceeded or if the
 end of the time span is reached.
 """
-function trajectory(x0::NTuple{3, T}, v0::NTuple{3, T}, ddx::Function=ddx_gravity;
+function trajectory(x0::NTuple{3, T}, v0::NTuple{3, T}; ddx::Function=ddx_gravity,
         alg=Tsit5(), rmin::Real=LUNAR_RADIUS, rmax::Real=1e9, tspan::Tuple=(0f0,1f10),
         kwargs...) where {T<:AbstractFloat}
 
@@ -47,24 +47,22 @@ function trajectory(x0::NTuple{3, T}, v0::NTuple{3, T}, ddx::Function=ddx_gravit
     return solve(prob, alg; callback=cb, dtmin=1e-2, reltol=1e-4, kwargs...)
 end
 function trajectory(x0::Tuple{<:Real, <:Real, <:Real},
-                    v0::Tuple{<:Real, <:Real, <:Real}, args...; kwargs...)
+                    v0::Tuple{<:Real, <:Real, <:Real}; kwargs...)
     x0_r, x0_theta, x0_phi, v0_x, v0_y, v0_z = promote(x0..., v0...)
-    return trajectory((x0_r, x0_theta, x0_phi), (v0_x, v0_y, v0_z), args...; kwargs...)
+    return trajectory((x0_r, x0_theta, x0_phi), (v0_x, v0_y, v0_z); kwargs...)
 end
 function trajectory(x0::Tuple{<:Integer, <:Integer, <:Integer},
-                    v0::Tuple{<:Integer, <:Integer, <:Integer}, args...; kwargs...)
-    return trajectory(float.(x0), float.(v0), args...; kwargs...)
+                    v0::Tuple{<:Integer, <:Integer, <:Integer}; kwargs...)
+    return trajectory(float.(x0), float.(v0); kwargs...)
 end
-function trajectory(x0::AbstractVector, v0::AbstractVector, args...; kwargs...)
-    return trajectory(Tuple(x0), Tuple(v0), args...; kwargs...)
+function trajectory(x0::AbstractVector, v0::AbstractVector; kwargs...)
+    return trajectory(Tuple(x0), Tuple(v0); kwargs...)
 end
-function trajectory(x0::GlobalCartesianPosition, v0::GlobalCartesianVelocity, args...;
-                    kwargs...)
-    return trajectory(Tuple(x0), Tuple(v0), args...; kwargs...)
+function trajectory(x0::GlobalCartesianPosition, v0::GlobalCartesianVelocity; kwargs...)
+    return trajectory(Tuple(x0), Tuple(v0); kwargs...)
 end
-function trajectory(x0::AbstractPosition, v0::AbstractVelocity, args...; kwargs...)
-    return trajectory(GlobalCartesianPosition(x0), GlobalCartesianVelocity(x0, v0), args...;
-                      kwargs...)
+function trajectory(x0::AbstractPosition, v0::AbstractVelocity; kwargs...)
+    return trajectory(GlobalCartesianPosition(x0), GlobalCartesianVelocity(x0, v0); kwargs...)
 end
 
 

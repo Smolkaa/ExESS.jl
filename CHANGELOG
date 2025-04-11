@@ -16,6 +16,8 @@
   function, which now also accepts a local slopes and azimuths as input
   - adjusted function to work with common coordinate system (azimuth starts at zero
     towards east and is defined mathematically positive)
+- HOUSEKEEPING (breaking): Changed the `trajectory` call signature to have the acceleration
+  function in the `kwargs...` instead. Adjusted the tests accordingly.
 
 ## v0.1.11 (2024/10/08)
 
