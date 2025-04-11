@@ -1,6 +1,8 @@
 # ExESS -- CHANGELOG
 
-## v0.1.12 (2024/??/??)
+## v0.1.13 (2025/??/??)
+
+## v0.1.12 (2025/04/11)
 
 - FEATURE/HOUSEKEEPING: Changed `lunar_surface_temperatue_BUTLER1997` to 
   `lunar_surface_temperature_CRIDER2002` and added the optional for a single input of a
@@ -10,7 +12,14 @@
   the field specific getter functions are still available and can be used as before.
 - FEATURE: added `PSDSpeedDistribution` to model particle speed distributions following
   photon-stimulated-desorption (PSD), based on the works of Gamborino et al. (2018).
-
+- HOUSEKEEPING: renamed `solar_angle` to `solar_incidence_angle` to clarify the function's
+  purpose and usage 
+- FEATURE: added `local_solar_incidence_angle` as an extension to the `solar_incidence_angle`
+  function, which now also accepts a local slopes and azimuths as input
+  - adjusted function to work with common coordinate system (azimuth starts at zero
+    towards east and is defined mathematically positive)
+- HOUSEKEEPING (breaking): Changed the `trajectory` call signature to have the acceleration
+  function in the `kwargs...` instead. Adjusted the tests accordingly.
 
 ## v0.1.11 (2024/10/08)
 

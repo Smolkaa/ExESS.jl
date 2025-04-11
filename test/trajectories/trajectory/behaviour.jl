@@ -7,7 +7,7 @@ using LinearAlgebra
         # setup
         x0 = rand(GlobalSphericalPosition, SolarSurfaceDistribution(LUNAR_RADIUS))
         v0 = rand(LocalCartesianVelocity, MBFluxVelocityDistribution(250, amu2kg(4)))
-        traj = trajectory(x0, v0, ddx_gravity)
+        traj = trajectory(x0, v0; ddx=ddx_gravity)
 
         # test launch
         @test isapprox(Tuple(traj(0)[1:3]), Tuple(GlobalCartesianVelocity(x0, v0)); rtol=1e-6)

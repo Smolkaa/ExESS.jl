@@ -1,6 +1,6 @@
 print("TESTING: derivers > physical_chemistry.jl")
 
-@testset verbose=true "physical_chemistry.jl ........." begin
+@testset verbose=true "physical_chemistry.jl ...................." begin
 
     #::. type-stability
     types = [Int32, Int64, BigInt, Float16, Float32, Float64, BigFloat]

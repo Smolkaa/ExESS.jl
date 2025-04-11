@@ -58,7 +58,7 @@ include(joinpath(@__DIR__, "moon", "lunar_surface_temperatures_HURLEY2015.jl"))
 
 # misc
 include(joinpath(@__DIR__, "misc", "projection_CHAMBERLAIN1963.jl"))
-include(joinpath(@__DIR__, "misc", "solar_angle.jl"))
+include(joinpath(@__DIR__, "misc", "solar_incidence_angle.jl"))
 
 
 

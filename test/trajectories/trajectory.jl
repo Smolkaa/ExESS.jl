@@ -1,4 +1,4 @@
-@testset verbose=true "trajectory.jl .............." begin
+@testset verbose=true "trajectory.jl ............................" begin
     print("TESTING: trajectories > trajectory.jl")
 
     #

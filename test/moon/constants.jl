@@ -1,6 +1,6 @@
 print("TESTING: moon > constants.jl")
 
-@testset verbose=true "constants.jl .................." begin
+@testset verbose=true "constants.jl ............................." begin
     @test isdefined(ExESS, :LUNAR_RADIUS)
     @test isdefined(ExESS, :LUNAR_MASS)
     @test isdefined(ExESS, :LUNAR_DAY)

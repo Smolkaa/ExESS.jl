@@ -1,4 +1,4 @@
-@testset verbose=true "utils.jl ......................" begin
+@testset verbose=true "utils.jl ................................." begin
     print("TESTING: base > utils.jl")
 
     #::. type stability
