@@ -1,6 +1,6 @@
 # ExESS -- CHANGELOG
 
-## v0.1.12 (2024/??/??)
+## v0.1.12 (2025/04/11)
 
 - FEATURE/HOUSEKEEPING: Changed `lunar_surface_temperatue_BUTLER1997` to 
   `lunar_surface_temperature_CRIDER2002` and added the optional for a single input of a
