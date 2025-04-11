@@ -18,6 +18,9 @@
     towards east and is defined mathematically positive)
 - HOUSEKEEPING (breaking): Changed the `trajectory` call signature to have the acceleration
   function in the `kwargs...` instead. Adjusted the tests accordingly.
+- HOUSEKEEPING: Removed `LocalSphericalVelocity` vector type, as it is unused throughout
+  the entire project. The removal improves code-readability, and general cleanliness.
+
 
 ## v0.1.11 (2024/10/08)
 
