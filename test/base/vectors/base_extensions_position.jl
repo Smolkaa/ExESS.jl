@@ -1,5 +1,5 @@
 @testset "base extensions - positions" begin
-    
+
     a, x, r = rand(), rand(3), rand(3) .* [1, 2pi, pi] .- [0, pi, pi/2]
     xt, rt = Tuple(x), Tuple(r)
     x1, x2 = GlobalCartesianPosition(rand(3)), GlobalCartesianPosition(rand(3))
@@ -29,7 +29,7 @@
     @test typeof(r1 + x2) <: GlobalSphericalPosition
     @test_throws MethodError typeof(r1 + l2) <: GlobalSphericalPosition
     @test typeof(r1 + r2) <: GlobalSphericalPosition
-    
+
     @test typeof(x1 - xt) <: GlobalCartesianPosition
     @test typeof(x1 - x) <: GlobalCartesianPosition
     @test typeof(xt - x2) <: GlobalCartesianPosition
@@ -71,7 +71,7 @@
     @test typeof(xt * l2) <: LocalCartesianPosition
     @test typeof(x * l2) <: LocalCartesianPosition
     @test typeof(l1 * l2) <: Real
-    @test_throws MethodError typeof(l1 * x2) <: Real 
+    @test_throws MethodError typeof(l1 * x2) <: Real
     @test_throws MethodError typeof(l1 * r2) <: Real
 
     @test typeof(r1 * a) <: GlobalSphericalPosition
@@ -83,7 +83,7 @@
     @test typeof(r1 * x2) <: Real
     @test_throws MethodError typeof(r1 * l2) <: Real
     @test typeof(r1 * r2) <: Real
-    
+
     @test typeof(x1 / a) <: GlobalCartesianPosition
     @test_throws MethodError typeof(a / x2) <: GlobalCartesianPosition
     @test typeof(x1 / xt) <: GlobalCartesianPosition
@@ -107,5 +107,13 @@
     @test_throws MethodError typeof(rt / r2) <: GlobalSphericalPosition
     @test_throws MethodError typeof(r / r2) <: GlobalSphericalPosition
     @test_throws MethodError typeof(r1 / r2) <: Real
+
+    ELTYPES = [Float16, Float32, Float64, BigFloat]
+    @test all(t -> eltype(GlobalCartesianPosition(rand(t, 3))) == t, ELTYPES)
+    @test all(t -> eltype(LocalCartesianPosition(rand(t, 3))) == t, ELTYPES)
+    @test all(t -> eltype(GlobalSphericalPosition(rand(t, 3))) == t, ELTYPES)
+
+    # @test all(x -> isapprox(GlobalCartesianPosition(x), x), [rand(3) for _ in 1:1000])
+    # @test all(x -> isapprox(GlobalCartesianPosition(x), x), [rand(3) for _ in 1:1000])
 
 end

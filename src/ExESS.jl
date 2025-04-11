@@ -26,6 +26,7 @@ include(joinpath(@__DIR__, "base", "utils.jl"))
 
 # drivers
 include(joinpath(@__DIR__, "drivers", "maxwellian.jl"))
+include(joinpath(@__DIR__, "drivers", "photon_stimulated_desorption.jl"))
 include(joinpath(@__DIR__, "drivers", "physical_chemistry.jl"))
 include(joinpath(@__DIR__, "drivers", "surface_distributions.jl"))
 include(joinpath(@__DIR__, "drivers", "thermal_sorption.jl"))
@@ -52,12 +53,12 @@ include(joinpath(@__DIR__, "mercury", "constants.jl"))
 # moon
 include(joinpath(@__DIR__, "moon", "constants.jl"))
 include(joinpath(@__DIR__, "moon", "lunar_surface_temperatures_DIVINER.jl"))
-include(joinpath(@__DIR__, "moon", "lunar_surface_temperatures_BUTLER1997.jl"))
+include(joinpath(@__DIR__, "moon", "lunar_surface_temperatures_CRIDER2002.jl"))
 include(joinpath(@__DIR__, "moon", "lunar_surface_temperatures_HURLEY2015.jl"))
 
 # misc
 include(joinpath(@__DIR__, "misc", "projection_CHAMBERLAIN1963.jl"))
-include(joinpath(@__DIR__, "misc", "solar_angle.jl"))
+include(joinpath(@__DIR__, "misc", "solar_incidence_angle.jl"))
 
 
 

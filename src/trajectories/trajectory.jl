@@ -2,33 +2,32 @@
 #::. FUNCTIONS
 ############################################################################################
 """
-    [1] trajectory(x0::AbstractVector, v0::AbstractVector, [ddx::Function]; kwargs...)
-    [2] trajectory(x0::AbstractPosition, v0::AbstractVelocity, [ddx::Function]; kwargs...)
+    trajectory(x0, v0; kwargs...)
 
 Calculate the trajectory of a particle starting at position `x0` (global cartesian
 coordinates), with initial velocity `v0` (global cartesian coordinates), given the
-acceleration function `ddx` (global cartesian coordinates).
+acceleration function `ddx` (global cartesian coordinates). Returns a `ODESolution` object 
+as the trajectory.
 
-Returns a `ODESolution` object as the trajectory.
+# Arguments
+- `x0::Tuple` or `x0::AbstractVector` or `x0::AbstractPosition`: Initial position of the 
+  particle in global cartesian coordinates.
+- `v0::Tuple` or `v0::AbstractVector` or `v0::AbstractVelocity`: Initial velocity of the
+  particle in global cartesian coordinates.
 
-**Key-Word Arguments**
+# Key-Word Arguments
+- `alg=Tsit5()`: Numerical solver algorithm.
+- `ddx::Function=ddx_gravity`: Acceleration function of the particle in glob. cart. coords.
+- `rmin::Real=LUNAR_RADIUS`: Minimum radius of computational domain (m).
+- `rmax::Real=1e9`: Maximum radius of computational domain (m).
+- `tspan::Tuple=(0f0,1f10)`: Time span of the integration ((s), (s)).
 
-| Field    | Value          | Unit       | Description                            |
-|:-------- | --------------:|:---------- |:-------------------------------------- |
-| `alg`    | `Tsit5()`      |            | numerical solver algorithm             |
-| `rmin`   | `LUNAR_RADIUS` | [m]        | minimum radius of computational domain |
-| `rmax`   | `1e9`          | [m]        | maximum radius of computational domain |
-| `tspan`  | `(0f0,1f10)`   | ([s], [s]) | time span of the integration           |
-| `kwargs` |                |            | additional key-word arguments          |
-
-The integration terminates if either the minimum or maximum radius is exceeded or if the
+# Notes
+- 16-bit types are not accurate enough and will be promoted (no type-stability)
+- The integration terminates if either the minimum or maximum radius is exceeded or if the
 end of the time span is reached.
-
-**Notes**
-
-* 16-bit types are not accurate enough and will be promoted (no type-stability)
 """
-function trajectory(x0::NTuple{3, T}, v0::NTuple{3, T}, ddx::Function=ddx_gravity;
+function trajectory(x0::NTuple{3, T}, v0::NTuple{3, T}; ddx::Function=ddx_gravity,
         alg=Tsit5(), rmin::Real=LUNAR_RADIUS, rmax::Real=1e9, tspan::Tuple=(0f0,1f10),
         kwargs...) where {T<:AbstractFloat}
 
@@ -48,24 +47,22 @@ function trajectory(x0::NTuple{3, T}, v0::NTuple{3, T}, ddx::Function=ddx_gravit
     return solve(prob, alg; callback=cb, dtmin=1e-2, reltol=1e-4, kwargs...)
 end
 function trajectory(x0::Tuple{<:Real, <:Real, <:Real},
-                    v0::Tuple{<:Real, <:Real, <:Real}, args...; kwargs...)
+                    v0::Tuple{<:Real, <:Real, <:Real}; kwargs...)
     x0_r, x0_theta, x0_phi, v0_x, v0_y, v0_z = promote(x0..., v0...)
-    return trajectory((x0_r, x0_theta, x0_phi), (v0_x, v0_y, v0_z), args...; kwargs...)
+    return trajectory((x0_r, x0_theta, x0_phi), (v0_x, v0_y, v0_z); kwargs...)
 end
 function trajectory(x0::Tuple{<:Integer, <:Integer, <:Integer},
-                    v0::Tuple{<:Integer, <:Integer, <:Integer}, args...; kwargs...)
-    return trajectory(float.(x0), float.(v0), args...; kwargs...)
+                    v0::Tuple{<:Integer, <:Integer, <:Integer}; kwargs...)
+    return trajectory(float.(x0), float.(v0); kwargs...)
 end
-function trajectory(x0::AbstractVector, v0::AbstractVector, args...; kwargs...)
-    return trajectory(_get(x0), _get(v0), args...; kwargs...)
+function trajectory(x0::AbstractVector, v0::AbstractVector; kwargs...)
+    return trajectory(Tuple(x0), Tuple(v0); kwargs...)
 end
-function trajectory(x0::GlobalCartesianPosition, v0::GlobalCartesianVelocity, args...;
-                    kwargs...)
-    return trajectory(_get(x0), _get(v0), args...; kwargs...)
+function trajectory(x0::GlobalCartesianPosition, v0::GlobalCartesianVelocity; kwargs...)
+    return trajectory(Tuple(x0), Tuple(v0); kwargs...)
 end
-function trajectory(x0::AbstractPosition, v0::AbstractVelocity, args...; kwargs...)
-    return trajectory(GlobalCartesianPosition(x0), GlobalCartesianVelocity(x0, v0), args...;
-                      kwargs...)
+function trajectory(x0::AbstractPosition, v0::AbstractVelocity; kwargs...)
+    return trajectory(GlobalCartesianPosition(x0), GlobalCartesianVelocity(x0, v0); kwargs...)
 end
 
 
@@ -73,17 +70,17 @@ end
 #::. UTILITY FUNCTIONS
 ############################################################################################
 """
-    [1] ddx_gravity(x::NTuple{3}, [args...]; kwargs...)
-    [2] ddx_gravity(x::AbstractVector, [args...]; kwargs...)
+    ddx_gravity(x; kwargs...)
 
 Acceleration function for gravity.  Assumes a global cartesian coordinate system, which is
 centered at the center of the central object.
 
-**Key-Word Arguments**
+# Arguments
+- `x::Tuple` or `x::AbstractVector` or `x::AbstractPosition`: Position of the particle in
+  global cartesian coordiantes (also accepts `GlobalSphericalPosition` type).
 
-| Field    | Default Value  | Unit       | Description                          |
-|:-------- | --------------:|:---------- |:------------------------------------ |
-| `m`      | `LUNAR_MASS`   | [kg]       | mass of central object               |
+# Key-Word Arguments
+- `m::Real=LUNAR_MASS`: mass of central object (kg).
 """
 function ddx_gravity(x::NTuple{3, T}; m::Real=LUNAR_MASS) where {T<:AbstractFloat}
     return T.( .- x .* GRAVITATIONAL_CONSTANT .* m ./ norm(x)^3)
@@ -94,11 +91,14 @@ end
 function ddx_gravity(x::Tuple{<:Integer, <:Integer, <:Integer})
     return ddx_gravity((promote(1.0, x...)[2:4]); kwargs...)
 end
-function ddx_gravity(x::AbstractVector{T}; m::Real=LUNAR_MASS) where {T<:AbstractFloat}
-    return T.(-x .* GRAVITATIONAL_CONSTANT * m / norm(x)^3)
+function ddx_gravity(x::AbstractVector; kwargs...)
+    return ddx_gravity(Tuple(x); kwargs...)
 end
-function ddx_gravity(x::AbstractVector; m::Real=LUNAR_MASS)
-    return -x .* GRAVITATIONAL_CONSTANT * m / norm(x)^3
+function ddx_gravity(x::GlobalCartesianPosition; kwargs...)
+    return ddx_gravity(Tuple(x); kwargs...)
+end
+function ddx_gravity(x::GlobalSphericalPosition; kwargs...)
+    return ddx_gravity(GlobalCartesianPosition(x); kwargs...)
 end
 ddx_gravity(x, args...; kwargs...) = ddx_gravity(x; kwargs...)
 
@@ -107,12 +107,9 @@ ddx_gravity(x, args...; kwargs...) = ddx_gravity(x; kwargs...)
 #::. EXTENSIONS
 ############################################################################################
 """
-    [1] GlobalCartesianPosition(sol::ODESolution, t::Real)
-    [2] GlobalCartesianPosition(sol::ODESolution, t::AbstractVector)
+    GlobalCartesianPosition(sol, t)
 
-Extracts `GlobalCartesianPosition` from `ODESolution` at time or times `t`. Note that this
-constructor assumes the solution object to be from a `SecondOrderODEProblem`, where the
-components of the solution vector are ordered as `[vx, vy, vz, x, y, z]`.
+Extracts `GlobalCartesianPosition` from the trajectory `sol` at time or times `t`. 
 """
 function GlobalCartesianPosition(sol::ODESolution, t::Real)
     solt = sol(float(t))
@@ -124,12 +121,9 @@ end
 
 
 """
-    [1] GlobalSphericalPosition(sol::ODESolution, t::Real)
-    [2] GlobalSphericalPosition(sol::ODESolution, t::AbstractVector)
+    GlobalSphericalPosition(sol, t)
 
-Extracts `GlobalSphericalPosition` from `ODESolution` at time or times `t`. Note that this
-constructor assumes the solution object to be from a `SecondOrderODEProblem`, where the
-components of the solution vector are ordered as `[vx, vy, vz, x, y, z]`.
+Extracts `GlobalSphericalPosition` from the trajectory `sol` at time or times `t`. 
 """
 function GlobalSphericalPosition(sol::ODESolution, t::Real)
     return GlobalSphericalPosition(GlobalCartesianPosition(sol, t))
@@ -140,12 +134,9 @@ end
 
 
 """
-    [1] GlobalCartesianVelocity(sol::ODESolution, t::Real)
-    [2] GlobalCartesianVelocity(sol::ODESolution, t::AbstractVector)
+    GlobalCartesianVelocity(sol, t)
 
-Extracts `GlobalCartesianVelocity` from `ODESolution` at time or times 't'. Note that this
-constructor assumes the solution object to be from a `SecondOrderODEProblem`, where the
-components of the solution vector are ordered as `[vx, vy, vz, x, y, z]`.
+Extracts `GlobalCartesianVelocity` from the trajectory `sol` at time or times `t`. 
 """
 function GlobalCartesianVelocity(sol::ODESolution, t::Real)
     solt = sol(float(t))
@@ -157,12 +148,9 @@ end
 
 
 """
-    [1] LocalCartesianVelocity(sol::ODESolution, t::Real)
-    [2] LocalCartesianVelocity(sol::ODESolution, t::AbstractVector)
+    LocalCartesianVelocity(sol, t)
 
-Extracts `LocalCartesianVelocity` from `ODESolution` at time or times 't'. Note that this
-constructor assumes the solution object to be from a `SecondOrderODEProblem`, where the
-components of the solution vector are ordered as `[vx, vy, vz, x, y, z]`.
+Extracts `LocalCartesianVelocity` from the trajectory `sol` at time or times `t`. 
 """
 function LocalCartesianVelocity(sol::ODESolution, t::Real)
     return LocalCartesianVelocity(GlobalCartesianPosition(sol, t),

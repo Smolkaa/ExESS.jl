@@ -25,12 +25,12 @@ function benchmark_trajectory()
     # inputs
     x0_gsp = rand(GlobalSphericalPosition, SolarSurfaceDistribution(LUNAR_RADIUS))
     x0_gcp = GlobalCartesianPosition(x0_gsp)
-    x0_t = ExESS._get(x0_gcp)
+    x0_t = Tuple(x0_gcp)
     x0_v = vec(x0_gcp)
 
     v0_lcv = rand(LocalCartesianVelocity, MBFluxVelocityDistribution(100 + rand()*300, amu2kg(rand()*20)))
     v0_gcv = GlobalCartesianVelocity(x0_gcp, v0_lcv)
-    v0_t = ExESS._get(v0_gcv)
+    v0_t = Tuple(v0_gcv)
     v0_v = vec(v0_gcv)
 
     # write inputs to file
@@ -38,12 +38,12 @@ function benchmark_trajectory()
     write(fid, "```julia\n")
     write(fid, "x0_gsp = rand(GlobalSphericalPosition, SolarSurfaceDistribution(LUNAR_RADIUS))\n")
     write(fid, "x0_gcp = GlobalCartesianPosition(x0_gsp)\n")
-    write(fid, "x0_t = ExESS._get(x0_gcp)\n")
+    write(fid, "x0_t = Tuple(x0_gcp)\n")
     write(fid, "x0_v = vec(x0_gcp)\n")
     write(fid, "\n")
     write(fid, "v0_lcv = rand(LocalCartesianVelocity, MBFluxVelocityDistribution(100 + rand()*300, amu2kg(rand()*20)))\n")
     write(fid, "v0_gcv = GlobalCartesianVelocity(x0_gcp, v0_lcv)\n")
-    write(fid, "v0_t = ExESS._get(v0_gcv)\n")
+    write(fid, "v0_t = Tuple(v0_gcv)\n")
     write(fid, "v0_v = vec(v0_gcv)\n")
     write(fid, "```\n\n")
 
@@ -60,7 +60,7 @@ function benchmark_trajectory()
     @printf(fid, "- Median time: %.1f ns\n", median(bm.times))
     @printf(fid, "- Memory estimate: %i bytes\n", bm.memory)
     @printf(fid, "- Allocs estimate: %i\n\n", bm.allocs)
-    
+
 
     write(fid, "### Function: `trajectory` - Tuples w/ `reltol=1e-8`\n\n")
     bm = @benchmark trajectory($x0_t, $v0_t, $ddx_gravity; reltol=1e-8) evals=100 seconds=10

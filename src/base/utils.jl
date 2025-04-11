@@ -57,7 +57,7 @@ limit_acos(x::Real) = (abs(x) > 1) ? acos(sign(x)) : acos(x)
 """
     [1] lng2LT(lng::Real)
 
-Converts a subsolar longitude `lng` into local time `LT`.
+Converts a subsolar longitude `lng` (in rad) into local time `LT`.
 """
 lng2LT(lng::T) where {T<:AbstractFloat} = T((lng + pi) / pi * 12)
 lng2LT(lng::Real) = lng2LT(Float64(lng))
@@ -67,7 +67,7 @@ lng2LT(lng::BigInt) = lng2LT(BigFloat(lng))
 """
     [1] LT2lng(LT::Real)
 
-Converts a local time `LT` into a subsolar longitude `lng`.
+Converts a local time `LT` into a subsolar longitude `lng` (in rad).
 """
 LT2lng(LT::T) where {T<:AbstractFloat} = T(LT / 12 * pi - pi)
 LT2lng(LT::Real) = LT2lng(Float64(LT))
