@@ -2,6 +2,9 @@
 
 ## v0.1.13 (2025/??/??)
 
+- HOUSEKEEPING: Adjusted docstrings to match new format.
+  - `escape_velocity`
+
 ## v0.1.12 (2025/04/11)
 
 - FEATURE/HOUSEKEEPING: Changed `lunar_surface_temperatue_BUTLER1997` to 
