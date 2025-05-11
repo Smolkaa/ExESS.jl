@@ -2,6 +2,9 @@
 
 ## v0.1.13 (2025/??/??)
 
+- HOUSEKEEPING: Adjusted docstrings to match new format.
+  - `escape_velocity`
+
 ## v0.1.12 (2025/04/11)
 
 - FEATURE/HOUSEKEEPING: Changed `lunar_surface_temperatue_BUTLER1997` to 
@@ -20,6 +23,9 @@
     towards east and is defined mathematically positive)
 - HOUSEKEEPING (breaking): Changed the `trajectory` call signature to have the acceleration
   function in the `kwargs...` instead. Adjusted the tests accordingly.
+- HOUSEKEEPING: Removed `LocalSphericalVelocity` vector type, as it is unused throughout
+  the entire project. The removal improves code-readability, and general cleanliness.
+
 
 ## v0.1.11 (2024/10/08)
 

@@ -31,7 +31,8 @@ function trajectory(x0::NTuple{3, T}, v0::NTuple{3, T}; ddx::Function=ddx_gravit
         alg=Tsit5(), rmin::Real=LUNAR_RADIUS, rmax::Real=1e9, tspan::Tuple=(0f0,1f10),
         kwargs...) where {T<:AbstractFloat}
 
-    x0 = SA{T}[collect(x0 ./ norm(x0) .* (rmin + 0.1))...] # normalize starting position to surface
+    # x0 = SA{T}[collect(x0 ./ norm(x0) .* (rmin + 0.1))...] # normalize starting position to surface
+    x0 = SA[collect(x0)...]
     v0 = SA[collect(v0)...]
 
     function _f(du, u, p, t); return SA[ddx(u, du)...]; end
@@ -47,22 +48,22 @@ function trajectory(x0::NTuple{3, T}, v0::NTuple{3, T}; ddx::Function=ddx_gravit
     return solve(prob, alg; callback=cb, dtmin=1e-2, reltol=1e-4, kwargs...)
 end
 function trajectory(x0::Tuple{<:Real, <:Real, <:Real},
-                    v0::Tuple{<:Real, <:Real, <:Real}; kwargs...)
+        v0::Tuple{<:Real, <:Real, <:Real}, args...; kwargs...)
     x0_r, x0_theta, x0_phi, v0_x, v0_y, v0_z = promote(x0..., v0...)
-    return trajectory((x0_r, x0_theta, x0_phi), (v0_x, v0_y, v0_z); kwargs...)
+    return trajectory((x0_r, x0_theta, x0_phi), (v0_x, v0_y, v0_z), args...; kwargs...)
 end
 function trajectory(x0::Tuple{<:Integer, <:Integer, <:Integer},
-                    v0::Tuple{<:Integer, <:Integer, <:Integer}; kwargs...)
-    return trajectory(float.(x0), float.(v0); kwargs...)
+        v0::Tuple{<:Integer, <:Integer, <:Integer}, args...; kwargs...)
+    return trajectory(float.(x0), float.(v0), args...; kwargs...)
 end
-function trajectory(x0::AbstractVector, v0::AbstractVector; kwargs...)
-    return trajectory(Tuple(x0), Tuple(v0); kwargs...)
+function trajectory(x0::AbstractVector, v0::AbstractVector, args...; kwargs...)
+    return trajectory(Tuple(x0), Tuple(v0), args...; kwargs...)
 end
-function trajectory(x0::GlobalCartesianPosition, v0::GlobalCartesianVelocity; kwargs...)
-    return trajectory(Tuple(x0), Tuple(v0); kwargs...)
+function trajectory(x0::GlobalCartesianPosition, v0::GlobalCartesianVelocity, args...; kwargs...)
+    return trajectory(Tuple(x0), Tuple(v0), args...; kwargs...)
 end
-function trajectory(x0::AbstractPosition, v0::AbstractVelocity; kwargs...)
-    return trajectory(GlobalCartesianPosition(x0), GlobalCartesianVelocity(x0, v0); kwargs...)
+function trajectory(x0::AbstractPosition, v0::AbstractVelocity, args...; kwargs...)
+    return trajectory(GlobalCartesianPosition(x0), GlobalCartesianVelocity(x0, v0), args...; kwargs...)
 end
 
 

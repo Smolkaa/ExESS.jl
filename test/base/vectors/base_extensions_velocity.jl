@@ -4,7 +4,6 @@
     vt, vrt = Tuple(v), Tuple(vr)
     vgc1, vgc2 = GlobalCartesianVelocity(rand(3)), GlobalCartesianVelocity(rand(3))
     vlc1, vlc2 = LocalCartesianVelocity(rand(3)), LocalCartesianVelocity(rand(3))
-    vls1, vls2 = LocalSphericalVelocity(rand(3)), LocalSphericalVelocity(rand(3))
 
     @test typeof(vgc1 + vt) <: GlobalCartesianVelocity
     @test typeof(vgc1 + v) <: GlobalCartesianVelocity
@@ -12,7 +11,6 @@
     @test typeof(v + vgc2) <: GlobalCartesianVelocity
     @test typeof(vgc1 + vgc2) <: GlobalCartesianVelocity
     @test_throws MethodError typeof(vgc1 + vlc2) <: GlobalCartesianVelocity
-    @test_throws MethodError typeof(vgc1 + vls2) <: GlobalCartesianVelocity
 
     @test typeof(vlc1 + vt) <: LocalCartesianVelocity
     @test typeof(vlc1 + v) <: LocalCartesianVelocity
@@ -20,15 +18,6 @@
     @test typeof(v + vlc2) <: LocalCartesianVelocity
     @test_throws MethodError typeof(vlc1 + vgc2) <: LocalCartesianVelocity
     @test typeof(vlc1 + vlc2) <: LocalCartesianVelocity
-    @test typeof(vlc1 + vls2) <: LocalCartesianVelocity
-
-    @test typeof(vls1 + vt) <: LocalSphericalVelocity
-    @test typeof(vls1 + v) <: LocalSphericalVelocity
-    @test typeof(vt + vls2) <: LocalSphericalVelocity
-    @test typeof(v + vls2) <: LocalSphericalVelocity
-    @test_throws MethodError typeof(vls1 + vgc2) <: LocalSphericalVelocity
-    @test typeof(vls1 + vlc2) <: LocalSphericalVelocity
-    @test typeof(vls1 + vls2) <: LocalSphericalVelocity
 
     @test typeof(vgc1 - vt) <: GlobalCartesianVelocity
     @test typeof(vgc1 - v) <: GlobalCartesianVelocity
@@ -36,7 +25,6 @@
     @test typeof(v - vgc2) <: GlobalCartesianVelocity
     @test typeof(vgc1 - vgc2) <: GlobalCartesianVelocity
     @test_throws MethodError typeof(vgc1 - vlc2) <: GlobalCartesianVelocity
-    @test_throws MethodError typeof(vgc1 - vls2) <: GlobalCartesianVelocity
 
     @test typeof(vlc1 - vt) <: LocalCartesianVelocity
     @test typeof(vlc1 - v) <: LocalCartesianVelocity
@@ -44,15 +32,6 @@
     @test typeof(v - vlc2) <: LocalCartesianVelocity
     @test_throws MethodError typeof(vlc1 - vgc2) <: LocalCartesianVelocity
     @test typeof(vlc1 - vlc2) <: LocalCartesianVelocity
-    @test typeof(vlc1 - vls2) <: LocalCartesianVelocity
-
-    @test typeof(vls1 - vt) <: LocalSphericalVelocity
-    @test typeof(vls1 - v) <: LocalSphericalVelocity
-    @test typeof(vt - vls2) <: LocalSphericalVelocity
-    @test typeof(v - vls2) <: LocalSphericalVelocity
-    @test_throws MethodError typeof(vls1 - vgc2) <: LocalSphericalVelocity
-    @test typeof(vls1 - vlc2) <: LocalSphericalVelocity
-    @test typeof(vls1 - vls2) <: LocalSphericalVelocity
 
     @test typeof(vgc1 * a) <: GlobalCartesianVelocity
     @test typeof(a * vgc1) <: GlobalCartesianVelocity
@@ -62,7 +41,6 @@
     @test typeof(v * vgc2) <: GlobalCartesianVelocity
     @test typeof(vgc1 * vgc2) <: Real
     @test_throws MethodError typeof(vgc1 * vlc2) <: GlobalCartesianVelocity
-    @test_throws MethodError typeof(vgc1 * vls2) <: GlobalCartesianVelocity
 
     @test typeof(vlc1 * a) <: LocalCartesianVelocity
     @test typeof(a * vlc1) <: LocalCartesianVelocity
@@ -72,17 +50,6 @@
     @test typeof(v * vlc2) <: LocalCartesianVelocity
     @test typeof(vlc1 * vlc2) <: Real
     @test_throws MethodError typeof(vlc1 * vgc2) <: LocalCartesianVelocity
-    @test typeof(vlc1 * vls2) <: Real
-
-    @test typeof(vls1 * a) <: LocalSphericalVelocity
-    @test typeof(a * vls1) <: LocalSphericalVelocity
-    @test typeof(vls1 * vt) <: LocalSphericalVelocity
-    @test typeof(vls1 * v) <: LocalSphericalVelocity
-    @test typeof(vt * vls2) <: LocalSphericalVelocity
-    @test typeof(v * vls2) <: LocalSphericalVelocity
-    @test typeof(vls1 * vls2) <: Real
-    @test_throws MethodError typeof(vls1 * vgc2) <: LocalSphericalVelocity
-    @test typeof(vls1 * vlc2) <: Real
 
     @test typeof(vgc1 / a) <: GlobalCartesianVelocity
     @test_throws MethodError typeof(a / vgc1) <: GlobalCartesianVelocity
@@ -92,7 +59,6 @@
     @test_throws MethodError typeof(v / vgc2) <: GlobalCartesianVelocity
     @test_throws MethodError typeof(vgc1 / vgc2) <: Real
     @test_throws MethodError typeof(vgc1 / vlc2) <: GlobalCartesianVelocity
-    @test_throws MethodError typeof(vgc1 / vls2) <: GlobalCartesianVelocity
 
     @test typeof(vlc1 / a) <: LocalCartesianVelocity
     @test_throws MethodError typeof(a / vlc1) <: LocalCartesianVelocity
@@ -102,16 +68,5 @@
     @test_throws MethodError typeof(v / vlc2) <: LocalCartesianVelocity
     @test_throws MethodError typeof(vlc1 / vgc2) <: LocalCartesianVelocity
     @test_throws MethodError typeof(vlc1 / vlc2) <: Real
-    @test_throws MethodError typeof(vlc1 / vls2) <: LocalCartesianVelocity
-
-    @test typeof(vls1 / a) <: LocalSphericalVelocity
-    @test_throws MethodError typeof(a / vls1) <: LocalSphericalVelocity
-    @test typeof(vls1 / vt) <: LocalSphericalVelocity
-    @test typeof(vls1 / v) <: LocalSphericalVelocity
-    @test_throws MethodError typeof(vt / vls2) <: LocalSphericalVelocity
-    @test_throws MethodError typeof(v / vls2) <: LocalSphericalVelocity
-    @test_throws MethodError typeof(vls1 / vgc2) <: LocalSphericalVelocity
-    @test_throws MethodError typeof(vls1 / vlc2) <: Real
-    @test_throws MethodError typeof(vls1 / vls2) <: Real
 
 end
