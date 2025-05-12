@@ -11,6 +11,19 @@ spherical coordinates (radius, longitude, latitude).
 
 # Arguments
 - `r::Real`: Radius of the central planetary body (m)
+
+# Usage
+The distribution is to be used with the statistic functions: 
+- `cdf(..., l, u)` to evaluate the cumulative distribution function between two points `l` 
+  and `u`, where `l` and `u` are `Tuple`s or `Vector`s in spherical coordinates (radius, 
+  longitude, latitude) or `GlobalSphericalPosition` or `GlobalCartesianPosition`.
+- `pdf(..., x)` to evaluate the probability density function at a given point `x`, where `x` 
+  is a `Tuple` or `Vector` in spherical coordinates (radius, longitude, latitude) or 
+  `GlobalSphericalPosition` or `GlobalCartesianPosition`.
+- `rand([S], ..., [N])` to draw a uniformly random point on a spherical surface in 
+  spherical coordinates (radius, longitude, latitude). This function can be called with an 
+  optional type `S` to cast the output to that type. If `N` is provided, it will return
+  `N` samples in a `Vector` of `S`.
 """
 struct EqualSurfaceDistribution{S<:AbstractFloat} <: AbstractDistribution; r::S; end
 EqualSurfaceDistribution(r::Integer) = EqualSurfaceDistribution(Float64(r))
@@ -28,6 +41,19 @@ If sampled, returns a solar-wind distributed random point on the Sun-facing surf
 
 # Arguments
 - `r::Real`: Radius of the central planetary body (m)
+
+# Usage
+The distribution is to be used with the statistic functions:
+- `cdf(..., l, u)` to evaluate the cumulative distribution function between two points `l` 
+  and `u`, where `l` and `u` are `Tuple`s or `Vector`s in spherical coordinates (radius, 
+  longitude, latitude) or `GlobalSphericalPosition` or `GlobalCartesianPosition`.
+- `pdf(..., x)` to evaluate the probability density function at a given point `x`, where `x`
+  is a `Tuple` or `Vector` in spherical coordinates (radius, longitude, latitude) or 
+  `GlobalSphericalPosition` or `GlobalCartesianPosition`.
+- `rand([S], ..., [N])` to draw a uniformly random point on a solar-wind distributed
+  spherical surface in spherical coordinates (radius, longitude, latitude). This function 
+  can be called with an optional type `S` to cast the output to that type. If `N` is provided,
+  it will return `N` samples in a `Vector` of `S`.
 """
 struct SolarSurfaceDistribution{S<:AbstractFloat} <: AbstractDistribution; r::S; end
 SolarSurfaceDistribution(r::Integer) = SolarSurfaceDistribution(Float64(r))
