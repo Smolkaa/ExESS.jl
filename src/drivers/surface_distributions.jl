@@ -2,11 +2,15 @@
 #::. STRUCTS
 ############################################################################################
 """
-    [1] EqualSurfaceDistribution{S<:AbstractFloat}
-    [2] EqualSurfaceDistribution(r::Real)
+    EqualSurfaceDistribution{S<:AbstractFloat}
+    EqualSurfaceDistribution(r)
 
 Custom struct defining an equal surface distribution based on the surface area of a sphere.
-Uses the radius `r` in [m] of the central planetary body as input.
+If sampled, returns a uniformly distributed random point on the surface of a sphere in 
+spherical coordinates (radius, longitude, latitude).
+
+# Arguments
+- `r::Real`: Radius of the central planetary body (m)
 """
 struct EqualSurfaceDistribution{S<:AbstractFloat} <: AbstractDistribution; r::S; end
 EqualSurfaceDistribution(r::Integer) = EqualSurfaceDistribution(Float64(r))
@@ -14,12 +18,16 @@ EqualSurfaceDistribution(r::BigInt) = EqualSurfaceDistribution(BigFloat(r))
 
 
 """
-    [1] SolarSurfaceDistribution{S<:AbstractFloat}
-    [2] SolarSurfaceDistribution(r::Real)
+    SolarSurfaceDistribution{S<:AbstractFloat}
+    SolarSurfaceDistribution(r)
 
 Custom struct defining a surface distribution based on the influence of the solar wind.
-Uses the radius `r` in [m] of the central planetary body as input. Applies only to the
-Sun-facing side (i.e. subsolar longitude in `-pi/2 <= lon <= pi/2`).
+If sampled, returns a solar-wind distributed random point on the Sun-facing surface 
+(i.e. subsolar longitude in `-pi/2 <= lon <= pi/2`) of a sphere in  spherical coordinates 
+(radius, longitude, latitude).
+
+# Arguments
+- `r::Real`: Radius of the central planetary body (m)
 """
 struct SolarSurfaceDistribution{S<:AbstractFloat} <: AbstractDistribution; r::S; end
 SolarSurfaceDistribution(r::Integer) = SolarSurfaceDistribution(Float64(r))
@@ -80,12 +88,14 @@ end
 # overwriting additional `Base.rand` methods for multivariate surface distributions `_SDs`
 Base.rand(S::Type{<:AbstractFloat}, d::_SDs) = S.(rand(d))
 Base.rand(S::Type{<:GlobalSphericalPosition}, d::_SDs) = S(rand(d))
-function Base.rand(S::Type{<:AbstractFloat}, d::_SDs, N::Integer) # perormance improvment
+Base.rand(S::Type{<:GlobalCartesianPosition}, d::_SDs) = S(rand(GlobalSphericalPosition, d))
+function Base.rand(S::Type{<:AbstractFloat}, d::_SDs, N::Integer) # performance improvement
     SAMPLES = Vector{NTuple{3, S}}(undef, N)
     for i in 1:N; SAMPLES[i] = rand(S, d); end
     return SAMPLES
 end
 Base.rand(S::Type{<:GlobalSphericalPosition}, d::_SDs, N::Integer) = S.(rand(d, N))
+Base.rand(S::Type{<:GlobalCartesianPosition}, d::_SDs, N::Integer) = S.(rand(GlobalSphericalPosition, d, N))
 
 
 ############################################################################################

@@ -1,10 +1,3 @@
-#=
-    The type stability of the maxwellian distributions is usually goverend by the subtype
-    of the individual distribution type. In the `base/statistics.jl` file, an additional
-    method is defined that takes an additional input type as first argument, which
-    overwrites the type of the output. This is tested here as well.
-=#
-
 @testset "type stability" begin
 
     # Monte Carlo tests (N=100)
@@ -51,6 +44,8 @@
             @test rand(t4, d, 10) isa Vector{Tuple{t4, t4, t4}}
             @test rand(GlobalSphericalPosition, d) isa GlobalSphericalPosition
             @test rand(GlobalSphericalPosition, d, 10) isa Vector{GlobalSphericalPosition{t_out_1}}
+            @test rand(GlobalCartesianPosition, d) isa GlobalCartesianPosition
+            @test rand(GlobalCartesianPosition, d, 10) isa Vector{GlobalCartesianPosition{t_out_1}}
 
         end
     end
