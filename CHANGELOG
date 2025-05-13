@@ -4,6 +4,10 @@
 
 - HOUSEKEEPING: Adjusted docstrings to match new format.
   - `escape_velocity`
+- FEATURE: added `rand(GlobalCartesianPosition, EqualSurfaceDistribution(r), [N])`
+  functionality as a shorthand version of casting the type outside of the `rand` call.
+  Similarly, this also works for `SolarSurfaceDistribution`.
+
 
 ## v0.1.12 (2025/04/11)
 
