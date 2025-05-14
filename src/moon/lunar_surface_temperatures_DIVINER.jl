@@ -2,10 +2,10 @@
 #::. FUNCTIONS
 ############################################################################################
 """
-    [1] lunar_surface_temperatures_DIVINER([S], lon0)
-    [2] lunar_surface_temperatures_DIVINER([S], lon0, lon, lat)
-    [3] lunar_surface_temperatures_DIVINER([S], lon0, x)
-    [4] lunar_surface_temperatures_DIVINER([S], lon0, grid)
+    lunar_surface_temperatures_DIVINER([S], lon0)
+    lunar_surface_temperatures_DIVINER([S], lon0, lon, lat)
+    lunar_surface_temperatures_DIVINER([S], lon0, x)
+    lunar_surface_temperatures_DIVINER([S], lon0, grid)
 
 Returns the Diviner measurements based lunar surface temperatures, with the subsolar point
 shifted by `lon0` (in radians) in the range of (0, 2π) from the center. The input
@@ -129,10 +129,10 @@ end
 
 
 """
-    [1] lunar_surface_temperatures_DIVINER_avg([S])
-    [2] lunar_surface_temperatures_DIVINER_avg([S], lon, lat)
-    [3] lunar_surface_temperatures_DIVINER_avg([S], x)
-    [4] lunar_surface_temperatures_DIVINER_avg([S], grid)
+    lunar_surface_temperatures_DIVINER_avg([S])
+    lunar_surface_temperatures_DIVINER_avg([S], lon, lat)
+    lunar_surface_temperatures_DIVINER_avg([S], x)
+    lunar_surface_temperatures_DIVINER_avg([S], grid)
 
 Returns the Diviner measurements based averaged lunar surface temperatures. The input
 parameters are in spherical, sub-solar coordinates, with the longitude `lon` in the range
