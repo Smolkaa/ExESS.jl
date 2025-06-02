@@ -11,8 +11,8 @@
             @test J2eV(type(1))         isa BigFloat
             @test kJpmol2eV(type(1))    isa BigFloat
             @test limit_acos(type(1))   isa BigFloat
-            @test lng2LT(type(1))       isa BigFloat
-            @test LT2lng(type(1))       isa BigFloat
+            @test lon2LT(type(1))       isa BigFloat
+            @test LT2lon(type(1))       isa BigFloat
         elseif type <: Integer
             @test amu2kg(type(1))       isa Float64
             @test eV2J(type(1))         isa Float64
@@ -20,8 +20,8 @@
             @test J2eV(type(1))         isa Float64
             @test kJpmol2eV(type(1))    isa Float64
             @test limit_acos(type(1))   isa Float64
-            @test lng2LT(type(1))       isa Float64
-            @test LT2lng(type(1))       isa Float64
+            @test lon2LT(type(1))       isa Float64
+            @test LT2lon(type(1))       isa Float64
         else
             @test amu2kg(type(1))       isa type
             @test eV2J(type(1))         isa type  # could break for Float16 ?
@@ -29,8 +29,8 @@
             @test J2eV(type(1))         isa type  # could break for Float16 ?
             @test kJpmol2eV(type(1))    isa type
             @test limit_acos(type(1))   isa type
-            @test lng2LT(type(1))       isa type
-            @test LT2lng(type(1))       isa type
+            @test lon2LT(type(1))       isa type
+            @test LT2lon(type(1))       isa type
         end
         @test sgn(type(1)) isa type
     end
@@ -44,17 +44,17 @@
     @test all(r -> isapprox(eV2kJpmol(kJpmol2eV(r)), r, rtol=1e-6), rand(1000) * 10)
 
     #::. longitude <> local time conversion
-    @test isapprox(lng2LT(-pi),   0, rtol=1e-6)
-    @test isapprox(lng2LT(-pi/2), 6, rtol=1e-6)
-    @test isapprox(lng2LT(0),    12, rtol=1e-6)
-    @test isapprox(lng2LT(pi/2), 18, rtol=1e-6)
-    @test isapprox(lng2LT(pi),   24, rtol=1e-6)
-    @test isapprox(LT2lng(0),  -pi,   rtol=1e-6)
-    @test isapprox(LT2lng(6),  -pi/2, rtol=1e-6)
-    @test isapprox(LT2lng(12),  0,    rtol=1e-6)
-    @test isapprox(LT2lng(18),  pi/2, rtol=1e-6)
-    @test isapprox(LT2lng(24),  pi,   rtol=1e-6)
-    @test all(r -> isapprox(LT2lng(lng2LT(r)), r, rtol=1e-6), rand(1000) .* 2pi .- pi)
+    @test isapprox(lon2LT(-pi),   0, rtol=1e-6)
+    @test isapprox(lon2LT(-pi/2), 6, rtol=1e-6)
+    @test isapprox(lon2LT(0),    12, rtol=1e-6)
+    @test isapprox(lon2LT(pi/2), 18, rtol=1e-6)
+    @test isapprox(lon2LT(pi),   24, rtol=1e-6)
+    @test isapprox(LT2lon(0),  -pi,   rtol=1e-6)
+    @test isapprox(LT2lon(6),  -pi/2, rtol=1e-6)
+    @test isapprox(LT2lon(12),  0,    rtol=1e-6)
+    @test isapprox(LT2lon(18),  pi/2, rtol=1e-6)
+    @test isapprox(LT2lon(24),  pi,   rtol=1e-6)
+    @test all(r -> isapprox(LT2lon(lon2LT(r)), r, rtol=1e-6), rand(1000) .* 2pi .- pi)
 
     #::. pclamp
     function _test_pclamp()

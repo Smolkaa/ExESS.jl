@@ -55,23 +55,23 @@ limit_acos(x::Real) = (abs(x) > 1) ? acos(sign(x)) : acos(x)
 
 
 """
-    [1] lng2LT(lng::Real)
+    [1] lon2LT(lng::Real)
 
 Converts a subsolar longitude `lng` (in rad) into local time `LT`.
 """
-lng2LT(lng::T) where {T<:AbstractFloat} = T((lng + pi) / pi * 12)
-lng2LT(lng::Real) = lng2LT(Float64(lng))
-lng2LT(lng::BigInt) = lng2LT(BigFloat(lng))
+lon2LT(lng::T) where {T<:AbstractFloat} = T((lng + pi) / pi * 12)
+lon2LT(lng::Real) = lon2LT(Float64(lng))
+lon2LT(lng::BigInt) = lon2LT(BigFloat(lng))
 
 
 """
-    [1] LT2lng(LT::Real)
+    [1] LT2lon(LT::Real)
 
 Converts a local time `LT` into a subsolar longitude `lng` (in rad).
 """
-LT2lng(LT::T) where {T<:AbstractFloat} = T(LT / 12 * pi - pi)
-LT2lng(LT::Real) = LT2lng(Float64(LT))
-LT2lng(LT::BigInt) = LT2lng(BigFloat(LT))
+LT2lon(LT::T) where {T<:AbstractFloat} = T(LT / 12 * pi - pi)
+LT2lon(LT::Real) = LT2lon(Float64(LT))
+LT2lon(LT::BigInt) = LT2lon(BigFloat(LT))
 
 
 """
@@ -122,4 +122,4 @@ SpecialFunctions.erfinv(x::Float16) = Float16(erfinv(Float32(x)))
 ############################################################################################
 #::. EXPORTS
 ############################################################################################
-export amu2kg, eV2J, eV2kJpmol, J2eV, kJpmol2eV, limit_acos, lng2LT, LT2lng, pclamp, sgn
+export amu2kg, eV2J, eV2kJpmol, J2eV, kJpmol2eV, limit_acos, lon2LT, LT2lon, pclamp, sgn
