@@ -99,7 +99,15 @@ LT2lon(LT::BigInt) = LT2lon(BigFloat(LT))
 
 
 """
+    pclamp(x, l, u)
 
+Performs a periodic clamp of `x` between `l` and `u`, i.e., it returns `x` if it is within
+the bounds, otherwise it returns `l + mod(x - l, u - l)`.
+
+# Arguments
+- `x::Real`: Input value to be clamped.
+- `l::Real`: Lower bound of the clamp.
+- `u::Real`: Upper bound of the clamp.
 """
 function pclamp(x::T, l::T, u::T) where {T<:Real}
     if l <= x <= u; return x; end
