@@ -56,14 +56,12 @@ Note that all inputs (but the type `S`) can be used as vectors.
   DOI: 10.3847/psj/ad84e3
 """
 function local_solar_incidence_angle(lon::Real, lat::Real, slope::Real, az::Real)
-    az = typeof(float(az))(-pi/2 - az)
-    return limit_acos(cos(lat)   * cos(slope)            * cos(lon) +
-                      sin(lat)   * sin(slope) * cos(az)  * cos(lon) +
-                                   sin(slope) * sin(az)  * sin(lon) )
+    return limit_acos(cos(lat)   * cos(slope)            * cos(lon) -
+                      sin(lat)   * sin(slope) * sin(az)  * cos(lon) -
+                                   sin(slope) * cos(az)  * sin(lon) )
 end
 function local_solar_incidence_angle(lon::Real, lat::Real, slope::Real, az::Real, decl::Real)
-    az = typeof(float(az))(-pi/2 - az)
-    return limit_acos(sin(decl) * (sin(lat) * cos(slope) - cos(lat) * sin(slope) * cos(az))+
+    return limit_acos(sin(decl) * (sin(lat) * cos(slope) + cos(lat) * sin(slope) * sin(az))+
                       cos(decl) * cos(local_solar_incidence_angle(lon, lat, slope, az)))
 end
 function local_solar_incidence_angle(x::GlobalSphericalPosition, args...)
