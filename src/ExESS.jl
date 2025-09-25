@@ -71,11 +71,11 @@ include(joinpath(@__DIR__, "misc", "solar_incidence_angle.jl"))
 
 Scientific code library for simulating surface-bounded exosphere environments of airless
 bodies in the solar system. Note that the package is under development and subject to
-frequent changes. For questions, please contact the A. Smolka via email.
+frequent changes. For questions, please contact the A. Peschel via email.
 
 The documentation and manual can be found in the [GitHub wiki](https://github.com/Smolkaa/ExESS.jl/wiki).
 
-_Author: A. Smolka (a.smolka@tum.de)_
+_Author: A. Peschel (a.peschel@tum.de)_
 
 ## Installation & Usage
 
