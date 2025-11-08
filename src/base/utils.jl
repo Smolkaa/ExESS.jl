@@ -2,7 +2,7 @@
 #::. FUNCTIONS
 ############################################################################################
 """
-    amu2kg(amu)
+    amu2kg(amu) -> Real
 
 Converts atomic mass unit `amu` into kilo gram.
 
@@ -14,7 +14,7 @@ amu2kg(amu::Integer) = amu / AVOGADRO_CONSTANT / 1000
 
 
 """
-    eV2J(eV)
+    eV2J(eV) -> Real
 
 Converts energy in electron volt `eV` to joule.
 
@@ -26,7 +26,7 @@ eV2J(eV::Integer) = eV * ELEMENTARY_CHARGE
 
 
 """
-    eV2kJpmol(eV)
+    eV2kJpmol(eV) -> Real
 
 Converts energy in electron volt `eV` to kilo joule per mole.
 
@@ -38,7 +38,7 @@ eV2kJpmol(eV::Integer) = eV2J(eV) * AVOGADRO_CONSTANT / 1000
 
 
 """
-    J2eV(J)
+    J2eV(J) -> Real
 
 Converts energy in joule `J` to electron volt.
 
@@ -50,7 +50,7 @@ J2eV(J::Integer) = J / ELEMENTARY_CHARGE
 
 
 """
-    kJpmol2eV(kJpmol)
+    kJpmol2eV(kJpmol) -> Real
 
 Converts energy in kilo joule per mole `kJpmol` to electron volt.
 
@@ -62,7 +62,7 @@ kJpmol2eV(kJpmol::Integer) = J2eV(kJpmol * 1000) / AVOGADRO_CONSTANT
 
 
 """
-    limit_acos(x)
+    limit_acos(x) -> Real
 
 Extends the `acos` function for input outside of `[-1,1]` through clipping.
 
@@ -73,7 +73,7 @@ limit_acos(x::Real) = (abs(x) > 1) ? acos(sign(x)) : acos(x)
 
 
 """
-    lon2LT(lon)
+    lon2LT(lon) -> Real
 
 Converts a subsolar longitude `lon` (in rad) into local time `LT`.
 
@@ -86,7 +86,7 @@ lon2LT(lng::BigInt) = lon2LT(BigFloat(lng))
 
 
 """
-    LT2lon(LT)
+    LT2lon(LT) -> Real
 
 Converts a local time `LT` into a subsolar longitude `lon` (in rad).
 
@@ -99,7 +99,7 @@ LT2lon(LT::BigInt) = LT2lon(BigFloat(LT))
 
 
 """
-    pclamp(x, l, u)
+    pclamp(x, l, u) -> Real
 
 Performs a periodic clamp of `x` between `l` and `u`, i.e., it returns `x` if it is within
 the bounds, otherwise it returns `l + mod(x - l, u - l)`.
@@ -118,7 +118,7 @@ pclamp(x::Real, l::Real, u::Real) = pclamp(promote(x, l, u)...)
 
 
 """
-    sgn(x)
+    sgn(x) -> Real
 
 Returns the sign of `x` with the custom definition `sgn(0) = 1`.
 
