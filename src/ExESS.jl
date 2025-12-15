@@ -5,8 +5,9 @@ module ExESS
 #::. LOADING PACKAGES
 ############################################################################################
 using DelimitedFiles: readdlm
-using DifferentialEquations: ODESolution, SecondOrderODEProblem, solve, terminate!, Tsit5,
-                             VectorContinuousCallback
+using SciMLBase: ODESolution, SecondOrderODEProblem, terminate!, VectorContinuousCallback
+using OrdinaryDiffEq: solve
+using OrdinaryDiffEqTsit5: Tsit5
 using Interpolations: BSpline, Flat, interpolate, Linear, linear_interpolation
 using LinearAlgebra
 using NearestNeighbors: KDTree, knn
