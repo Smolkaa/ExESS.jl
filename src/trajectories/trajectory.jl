@@ -23,7 +23,7 @@ as the trajectory.
 - `tspan::Tuple=(0f0,1f10)`: Time span of the integration ((s), (s)).
 
 # Notes
-- 16-bit types are not accurate enough and will be promoted (no type-stability)
+- 16-bit types are not accurate enough and will be promoted (no type-stability).
 - The integration terminates if either the minimum or maximum radius is exceeded or if the
 end of the time span is reached.
 """
@@ -75,12 +75,12 @@ end
 """
     ddx_gravity(x; kwargs...)
 
-Acceleration function for gravity.  Assumes a global cartesian coordinate system, which is
+Acceleration function for gravity. Assumes a global cartesian coordinate system, which is
 centered at the center of the central object.
 
 # Arguments
 - `x::Tuple` or `x::AbstractVector` or `x::AbstractPosition`: Position of the particle in
-  global cartesian coordiantes (also accepts `GlobalSphericalPosition` type).
+  global cartesian coordinates (also accepts `GlobalSphericalPosition` type).
 
 # Key-Word Arguments
 - `m::Real=LUNAR_MASS`: mass of central object (kg).
@@ -104,6 +104,20 @@ function ddx_gravity(x::GlobalSphericalPosition; kwargs...)
     return ddx_gravity(GlobalCartesianPosition(x); kwargs...)
 end
 ddx_gravity(x, args...; kwargs...) = ddx_gravity(x; kwargs...)
+
+
+"""
+    ddx0(args...; kwargs...) = (0, 0, 0)
+
+Accelerator function for zero acceleration. Used to simulate ray tracing. 
+"""
+ddx0(x::NTuple{3, T}) where {T<:AbstractFloat} = T.((0,0,0))
+ddx0(x::Tuple{<:Real, <:Real, <:Real}) = ddx0((promote(x...)); kwargs...)
+ddx0(x::Tuple{<:Integer, <:Integer, <:Integer}) = ddx0(float.(x); kwargs...)
+ddx0(x::AbstractVector) = ddx0(Tuple(x))
+ddx0(x::GlobalCartesianPosition) = ddx0(Tuple(x))
+ddx0(x::GlobalSphericalPosition) = ddx0(GlobalCartesianPosition(x))
+ddx0(x, args...; kwargs...) = ddx0(x)
 
 
 ############################################################################################
