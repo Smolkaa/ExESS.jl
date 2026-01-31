@@ -8,24 +8,34 @@ abstract type AbstractSpherical2DGrid <: AbstractSphericalGrid end
 #::. FUNCTIONS
 ############################################################################################
 """
-    [1] struct Spherical2DGrid{T<:AbstractFloat} <: AbstractSpherical2DGrid end
-    [2] Spherical2DGrid([T::Type,] r::Real, N_lon::Integer, N_lat::Integer; kwargs...)
+    struct Spherical2DGrid{T<:AbstractFloat} <: AbstractSpherical2DGrid end
+    Spherical2DGrid([T,] r, N_lon, N_lat; kwargs...)
 
 Global structured grid of surface coordinates (2D) of type `GlobalSphericalPosition{T}` over
 a sphere of radius `r`.
 
-| Field      | Type; with `T<:AbstractFloat`        | Description                       |
-|:---------- |:------------------------------------ |:--------------------------------- |
-| `r`        | `T`                                  | radius of global body (sphere)    |
-| `N_lon`    | `Int64`                              | # elements in longitude direction |
-| `N_lat`    | `Int64`                              | # elements in latitude direction  |
-| `coords`   | `Vector{GlobalSphericalPosition{T}}` | coordinates                       |
-| `areas`    | `Vector{T}`                          | surface area                      |
-| `lonrange` | `Tuple{T, T}`                        | longitude range                   |
-| `latrange` | `Tuple{T, T}`                        | latitude range                    |
+# Arguments
+- `T::Type{<:AbstractFloat}`: (optional) Floating point type for the grid coordinates.
+- `r::Real`: Radius of the sphere in (m).
+- `N_lon::Integer`: Number of grid elements in the longitude direction.
+- `N_lat::Integer`: Number of grid elements in the latitude direction.
 
+# Keyword Arguments
+- `lonrange::Tuple{Real, Real}`: (optional) Longitude range of the grid (default: `(-π, π)`).
+- `latrange::Tuple{Real, Real}`: (optional) Latitude range of the grid (default: `(-π/2, π/2)`).
+
+# Struct Fields
+- `r::Real`: Radius of the sphere in (m).
+- `N_lon::Integer`: Number of grid elements in the longitude direction.
+- `N_lat::Integer`: Number of grid elements in the latitude direction.
+- `coords::Vector{GlobalSphericalPosition{AbstractFloat}}`: Vector of surface coordinates.
+- `areas::Vector{AbstractFloat}`: Vector of surface areas of each grid element in (m2).
+- `lonrange::Tuple{AbstractFloat, AbstractFloat}`: Longitude range of the grid.
+- `latrange::Tuple{AbstractFloat, AbstractFloat}`: Latitude range of the grid.
+
+# Notes
 To ensure expected behavior, the grid object should generally be created with the outer
-constructor [2].
+constructor.
 """
 struct Spherical2DGrid{T<:AbstractFloat} <: AbstractSpherical2DGrid
     r::T
@@ -63,24 +73,34 @@ end
 
 
 """
-    [1] struct Spherical2DGrid_EqSim{T<:AbstractFloat} <: AbstractSpherical2DGrid end
-    [2] Spherical2DGrid_EqSim([T::Type,] r::Real, N_lon::Integer, N_lat::Integer; kwargs...)
+    struct Spherical2DGrid_EqSim{T<:AbstractFloat} <: AbstractSpherical2DGrid end
+    Spherical2DGrid_EqSim([T,] r, N_lon, N_lat; kwargs...)
 
 Global structured grid of surface coordinates (2D) of type `GlobalSphericalPosition{T}` over
 the upper hemisphere with radius `r`, assuming equatorial symmetry.
 
-| Field      | Type; with `T<:AbstractFloat`        | Description                       |
-|:---------- |:------------------------------------ |:--------------------------------- |
-| `r`        | `T`                                  | radius of global body (sphere)    |
-| `N_lon`    | `Int64`                              | # elements in longitude direction |
-| `N_lat`    | `Int64`                              | # elements in latitude direction  |
-| `coords`   | `Vector{GlobalSphericalPosition{T}}` | coordinates                       |
-| `areas`    | `Vector{T}`                          | surface area                      |
-| `lonrange` | `Tuple{T, T}`                        | longitude range                   |
-| `latrange` | `Tuple{T, T}`                        | latitude range                    |
+# Arguments
+- `T::Type{<:AbstractFloat}`: (optional) Floating point type for the grid coordinates.
+- `r::Real`: Radius of the sphere in (m).
+- `N_lon::Integer`: Number of grid elements in the longitude direction.
+- `N_lat::Integer`: Number of grid elements in the latitude direction.
 
+# Keyword Arguments
+- `lonrange::Tuple{Real, Real}`: (optional) Longitude range of the grid (default: `(-π, π)`).
+- `latmax::Real`: (optional) Maximum latitude of the grid (default: `π/2`).
+
+# Struct Fields
+- `r::Real`: Radius of the sphere in (m).
+- `N_lon::Integer`: Number of grid elements in the longitude direction.
+- `N_lat::Integer`: Number of grid elements in the latitude direction.
+- `coords::Vector{GlobalSphericalPosition{AbstractFloat}}`: Vector of surface coordinates.
+- `areas::Vector{AbstractFloat}`: Vector of surface areas of each grid element in (m2).
+- `lonrange::Tuple{AbstractFloat, AbstractFloat}`: Longitude range of the grid.
+- `latrange::Tuple{AbstractFloat, AbstractFloat}`: Latitude range of the grid.
+
+# Notes
 To ensure expected behavior, the grid object should generally be created with the outer
-constructor [2]. The function comes with a unique key-word argument `latmax` to set the
+constructor. The function comes with a unique key-word argument `latmax` to set the
 maximum latitude of the grid. Due to its equatorial symmetry, `latrange[1]=0` and `latmax>0`.
 """
 struct Spherical2DGrid_EqSim{T<:AbstractFloat} <: AbstractSpherical2DGrid
@@ -118,25 +138,34 @@ end
 
 
 """
-    [1] struct Spherical2DGrid_Reduced{T<:AbstractFloat} <: AbstractSpherical2DGrid end
-    [2] Spherical2DGrid_Reduced([T::Type,] r::Real, N_lat::Integer; kwargs...)
+    struct Spherical2DGrid_Reduced{T<:AbstractFloat} <: AbstractSpherical2DGrid end
+    Spherical2DGrid_Reduced([T,] r, N_lat; kwargs...)
 
 Global structured grid of surface coordinates (2D) of type `GlobalSphericalPosition{T}` over
 the sphere radius `r`. The grid is reduced in the longitude direction to have approximately
 equal `(lonrange[2]-lonrange[1])*r*cos(lat)/N_lon` grid element lengths.
 
-| Field      | Type; with `T<:AbstractFloat`        | Description                       |
-|:---------- |:------------------------------------ |:--------------------------------- |
-| `r`        | `T`                                  | radius of global body (sphere)    |
-| `N_lon`    | `Vector{Int64}`                      | # elements in longitude direction |
-| `N_lat`    | `Int64`                              | # elements in latitude direction  |
-| `coords`   | `Vector{GlobalSphericalPosition{T}}` | coordinates                       |
-| `areas`    | `Vector{T}`                          | surface area                      |
-| `lonrange` | `Tuple{T, T}`                        | longitude range                   |
-| `latrange` | `Tuple{T, T}`                        | latitude range                    |
+# Arguments
+- `T::Type{<:AbstractFloat}`: (optional) Floating point type for the grid coordinates.
+- `r::Real`: Radius of the sphere in (m).
+- `N_lat::Integer`: Number of grid elements in the latitude direction.
 
+# Keyword Arguments
+- `lonrange::Tuple{Real, Real}`: (optional) Longitude range of the grid (default: `(-π, π)`).
+- `latrange::Tuple{Real, Real}`: (optional) Latitude range of the grid (default: `(-π/2, π/2)`).
+
+# Struct Fields
+- `r::Real`: Radius of the sphere in (m).
+- `N_lon::Vector{Int64}`: Number of grid elements in the longitude direction, per latitude.
+- `N_lat::Integer`: Number of grid elements in the latitude direction.
+- `coords::Vector{GlobalSphericalPosition{AbstractFloat}}`: Vector of surface coordinates.
+- `areas::Vector{AbstractFloat}`: Vector of surface areas of each grid element in (m2).
+- `lonrange::Tuple{AbstractFloat, AbstractFloat}`: Longitude range of the grid.
+- `latrange::Tuple{AbstractFloat, AbstractFloat}`: Latitude range of the grid.
+
+# Notes
 To ensure expected behavior, the grid object should generally be created with the outer
-constructor [2].
+constructor.
 """
 struct Spherical2DGrid_Reduced{T<:AbstractFloat} <: AbstractSpherical2DGrid
     r::T
@@ -189,24 +218,35 @@ end
 
 
 """
-    [1] struct Spherical2DGrid_Reduced_EqSim{T<:AbstractFloat} <: AbstractSpherical2DGrid end
-    [2] Spherical2DGrid_Reduced_EqSim([T::Type,] r::Real, N_lat::Integer; kwargs...)
+    struct Spherical2DGrid_Reduced_EqSim{T<:AbstractFloat} <: AbstractSpherical2DGrid end
+    Spherical2DGrid_Reduced_EqSim([T,] r, N_lat; kwargs...)
 
 Global structured grid of surface coordinates (2D) of type `GlobalSphericalPosition{T}` over
 the upper hemisphere with radius `r`, assuming equatorial symmetry. The grid is reduced in
 the longitude direction to have approximately equal
 `(lonrange[2]-lonrange[1])*r*cos(lat)/N_lon` grid element lengths.
 
-| Field     | Type; with `T<:AbstractFloat`        | Description                       |
-|:--------- |:------------------------------------ |:--------------------------------- |
-| `r`       | `T`                                  | radius of global body (sphere)    |
-| `N_lon`   | `Vector{Int64}`                      | # elements in longitude direction |
-| `N_lat`   | `Int64`                              | # elements in latitude direction  |
-| `coords`  | `Vector{GlobalSphericalPosition{T}}` | coordinates                       |
-| `areas`   | `Vector{T}`                          | surface area                      |
+# Arguments
+- `T::Type{<:AbstractFloat}`: (optional) Floating point type for the grid coordinates.
+- `r::Real`: Radius of the sphere in (m).
+- `N_lat::Integer`: Number of grid elements in the latitude direction.
 
+# Keyword Arguments
+- `lonrange::Tuple{Real, Real}`: (optional) Longitude range of the grid (default: `(-π, π)`).
+- `latmax::Real`: (optional) Maximum latitude of the grid (default: `π/2`).
+
+# Struct Fields
+- `r::Real`: Radius of the sphere in (m).
+- `N_lon::Vector{Int64}`: Number of grid elements in the longitude direction, per latitude.
+- `N_lat::Integer`: Number of grid elements in the latitude direction.
+- `coords::Vector{GlobalSphericalPosition{AbstractFloat}}`: Vector of surface coordinates.
+- `areas::Vector{AbstractFloat}`: Vector of surface areas of each grid element in (m2).
+- `lonrange::Tuple{AbstractFloat, AbstractFloat}`: Longitude range of the grid.
+- `latrange::Tuple{AbstractFloat, AbstractFloat}`: Latitude range of the grid.
+
+# Notes
 To ensure expected behavior, the grid object should generally be created with the outer
-constructor [2]. The function comes with a unique key-word argument `latmax` to set the
+constructor. The function comes with a unique key-word argument `latmax` to set the
 maximum latitude of the grid. Due to its equatorial symmetry, `latrange[1]=0` and `latmax>0`.
 """
 struct Spherical2DGrid_Reduced_EqSim{T<:AbstractFloat} <: AbstractSpherical2DGrid
