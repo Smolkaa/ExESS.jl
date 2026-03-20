@@ -2,6 +2,16 @@
 #::. CONSTANTS
 ############################################################################################
 """
+    LUNAR_DAY::Float64 = 2.55144300192e6
+
+Length of a day on the Moon, with respect to the Sun (also: synodic period), in (s).
+
+https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html
+"""
+const LUNAR_DAY = 3600 * 24 * 29.5305903 # (s)
+
+
+"""
     LUNAR_MASS::Float64 = 7.346e22
 
 Mass of the Moon in (kg).
@@ -31,26 +41,10 @@ https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html
 const LUNAR_ROTATION_PERIOD = 3600 * 24 * 27.3217 # (s)
 
 
-"""
-    LUNAR_ORBITAL_PERIOD::Float64 = 2.36059488e6
 
-Length of the orbital period of the Moon around Earth in (s).
-
-https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html
-"""
-const LUNAR_ORBITAL_PERIOD = LUNAR_ROTATION_PERIOD # (s)
-
-
-"""
-    LUNAR_DAY::Float64 = 2.55144300192e6
-
-Length of a day on the Moon, with respect to the Sun (also: synodic period), in (s).
-
-https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html
-"""
-const LUNAR_DAY = 3600 * 24 * 29.5305903 # (s)
-
-
+############################################################################################
+#::. DERIVED CONSTANTS (for convenience)
+############################################################################################
 """
     LUNAR_g0::Float64 = 1.6242654756205575
 
@@ -60,6 +54,16 @@ This constant is a precalculated value based on: `G * m_M / r_M^2`, with the gra
 constant `G`, the lunar mass `m_M`, and the meand lunar radius `r_M`.
 """
 const LUNAR_g0 = GRAVITATIONAL_CONSTANT * LUNAR_MASS / LUNAR_RADIUS^2 # (m s-2)
+
+
+"""
+    LUNAR_ORBITAL_PERIOD::Float64 = 2.36059488e6
+
+Length of the orbital period of the Moon around Earth in (s).
+
+https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html
+"""
+const LUNAR_ORBITAL_PERIOD = LUNAR_ROTATION_PERIOD # (s)
 
 
 
