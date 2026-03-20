@@ -50,6 +50,7 @@ include(joinpath(@__DIR__, "ceres", "constants.jl"))
 
 # mercury
 include(joinpath(@__DIR__, "mercury", "constants.jl"))
+include(joinpath(@__DIR__, "mercury", "mercury_surface_temperatures.jl"))
 
 # moon
 include(joinpath(@__DIR__, "moon", "constants.jl"))
