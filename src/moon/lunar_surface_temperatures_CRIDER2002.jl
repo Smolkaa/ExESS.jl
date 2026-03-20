@@ -22,7 +22,7 @@ can provide a type `S` to convert the output to the desired type.
 - `lat::Real` or `lat::AbstractVector`: Latitude(s) in the range (-π/2, π/2).
 - `grid::AbstractGrid`: Grid of points to evaluate the temperatures.
 
-# Key-Word Arguments (Based on Crider et al., 2002)
+# Key-Word Arguments
 - `T0::Real=100`: Minimum (night time) temperature in Kelvin.
 - `T1::Real=280`: Amplitude of cosine temperature variation in Kelvin. In Killen et al.
   2019, this value is assumed to be 250 K.

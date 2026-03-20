@@ -15,17 +15,17 @@ Global structured grid of surface coordinates (2D) of type `GlobalSphericalPosit
 a sphere of radius `r`.
 
 # Arguments
-- `T::Type{<:AbstractFloat}`: (optional) Floating point type for the grid coordinates.
+- `T::Type{<:AbstractFloat}`: (optional) Floating point type for the grid.
 - `r::Real`: Radius of the sphere in (m).
 - `N_lon::Integer`: Number of grid elements in the longitude direction.
 - `N_lat::Integer`: Number of grid elements in the latitude direction.
 
 # Keyword Arguments
-- `lonrange::Tuple{Real, Real}`: (optional) Longitude range of the grid (default: `(-π, π)`).
-- `latrange::Tuple{Real, Real}`: (optional) Latitude range of the grid (default: `(-π/2, π/2)`).
+- `lonrange::Tuple{Real, Real}`: (optional) Longitude range of the grid (default: `(-pi, pi)`).
+- `latrange::Tuple{Real, Real}`: (optional) Latitude range of the grid (default: `(-pi/2, pi/2)`).
 
 # Struct Fields
-- `r::Real`: Radius of the sphere in (m).
+- `r::AbstractFloat`: Radius of the sphere in (m).
 - `N_lon::Integer`: Number of grid elements in the longitude direction.
 - `N_lat::Integer`: Number of grid elements in the latitude direction.
 - `coords::Vector{GlobalSphericalPosition{AbstractFloat}}`: Vector of surface coordinates.
@@ -86,11 +86,11 @@ the upper hemisphere with radius `r`, assuming equatorial symmetry.
 - `N_lat::Integer`: Number of grid elements in the latitude direction.
 
 # Keyword Arguments
-- `lonrange::Tuple{Real, Real}`: (optional) Longitude range of the grid (default: `(-π, π)`).
-- `latmax::Real`: (optional) Maximum latitude of the grid (default: `π/2`).
+- `lonrange::Tuple{Real, Real}`: (optional) Longitude range of the grid (default: `(-pi, pi)`).
+- `latmax::Real`: (optional) Maximum latitude of the grid (default: `pi/2`).
 
 # Struct Fields
-- `r::Real`: Radius of the sphere in (m).
+- `r::AbstractFloat`: Radius of the sphere in (m).
 - `N_lon::Integer`: Number of grid elements in the longitude direction.
 - `N_lat::Integer`: Number of grid elements in the latitude direction.
 - `coords::Vector{GlobalSphericalPosition{AbstractFloat}}`: Vector of surface coordinates.
@@ -151,8 +151,8 @@ equal `(lonrange[2]-lonrange[1])*r*cos(lat)/N_lon` grid element lengths.
 - `N_lat::Integer`: Number of grid elements in the latitude direction.
 
 # Keyword Arguments
-- `lonrange::Tuple{Real, Real}`: (optional) Longitude range of the grid (default: `(-π, π)`).
-- `latrange::Tuple{Real, Real}`: (optional) Latitude range of the grid (default: `(-π/2, π/2)`).
+- `lonrange::Tuple{Real, Real}`: (optional) Longitude range of the grid (default: `(-pi, pi)`).
+- `latrange::Tuple{Real, Real}`: (optional) Latitude range of the grid (default: `(-pi/2, pi/2)`).
 
 # Struct Fields
 - `r::Real`: Radius of the sphere in (m).
@@ -232,8 +232,8 @@ the longitude direction to have approximately equal
 - `N_lat::Integer`: Number of grid elements in the latitude direction.
 
 # Keyword Arguments
-- `lonrange::Tuple{Real, Real}`: (optional) Longitude range of the grid (default: `(-π, π)`).
-- `latmax::Real`: (optional) Maximum latitude of the grid (default: `π/2`).
+- `lonrange::Tuple{Real, Real}`: (optional) Longitude range of the grid (default: `(-pi, pi)`).
+- `latmax::Real`: (optional) Maximum latitude of the grid (default: `pi/2`).
 
 # Struct Fields
 - `r::Real`: Radius of the sphere in (m).

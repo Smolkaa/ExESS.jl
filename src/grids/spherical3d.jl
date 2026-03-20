@@ -8,37 +8,43 @@ abstract type AbstractSpherical3DGrid <: AbstractSphericalGrid end
 #::. FUNCTIONS
 ############################################################################################
 """
-    struct Spherical3DGrid{T} <: AbstractSpherical3DGrid
-    Spherical3DGrid([T], r0, h, N_lon, N_lat; kwargs...)
-    Spherical3DGrid([T], r, N_lon, N_lat; kwargs...)
+    struct Spherical3DGrid{T<:AbstractFloat} <: AbstractSpherical3DGrid
+    Spherical3DGrid([T], r, [h,] N_lon, N_lat; kwargs...)
 
-Global structured volume grid (3D) of type `GlobalSphericalPosition{T}` over a sphere of
-radius `r0` with heights of the individual radial layers `h`. Alternatively, the radial
-distances can directly be specified by `r` (`r = r0 .+ h`). Note that all heights have
-to be positive. Note that the radial position of each individual grid element is located
-at the bottom (base/surface) of each cell.
+Global structured volume grid (3D) of type `GlobalSphericalPosition` over a sphere of
+radius `r` with heights of the individual radial layers `h`. Alternatively, the radial
+distances can directly be specified by a vector of radial coordinates `r`.
 
-To ensure expected behavior, the grid object should generally be created with the outer
-constructors. Those functions take the key-word `lonrange` and `latrange` to specify the
-range of the longitude and latitude. The default values are `(-pi, pi)` and `(-pi/2, pi/2)`,
-respectively.
+# Arguments
+- `T::Type{<:AbstractFloat}`: (optional) Floating point type for the grid.
+- `r::Real` or `r::AbstractVector{<:Real}`: Radius of the base of the sphere, or the vector
+  of radial positions of the grid elements in (m).
+- `h::AbstractVector{<:Real}`: (optional) Heights of the individual radial layers in (m). 
+  Must be positive. Can only be used with a scalar `r`.
+- `N_lon::Integer`: Number of grid elements in the longitude direction.
+- `N_lat::Integer`: Number of grid elements in the latitude direction.
 
-The optional argument `T can be used to control the type of the structs fields.
+# Keyword Arguments
+- `lonrange::Tuple{Real, Real}`: (optional) Longitude range of the grid (default: `(-pi, pi)`).
+- `latrange::Tuple{Real, Real}`: (optional) Latitude range of the grid (default: `(-pi/2, pi/2)`).
 
-# Fields & Arguments
+# Struct Fields
+- `r0::AbstractFloat`: Radius of the sphere in (m).
+- `h::Vector{AbstractFloat}`: Heights of the individual radial layers in (m).
+- `N_r::Int64`: Number of grid elements in the radial direction.
+- `N_lon::Int64`: Number of grid elements in the longitude direction.
+- `N_lat::Int64`: Number of grid elements in the latitude direction.
+- `coords::Vector{GlobalSphericalPosition{AbstractFloat}}`: Coordinates of the grid elements.
+- `areas::Vector{AbstractFloat}`: Surface areas of the grid elements in (m2).
+- `volumes::Vector{AbstractFloat}`: Volumes of the grid elements in (m3).
+- `lonrange::Tuple{AbstractFloat, AbstractFloat}`: Longitude range of the grid.
+- `latrange::Tuple{AbstractFloat, AbstractFloat}`: Latitude range of the grid.
 
-| Field      | Type; with `T<:AbstractFloat`        | Description                       |
-|:---------- |:------------------------------------ |:--------------------------------- |
-| `r0`       | `T`                                  | radius of global body (sphere)    |
-| `h`        | `Vector{T}`                          | heights above radial base `r0`    |
-| `N_r`      | `Int64`                              | # elements in radial direction    |
-| `N_lon`    | `Int64`                              | # elements in longitude direction |
-| `N_lat`    | `Int64`                              | # elements in laditude direction  |
-| `coords`   | `Vector{GlobalSphericalPosition{T}}` | coordinates                       |
-| `areas`    | `Vector{T}`                          | surface area                      |
-| `volumes`  | `Vector{T}`                          | volumes                           |
-| `lonrange` | `Tuple{T, T}`                        | longitude range                   |
-| `latrange` | `Tuple{T, T}`                        | latitude range                    |
+# Notes
+- The radial position/coordinate of each grid element is located at the bottom/base of
+  each cell.
+- To ensure expected behavior, the grid object should generally be created with the outer 
+  constructors.
 """
 struct Spherical3DGrid{T<:AbstractFloat} <: AbstractSpherical3DGrid
     r0::T
@@ -104,38 +110,44 @@ function Spherical3DGrid(r::AbstractVector{<:Integer}, N_lon::Integer, N_lat::In
 end
 
 """
-    struct Spherical3DGrid_EqSim{T} <: AbstractSpherical3DGrid
-    Spherical3DGrid_EqSim([T], r0, h, N_lon, N_lat; kwargs...)
-    Spherical3DGrid_EqSim([T], r, N_lon, N_lat; kwargs...)
+    struct Spherical3DGrid_EqSim{T<:AbstractFloat} <: AbstractSpherical3DGrid
+    Spherical3DGrid_EqSim([T], r, [h,] N_lon, N_lat; kwargs...)
 
-Global structured volume grid (3D) of type `GlobalSphericalPosition{T}` over a hemisphere of
-radius `r0` with heights of the individual radial layers `h`. Alternatively, the radial
-distances can directly be specified by `r` (`r = r0 .+ h`). Note that all heights have
-to be positive. Note that the radial position of each individual grid element is located
-at the bottom (base/surface) of each cell.
+Global, structured, equatorially symmetric volume grid (3D) of type `GlobalSphericalPosition` 
+over a hemisphere of radius `r` with heights of the individual radial layers `h`. 
+Alternatively, the radial distances can directly be specified by a vector of radial 
+coordinates `r`.
 
-To ensure expected behavior, the grid object should generally be created with the outer
-constructors. Those functions take the key-word `lonrange` and `latmax` to
-specify the range of the longitude and latitude. The default values are `(-pi, pi)` and
-`pi/2`, respectively (the lower boundary of latitudes for equatorially symmetric grids is
-always zero).
+# Arguments
+- `T::Type{<:AbstractFloat}`: (optional) Floating point type for the grid.
+- `r::Real` or `r::AbstractVector{<:Real}`: Radius of the base of the sphere, or the vector
+  of radial positions of the grid elements in (m).
+- `h::AbstractVector{<:Real}`: (optional) Heights of the individual radial layers in (m). 
+  Must be positive. Can only be used with a scalar `r`.
+- `N_lon::Integer`: Number of grid elements in the longitude direction.
+- `N_lat::Integer`: Number of grid elements in the latitude direction.
 
-The optional argument `T can be used to control the type of the structs fields.
+# Keyword Arguments
+- `lonrange::Tuple{Real, Real}`: (optional) Longitude range of the grid (default: `(-pi, pi)`).
+- `latmax::Real`: (optional) Maximum latitude of the grid (default: `pi/2`).
 
-# Fields & Arguments
+# Struct Fields
+- `r0::AbstractFloat`: Radius of the sphere in (m).
+- `h::Vector{AbstractFloat}`: Heights of the individual radial layers in (m).
+- `N_r::Int64`: Number of grid elements in the radial direction.
+- `N_lon::Int64`: Number of grid elements in the longitude direction.
+- `N_lat::Int64`: Number of grid elements in the latitude direction.
+- `coords::Vector{GlobalSphericalPosition{AbstractFloat}}`: Coordinates of the grid elements.
+- `areas::Vector{AbstractFloat}`: Surface areas of the grid elements in (m2).
+- `volumes::Vector{AbstractFloat}`: Volumes of the grid elements in (m3).
+- `lonrange::Tuple{AbstractFloat, AbstractFloat}`: Longitude range of the grid.
+- `latrange::Tuple{AbstractFloat, AbstractFloat}`: Latitude range of the grid.
 
-| Field      | Type; with `T<:AbstractFloat`        | Description                       |
-|:---------- |:------------------------------------ |:--------------------------------- |
-| `r0`       | `T`                                  | radius of global body (sphere)    |
-| `h`        | `Vector{T}`                          | heights above radial base `r0`    |
-| `N_r`      | `Int64`                              | # elements in radial direction    |
-| `N_lon`    | `Int64`                              | # elements in azimuth direction   |
-| `N_lat`    | `Int64`                              | # elements in elevation direction |
-| `coords`   | `Vector{GlobalSphericalPosition{T}}` | coordinates                       |
-| `areas`    | `Vector{T}`                          | surface area                      |
-| `volumes`  | `Vector{T}`                          | volumes                           |
-| `lonrange` | `Tuple{T, T}`                        | longitude range                   |
-| `latrange` | `Tuple{T, T}`                        | latitude range                    |
+# Notes
+- The radial position/coordinate of each grid element is located at the bottom/base of
+  each cell.
+- To ensure expected behavior, the grid object should generally be created with the outer 
+  constructors.
 """
 struct Spherical3DGrid_EqSim{T<:AbstractFloat} <: AbstractSpherical3DGrid
     r0::T
@@ -201,36 +213,43 @@ end
 
 """
     struct Spherical3DGrid_Reduced{T} <: AbstractSpherical3DGrid
-    Spherical3DGrid_Reduced([T], r0, h, N_lat; kwargs...)
-    Spherical3DGrid_Reduced([T], r, N_lat; kwargs...)
+    Spherical3DGrid_Reduced([T], r, [h,] N_lat; kwargs...)
 
-Global structured volume grid (3D) of type `GlobalSphericalPosition{T}` over a sphere of
-radius `r0` with heights of the individual radial layers `h`. Alternatively, the radial
-distances can directly be specified by `r` (`r = r0 .+ h`). Note that all heights have
-to be positive. The grid is reduced in the azimuth direction to have approximately equal
-`(lonrange[2]-lonrange[1])*r*cos(lat)/N_lon` grid element lengths.
+Global, structured, reduced volume grid (3D) of type `GlobalSphericalPosition{T}` over a 
+sphere of radius `r0` with heights of the individual radial layers `h`. Alternatively, the 
+radial distances can directly be specified by a vector of radial coordinates `r`.
 
-To ensure expected behavior, the grid object should generally be created with the outer
-constructors. Those functions take the key-word `lonrange` and `latrange` to specify the
-range of the longitude and latitude. The default values are `(-pi, pi)` and `(-pi/2, pi/2)`,
-respectively.
+# Arguments
+- `T::Type{<:AbstractFloat}`: (optional) Floating point type for the grid.
+- `r::Real` or `r::AbstractVector{<:Real}`: Radius of the base of the sphere, or the vector
+  of radial positions of the grid elements in (m).
+- `h::AbstractVector{<:Real}`: (optional) Heights of the individual radial layers in (m).
+  Must be positive. Can only be used with a scalar `r`.
+- `N_lat::Integer`: Number of grid elements in the latitude direction.
 
-The optional argument `T can be used to control the type of the structs fields.
+# Keyword Arguments
+- `lonrange::Tuple{Real, Real}`: (optional) Longitude range of the grid (default: `(-pi, pi)`).
+- `latrange::Tuple{Real, Real}`: (optional) Latitude range of the grid (default: `(-pi/2, pi/2)`).
 
-# Fields & Arguments
+# Struct Fields
+- `r0::AbstractFloat`: Radius of the sphere in (m).
+- `h::Vector{AbstractFloat}`: Heights of the individual radial layers in (m).
+- `N_r::Int64`: Number of grid elements in the radial direction.
+- `N_lon::Vector{Int64}`: Number of grid elements in the longitude direction per latitude.
+- `N_lat::Int64`: Number of grid elements in the latitude direction.
+- `coords::Vector{GlobalSphericalPosition{AbstractFloat}}`: Coordinates of the grid elements.
+- `areas::Vector{AbstractFloat}`: Surface areas of the grid elements in (m2).
+- `volumes::Vector{AbstractFloat}`: Volumes of the grid elements in (m3).
+- `lonrange::Tuple{AbstractFloat, AbstractFloat}`: Longitude range of the grid.
+- `latrange::Tuple{AbstractFloat, AbstractFloat}`: Latitude range of the grid.
 
-| Field      | Type; with `T<:AbstractFloat`        | Description                       |
-|:---------- |:------------------------------------ |:--------------------------------- |
-| `r0`       | `T`                                  | radius of global body (sphere)    |
-| `h`        | `Vector{T}`                          | heights above radial base `r0`    |
-| `N_r`      | `Int64`                              | # elements in radial direction    |
-| `N_lon`    | `Int64`                              | # elements in azimuth direction   |
-| `N_lat`    | `Int64`                              | # elements in elevation direction |
-| `coords`   | `Vector{GlobalSphericalPosition{T}}` | coordinates                       |
-| `areas`    | `Vector{T}`                          | surface area                      |
-| `volumes`  | `Vector{T}`                          | volumes                           |
-| `lonrange` | `Tuple{T, T}`                        | longitude range                   |
-| `latrange` | `Tuple{T, T}`                        | latitude range                    |
+# Notes
+- The radial position/coordinate of each grid element is located at the bottom/base of
+  each cell.
+- To ensure expected behavior, the grid object should generally be created with the outer 
+  constructors.
+- The grid is reduced in the azimuth direction to have approximately equal 
+  `(lonrange[2]-lonrange[1])*r*cos(lat)/N_lon` grid element lengths.
 """
 struct Spherical3DGrid_Reduced{T<:AbstractFloat} <: AbstractSpherical3DGrid
     r0::T
@@ -305,30 +324,45 @@ end
 
 """
     struct Spherical3DGrid_Reduced_EqSim{T} <: AbstractSpherical3DGrid
-    Spherical3DGrid_Reduced_EqSim([T], r0, h, N_lat)
-    Spherical3DGrid_Reduced_EqSim([T], r, N_lat)
+    Spherical3DGrid_Reduced_EqSim([T], r, [h,] N_lat; kwargs...)
 
-Global structured volume grid (3D) of type `GlobalSphericalPosition{T}` over a sphere of
-radius `r0` with heights of the individual radial layers `h`. Alternatively, the radial
-distances can directly be specified by `r` (`r = r0 .+ h`). Note that all heights have
-to be positive. The grid is reduced in the azimuth direction to have approximately equal
-`2*pi*r*cos(lat)/N_lon` grid element lengths.
+Global, structured, reduced, equatorially symmetric volume grid (3D) of type 
+`GlobalSphericalPosition{T}` over a sphere of radius `r` with heights of the individual 
+radial layers `h`. Alternatively, the radial distances can directly be specified by a vector 
+of radial coordinates `r`. 
 
-| Field      | Type; with `T<:AbstractFloat`        | Description                       |
-|:---------- |:------------------------------------ |:--------------------------------- |
-| `r0`       | `T`                                  | radius of global body (sphere)    |
-| `h`        | `Vector{T}`                          | heights above radial base `r0`    |
-| `N_r`      | `Int64`                              | # elements in radial direction    |
-| `N_lon`    | `Int64`                              | # elements in azimuth direction   |
-| `N_lat`    | `Int64`                              | # elements in elevation direction |
-| `coords`   | `Vector{GlobalSphericalPosition{T}}` | coordinates                       |
-| `areas`    | `Vector{T}`                          | surface area                      |
-| `volumes`  | `Vector{T}`                          | volumes                           |
-| `lonrange` | `Tuple{T, T}`                        | longitude range                   |
-| `latrange` | `Tuple{T, T}`                        | latitude range                    |
+# Arguments
+- `T::Type{<:AbstractFloat}`: (optional) Floating point type for the grid.
+- `r::Real` or `r::AbstractVector{<:Real}`: Radius of the base of the sphere, or the vector
+  of radial positions of the grid elements in (m).
+- `h::AbstractVector{<:Real}`: (optional) Heights of the individual radial layers in (m). 
+  Must be positive. Can only be used with a scalar `r`.
+- `N_lat::Integer`: Number of grid elements in the latitude direction.
 
-To ensure expected behavior, the grid object should generally be created with the outer
-constructors [2] or [3].
+# Keyword Arguments
+- `lonrange::Tuple{Real, Real}`: (optional) Longitude range of the grid (default: `(-pi, pi)`).
+- `latmax::Real`: (optional) Maximum latitude of the grid (default: `pi/2`).
+
+# Struct Fields
+- `r0::AbstractFloat`: Radius of the sphere in (m).
+- `h::Vector{AbstractFloat}`: Heights of the individual radial layers in (m).
+- `N_r::Int64`: Number of grid elements in the radial direction.
+- `N_lon::Vector{Int64}`: Number of grid elements in the longitude direction per latitude.
+- `N_lat::Int64`: Number of grid elements in the latitude direction.
+- `coords::Vector{GlobalSphericalPosition{AbstractFloat}}`: Coordinates of the grid
+  elements.
+- `areas::Vector{AbstractFloat}`: Surface areas of the grid elements in (m2).
+- `volumes::Vector{AbstractFloat}`: Volumes of the grid elements in (m3).
+- `lonrange::Tuple{AbstractFloat, AbstractFloat}`: Longitude range of the grid.
+- `latrange::Tuple{AbstractFloat, AbstractFloat}`: Latitude range of the grid.
+
+# Notes
+- The radial position/coordinate of each grid element is located at the bottom/base of
+  each cell.
+- To ensure expected behavior, the grid object should generally be created with the outer
+  constructors.
+- The grid is reduced in the azimuth direction to have approximately equal
+  `2*pi*r*cos(lat)/N_lon` grid element lengths.
 """
 struct Spherical3DGrid_Reduced_EqSim{T<:AbstractFloat} <: AbstractSpherical3DGrid
     r0::T
