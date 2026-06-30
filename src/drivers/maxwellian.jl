@@ -2,15 +2,18 @@
 #::. STRUCTS
 ############################################################################################
 """
-    [1] MBAzimuthDistribution{S<:AbstractFloat}
-    [2] MBAzimuthDistribution(T::Real, m::Real)
+    MBAzimuthDistribution(T, m)
 
-Custom struct defining a (3D) Maxwell-Boltzmann azimuth angle distribution. Uses the
-temperature `T` in K and the mass `m` in kg as inputs.
+Custom struct defining a (3D) Maxwell-Boltzmann azimuth angle distribution, based on the 
+temperature `T` in (K) and the mass `m` in (kg).
 
-The lower and upper bounds of the distribution are `-pi` and `pi`, respectively.
+# Arguments
+- `T::Real`: Temperature (K)
+- `m::Real`: Mass (kg)
 
-**Defined Methods**: `rand`, `cdf`, `pdf`
+# Notes
+- The lower and upper bounds of the distribution are `-pi` and `pi`, respectively.
+- Defined Methods: `rand`, `cdf`, `pdf`
 """
 struct MBAzimuthDistribution{S<:AbstractFloat} <: AbstractDistribution; T::S; m::S; end
 MBAzimuthDistribution(T::Real, m::Real) = MBAzimuthDistribution(promote(T, m)...)
@@ -18,15 +21,18 @@ MBAzimuthDistribution(T::Integer, m::Integer) = MBAzimuthDistribution(promote(T,
 
 
 """
-    [1] MBFluxAzimuthDistribution{S<:AbstractFloat}
-    [2] MBFluxAzimuthDistribution(T::Real, m::Real)
+    MBFluxAzimuthDistribution(T, m)
 
-Custom struct defining a (3D) Maxwell-Boltzmann flux azimuth angle distribution. Uses the
-temperature `T` in K and the mass `m` in kg as inputs.
+Custom struct defining a (3D) Maxwell-Boltzmann flux azimuth angle distribution, based on
+the temperature `T` in (K) and the mass `m` in (kg).
 
-The lower and upper bounds of the distribution are `-pi` and `pi`, respectively.
+# Arguments
+- `T::Real`: Temperature (K)
+- `m::Real`: Mass (kg)
 
-**Defined Methods**: `rand`, `cdf`, `pdf`
+# Notes
+- The lower and upper bounds of the distribution are `-pi` and `pi`, respectively.
+- Defined Methods: `rand`, `cdf`, `pdf`
 """
 struct MBFluxAzimuthDistribution{S<:AbstractFloat} <: AbstractDistribution; T::S; m::S; end
 MBFluxAzimuthDistribution(T::Real, m::Real) = MBFluxAzimuthDistribution(promote(T, m)...)
@@ -34,15 +40,18 @@ MBFluxAzimuthDistribution(T::Integer, m::Integer) = MBFluxAzimuthDistribution(pr
 
 
 """
-    [1] MBElevationDistribution{S<:AbstractFloat}
-    [2] MBElevationDistribution(T::Real, m::Real)
+    MBElevationDistribution(T, m)
 
-Custom struct defining a (3D) Maxwell-Boltzmann elevation angle distribution. Uses the
-temperature `T` in K and the mass `m` in kg as inputs.
+Custom struct defining a (3D) Maxwell-Boltzmann elevation angle distribution, based on the
+temperature `T` in (K) and the mass `m` in (kg).
 
-The lower and upper bounds of the distribution are `-pi/2` and `pi/2`, respectively.
+# Arguments
+- `T::Real`: Temperature (K)
+- `m::Real`: Mass (kg)
 
-**Defined Methods**: `rand`, `cdf`, `pdf`
+# Notes
+- The lower and upper bounds of the distribution are `-pi/2` and `pi/2`, respectively.
+- Defined Methods: `rand`, `cdf`, `pdf`
 """
 struct MBElevationDistribution{S<:AbstractFloat} <: AbstractDistribution; T::S; m::S; end
 MBElevationDistribution(T::Real, m::Real) = MBElevationDistribution(promote(T, m)...)
@@ -50,15 +59,18 @@ MBElevationDistribution(T::Integer, m::Integer) = MBElevationDistribution(promot
 
 
 """
-    [1] MBFluxElevationDistribution{S<:AbstractFloat}
-    [2] MBFluxElevationDistribution(T::Real, m::Real)
+    MBFluxElevationDistribution(T, m)
 
-Custom struct defining a (3D) Maxwell-Boltzmann flux elevation angle distribution. Uses the
-temperature `T` in K and the mass `m` in kg as inputs.
+Custom struct defining a (3D) Maxwell-Boltzmann flux elevation angle distribution, based on
+the temperature `T` in (K) and the mass `m` in (kg).
 
-The lower and upper bounds of the distribution are `0` and `pi/2`, respectively.
+# Arguments
+- `T::Real`: Temperature (K)
+- `m::Real`: Mass (kg)
 
-**Defined Methods**: `rand`, `cdf`, `pdf`
+# Notes
+- The lower and upper bounds of the distribution are `0` and `pi/2`, respectively.
+- Defined Methods: `rand`, `cdf`, `pdf`
 """
 struct MBFluxElevationDistribution{S<:AbstractFloat} <: AbstractDistribution; T::S; m::S; end
 MBFluxElevationDistribution(T::Real, m::Real) = MBFluxElevationDistribution(promote(T, m)...)
@@ -66,15 +78,18 @@ MBFluxElevationDistribution(T::Integer, m::Integer) = MBFluxElevationDistributio
 
 
 """
-    [1] MBSpeedDistribution{S<:AbstractFloat}
-    [2] MBSpeedDistribution(T::Real, m::Real)
+    MBSpeedDistribution(T, m)
 
-Custom struct defining a (3D) Maxwell-Boltzmann speed distribution. Uses the temperature
-`T` in K and the mass `m` in kg as inputs.
+Custom struct defining a (3D) Maxwell-Boltzmann speed distribution, based on the
+temperature `T` in (K) and the mass `m` in (kg).
 
-The lower and upper bounds of the distribution are `0` and `Inf`, respectively.
+# Arguments
+- `T::Real`: Temperature (K)
+- `m::Real`: Mass (kg)
 
-**Defined Methods**: `rand`, `cdf`, `pdf`
+# Notes
+- The lower and upper bounds of the distribution are `0` and `Inf`, respectively.
+- Defined Methods: `rand`, `cdf`, `pdf`
 """
 struct MBSpeedDistribution{S<:AbstractFloat} <: AbstractDistribution; T::S; m::S; end
 MBSpeedDistribution(T::Real, m::Real) = MBSpeedDistribution(promote(T, m)...)
@@ -82,15 +97,18 @@ MBSpeedDistribution(T::Integer, m::Integer) = MBSpeedDistribution(promote(T, m, 
 
 
 """
-    [1] MBFluxSpeedDistribution{S<:AbstractFloat}
-    [2] MBFluxSpeedDistribution(T::Real, m::Real)
+    MBFluxSpeedDistribution(T, m)
 
-Custom struct defining a (3D) Maxwell-Boltzmann flux speed distribution. Uses the
-temperature `T` in K and the mass `m` in kg as inputs.
+Custom struct defining a (3D) Maxwell-Boltzmann flux speed distribution, based on the
+temperature `T` in (K) and the mass `m` in (kg).
 
-The lower and upper bounds of the distribution are `0` and `Inf`, respectively.
+# Arguments
+- `T::Real`: Temperature (K)
+- `m::Real`: Mass (kg)
 
-**Defined Methods**: `rand`, `cdf`, `pdf`
+# Notes
+- The lower and upper bounds of the distribution are `0` and `Inf`, respectively.
+- Defined Methods: `rand`, `cdf`, `pdf`
 """
 struct MBFluxSpeedDistribution{S<:AbstractFloat} <: AbstractDistribution; T::S; m::S; end
 MBFluxSpeedDistribution(T::Real, m::Real) = MBFluxSpeedDistribution(promote(T, m)...)
@@ -98,16 +116,19 @@ MBFluxSpeedDistribution(T::Integer, m::Integer) = MBFluxSpeedDistribution(promot
 
 
 """
-    [1] MBVelocityDistribution{S<:AbstractFloat}
-    [2] MBVelocityDistribution(T::Real, m::Real)
+    MBVelocityDistribution(T, m)
 
-Custom struct defining a (3D) Maxwell-Boltzmann velocity distribution. Uses the temperature
-`T` in K and the mass `m` in kg as inputs.
+Custom struct defining a (3D) Maxwell-Boltzmann velocity distribution, based on the
+temperature `T` in (K) and the mass `m` in (kg).
 
-The lower and upper bounds of the distribution are `(-Inf, -Inf, 0)` and
-`(Inf, Inf, Inf)`, respectively.
+# Arguments
+- `T::Real`: Temperature (K)
+- `m::Real`: Mass (kg)
 
-**Defined Methods**: `rand`, `cdf`, `pdf`
+# Notes
+- The lower and upper bounds of the distribution are `(-Inf, -Inf, 0)` and
+  `(Inf, Inf, Inf)`, respectively.
+- Defined Methods: `rand`, `cdf`, `pdf`
 """
 struct MBVelocityDistribution{S<:AbstractFloat} <: AbstractDistribution; T::S; m::S; end
 MBVelocityDistribution(T::Real, m::Real) = MBVelocityDistribution(promote(T, m)...)
@@ -115,16 +136,19 @@ MBVelocityDistribution(T::Integer, m::Integer) = MBVelocityDistribution(promote(
 
 
 """
-    [1] MBFluxVelocityDistribution{S<:AbstractFloat}
-    [2] MBFluxVelocityDistribution(T::Real, m::Real)
+    MBFluxVelocityDistribution(T, m)
 
-Custom struct defining a (3D) Maxwell-Boltzmann flux velocity distribution. Uses the
-temperature `T` in K and the mass `m` in kg as inputs.
+Custom struct defining a (3D) Maxwell-Boltzmann flux velocity distribution, based on the
+temperature `T` in (K) and the mass `m` in (kg).
 
-The lower and upper bounds of the distribution are `(-Inf, -Inf, 0)` and
-`(Inf, Inf, Inf)`, respectively.
+# Arguments
+- `T::Real`: Temperature (K)
+- `m::Real`: Mass (kg)
 
-**Defined Methods**: `rand`, `cdf`, `pdf`
+# Notes
+- The lower and upper bounds of the distribution are `(-Inf, -Inf, 0)` and
+  `(Inf, Inf, Inf)`, respectively.
+- Defined Methods: `rand`, `cdf`, `pdf`
 """
 struct MBFluxVelocityDistribution{S<:AbstractFloat} <: AbstractDistribution; T::S; m::S; end
 MBFluxVelocityDistribution(T::Real, m::Real) = MBFluxVelocityDistribution(promote(T, m)...)
@@ -202,13 +226,23 @@ end
 
 
 
+mode(::MBAzimuthDistribution{S}) where {S<:AbstractFloat} = zero(S)
+mode(::MBFluxAzimuthDistribution{S}) where {S<:AbstractFloat} = zero(S)
+# mode(::MBElevationDistribution{S}) where {S<:AbstractFloat} = zero(S)
+# mode(::MBFluxElevationDistribution{S}) where {S<:AbstractFloat} = S(pi/4)
 function mode(d::MBSpeedDistribution{S}) where {S<:AbstractFloat}
     return S(sqrt(2 * BOLTZMANN_CONSTANT * d.T / d.m))
 end
 function mode(d::MBFluxSpeedDistribution{S}) where {S<:AbstractFloat}
     return S(sqrt(3 * BOLTZMANN_CONSTANT * d.T / d.m))
 end
-# TODO: add mode value calculation for the other distributions
+# function mode(d::MBVelocityDistribution{S}) where {S<:AbstractFloat}
+#     return (mode(MBSpeedDistribution(d.T, d.m)), zero(S), zero(S))
+# end
+# function mode(d::MBFluxVelocityDistribution{S}) where {S<:AbstractFloat}
+#     v = mode(MBFluxSpeedDistribution(d.T, d.m)) * S(inv(sqrt(2)))
+#     return (v, zero(S), v)
+# end
 
 
 
