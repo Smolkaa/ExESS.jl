@@ -28,21 +28,23 @@ as the trajectory.
 end of the time span is reached.
 """
 function trajectory(x0::NTuple{3, T}, v0::NTuple{3, T}; ddx::Function=ddx_gravity,
-        alg=Tsit5(), rmin::Real=LUNAR_RADIUS, rmax::Real=1e9, tspan::Tuple=(0f0,1f10),
+        alg=Tsit5(), rmin::Real=LUNAR_RADIUS, rmax::Real=1e9, tspan::Tuple=(0e0,1e10),
         kwargs...) where {T<:AbstractFloat}
 
     # input checks and conversions
     @assert norm(x0) > rmin "Starting position `x0` must be greater than `rmin`!"
-    x0, v0 = SA[collect(x0)...], SA[collect(v0)...]
+    x, v = promote(float.(SVector{3}(x0)), float.(SVector{3}(v0)),)
 
     # set up of the 2nd-order ODE problem
-    function _f(du, u, p, t); return SA[ddx(u, du)...]; end
-    prob = SecondOrderODEProblem(_f, v0, x0, tspan)
+    function _f(du, u, p, t); return SVector{3}(ddx(u, du)); end
+    prob = SecondOrderODEProblem(_f, v, x, tspan)
 
-    # set up of event handling callbacks
+    # set up of event handling callbacks-
     function condition(out,u,t,integrator)
-        out[1] = norm(u[4:6]) - rmin # terminate if ground is intersected
-        out[2] = rmax - norm(u[4:6]) # terminate if particle escapes
+        r = norm(u.x[2])
+        out[1] = r - rmin # terminate if ground is intersected
+        out[2] = rmax - r # terminate if particle escapes
+        return nothing
     end
     affect!(integrator, idx) = terminate!(integrator)
     cb = VectorContinuousCallback(condition, affect!, 2; save_positions=(false,true))

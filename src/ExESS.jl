@@ -12,7 +12,7 @@ using Interpolations: BSpline, Flat, interpolate, Linear, linear_interpolation
 using LinearAlgebra
 using NearestNeighbors: KDTree, knn
 using SpecialFunctions
-using StaticArrays: SA
+using StaticArrays: SVector
 using Statistics
 
 
