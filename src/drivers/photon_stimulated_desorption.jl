@@ -29,10 +29,7 @@ struct PSDSpeedDistribution{S<:AbstractFloat} <: AbstractDistribution
     T::S; m::S; v0::S; k::S
 end
 function PSDSpeedDistribution(T::Real, m::Real, v0::Real, k::Real)
-    return PSDSpeedDistribution(promote(T, m, v0, k)...)
-end
-function PSDSpeedDistribution(T::Integer, m::Integer, v0::Integer, k::Integer)
-    return PSDSpeedDistribution(float(T), float(m), float(v0), float(k))
+    return PSDSpeedDistribution(map(float, promote(T, m, v0, k))...)
 end
 function PSDSpeedDistribution(T::Real, m::Real)
     return PSDSpeedDistribution(promote(T, m, 575, 1.7f0)...)

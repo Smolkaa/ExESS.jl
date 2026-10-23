@@ -22,13 +22,11 @@ constant `k_B`, and Planck's constant `h`.
 function arrhenius(A::S, T::S, Ea::S) where {S<:AbstractFloat}
     return S(A * exp(- Ea / (BOLTZMANN_CONSTANT * T)))
 end
-arrhenius(A::Real, T::Real, Ea::Real) = arrhenius(promote(A, T, Ea)...)
-arrhenius(A::Integer, T::Integer, Ea::Integer) = arrhenius(promote(A, T, Ea, 1.0)[1:3]...)
+arrhenius(A::Real, T::Real, Ea::Real) = arrhenius(map(float, promote(A, T, Ea))...)
 function arrhenius(T::S, Ea::S) where {S<:AbstractFloat}
     return arrhenius(S(BOLTZMANN_CONSTANT * T / PLANCK_CONSTANT), T, Ea)
 end
-arrhenius(T::Real, Ea::Real) = arrhenius(promote(T, Ea)...)
-arrhenius(T::Integer, Ea::Integer) = arrhenius(promote(T, Ea, 1.0)[1:2]...)
+arrhenius(T::Real, Ea::Real) = arrhenius(map(float, promote(T, Ea))...)
 arrhenius(S::Type{<:AbstractFloat}, args...) = S(arrhenius(args...))
 
 
@@ -58,10 +56,7 @@ the Arrhenius law. See the function `arrhenius` for more information.
   Icarus, 379, 114979. doi: 10.1016/j.icarus.2022.114979
 """
 diffusion_time(h::S, D0::S, T::S, E::S) where {S<:AbstractFloat} = arrhenius(h^2 / D0, T, -E)
-diffusion_time(h::Real, D0::Real, T::Real, E::Real) = diffusion_time(promote(h, D0, T, E)...)
-function diffusion_time(h::Integer, D0::Integer, T::Integer, E::Integer)
-    return diffusion_time(promote(h, D0, T, E, 1.0)[1:4]...)
-end
+diffusion_time(h::Real, D0::Real, T::Real, E::Real) = diffusion_time(map(float, promote(h, D0, T, E))...)
 diffusion_time(S::Type{<:AbstractFloat}, args...) = S(diffusion_time(args...))
 
 

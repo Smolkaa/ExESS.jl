@@ -26,8 +26,7 @@ The distribution is to be used with the statistic functions:
   `N` samples in a `Vector` of `S`.
 """
 struct EqualSurfaceDistribution{S<:AbstractFloat} <: AbstractDistribution; r::S; end
-EqualSurfaceDistribution(r::Integer) = EqualSurfaceDistribution(Float64(r))
-EqualSurfaceDistribution(r::BigInt) = EqualSurfaceDistribution(BigFloat(r))
+EqualSurfaceDistribution(r::Integer) = EqualSurfaceDistribution(float(r))
 
 
 """
@@ -56,8 +55,7 @@ The distribution is to be used with the statistic functions:
   it will return `N` samples in a `Vector` of `S`.
 """
 struct SolarSurfaceDistribution{S<:AbstractFloat} <: AbstractDistribution; r::S; end
-SolarSurfaceDistribution(r::Integer) = SolarSurfaceDistribution(Float64(r))
-SolarSurfaceDistribution(r::BigInt) = SolarSurfaceDistribution(BigFloat(r))
+SolarSurfaceDistribution(r::Integer) = SolarSurfaceDistribution(float(r))
 
 
 
