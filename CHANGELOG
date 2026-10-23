@@ -4,6 +4,7 @@
 
 - HOUSEKEEPING: Adjusted docstrings to match new format.
   - `escape_velocity`
+  - multiple functions and structs in `vectors.jl`
 - FEATURE: added `rand(GlobalCartesianPosition, EqualSurfaceDistribution(r), [N])`
   functionality as a shorthand version of casting the type outside of the `rand` call.
   Similarly, this also works for `SolarSurfaceDistribution`.

@@ -11,10 +11,7 @@ struct GlobalCartesianPosition{T<:AbstractFloat} <: AbstractPosition{T}
     z::T
 end
 function GlobalCartesianPosition(x::Real, y::Real, z::Real)
-    GlobalCartesianPosition(promote(x, y, z)...)
-end
-function GlobalCartesianPosition(x::Integer, y::Integer, z::Integer)
-    GlobalCartesianPosition(promote(x, y, z, 1.0)[1:3]...)
+    GlobalCartesianPosition(map(float, promote(x, y, z)))
 end
 
 struct LocalCartesianPosition{T<:AbstractFloat} <: AbstractPosition{T}
@@ -23,10 +20,7 @@ struct LocalCartesianPosition{T<:AbstractFloat} <: AbstractPosition{T}
     z::T
 end
 function LocalCartesianPosition(x::Real, y::Real, z::Real)
-    LocalCartesianPosition(promote(x, y, z)...)
-end
-function LocalCartesianPosition(x::Integer, y::Integer, z::Integer)
-    LocalCartesianPosition(promote(x, y, z, 1.0)[1:3]...)
+    LocalCartesianPosition(map(float, promote(x, y, z)))
 end
 
 struct GlobalSphericalPosition{T<:AbstractFloat} <: AbstractPosition{T}
@@ -35,10 +29,7 @@ struct GlobalSphericalPosition{T<:AbstractFloat} <: AbstractPosition{T}
     phi::T
 end
 function GlobalSphericalPosition(r::Real, theta::Real, phi::Real)
-    GlobalSphericalPosition(promote(r, theta, phi)...)
-end
-function GlobalSphericalPosition(r::Integer, theta::Integer, phi::Integer)
-    GlobalSphericalPosition(promote(r, theta, phi, 1.0)[1:3]...)
+    GlobalSphericalPosition(map(float, promote(r, theta, phi)))
 end
 
 struct GlobalCartesianVelocity{T<:AbstractFloat} <: AbstractVelocity{T}
@@ -47,10 +38,7 @@ struct GlobalCartesianVelocity{T<:AbstractFloat} <: AbstractVelocity{T}
     z::T
 end
 function GlobalCartesianVelocity(x::Real, y::Real, z::Real)
-    GlobalCartesianVelocity(promote(x, y, z)...)
-end
-function GlobalCartesianVelocity(x::Integer, y::Integer, z::Integer)
-    GlobalCartesianVelocity(promote(x, y, z, 1.0)[1:3]...)
+    GlobalCartesianVelocity(map(float, promote(x, y, z)))
 end
 
 struct LocalCartesianVelocity{T<:AbstractFloat} <: AbstractVelocity{T}
@@ -59,10 +47,7 @@ struct LocalCartesianVelocity{T<:AbstractFloat} <: AbstractVelocity{T}
     z::T
 end
 function LocalCartesianVelocity(x::Real, y::Real, z::Real)
-    LocalCartesianVelocity(promote(x, y, z)...)
-end
-function LocalCartesianVelocity(x::Integer, y::Integer, z::Integer)
-    LocalCartesianVelocity(promote(x, y, z, 1.0)[1:3]...)
+    LocalCartesianVelocity(map(float, promote(x, y, z)))
 end
 
 
@@ -96,18 +81,21 @@ const AbstractSphericalVector = Union{
 #::. FUNCTIONS
 ############################################################################################
 """
-    [1] GlobalCartesianPosition(x::Real, y::Real, z::Real)
-    [2] GlobalCartesianPosition(X::Tuple)
-    [3] GlobalCartesianPosition(X::AbstractVector)
-    [4] GlobalCartesianPosition(x::AbstractGlobalPosition)
+    GlobalCartesianPosition(x, y, z)
+    GlobalCartesianPosition(X)
 
-Three dimensional, global, cartesian position vector [1].
-Converts tuples, vector or other position type into `GlobalCartesianPosition` [2,3,4].
+Three-dimensional, global Cartesian position vector.
+Converts tuples, vectors, or other global position types to `GlobalCartesianPosition`.
 
-In a planetary context, global cartesian coordinates are defined as follows:
-- the x-axis points towards the Sun (from the central body's center to the subsolar point)
-- the y-axis points towards the positive longitude (east)
-- the z-axis points towards the positive latitude (north), completing the coordinate system
+# Arguments
+- `x::Real`, `y::Real`, `z::Real`: Cartesian position components.
+- `X::Tuple` or `X::AbstractVector` or `X::AbstractGlobalPosition`: Position to convert.
+
+# Notes
+In a planetary context, global Cartesian coordinates are defined as follows:
+- The x-axis points towards the Sun (from the central body's center to the subsolar point).
+- The y-axis points towards positive longitude (east).
+- The z-axis points towards positive latitude (north), completing the coordinate system.
 """
 GlobalCartesianPosition(X::Tuple) = GlobalCartesianPosition(X...)
 GlobalCartesianPosition(X::AbstractVector) = GlobalCartesianPosition(X...)
@@ -122,17 +110,20 @@ end
 
 
 """
-    [1] LocalCartesianPosition(x::Real, y::Real, z::Real)
-    [2] LocalCartesianPosition(X::Tuple)
-    [3] LocalCartesianPosition(X::AbstractVector)
-    [4] LocalCartesianPosition(x::AbstractLocalPosition)
+    LocalCartesianPosition(x, y, z)
+    LocalCartesianPosition(X)
 
-Three dimensional, local, cartesian position vector [1].
-Converts tuples, vector or other position type into `LocalCartesianPosition` [2,3,4].
+Three-dimensional, local Cartesian position vector.
+Converts tuples, vectors, or other local position types to `LocalCartesianPosition`.
 
-Local cartesian coordinates are defined as follows:
-- the x- and y-axis are spanning the tangent plane at the given position
-- the z-axis is pointing upwards
+# Arguments
+- `x::Real`, `y::Real`, `z::Real`: Cartesian position components.
+- `X::Tuple` or `X::AbstractVector` or `X::AbstractLocalPosition`: Position to convert.
+
+# Notes
+Local Cartesian coordinates are defined as follows:
+- The x- and y-axes span the tangent plane at the given position.
+- The z-axis points upwards.
 """
 LocalCartesianPosition(X::Tuple) = LocalCartesianPosition(X...)
 LocalCartesianPosition(X::AbstractVector) = LocalCartesianPosition(X...)
@@ -140,20 +131,21 @@ LocalCartesianPosition(x::LocalCartesianPosition) = x
 
 
 """
-    [1] GlobalSphericalPosition(r::Real, theta::Real, phi::Real)
-    [2] GlobalSphericalPosition(X::Tuple)
-    [3] GlobalSphericalPosition(X::AbstractVector)
-    [4] GlobalSphericalPosition(x::AbstractGlobalPosition)
+    GlobalSphericalPosition(r, theta, phi)
+    GlobalSphericalPosition(X)
 
-Three dimensional, global, spherical position vector [1].
-Converts tuples, vector or other position type into `GlobalSphericalPosition` [2,3,4].
+Three-dimensional, global spherical position vector.
+Converts tuples, vectors, or other global position types to `GlobalSphericalPosition`.
 
-In a planetary context, global spherical coordinates are defined as follows:
-- the r-axis points towards the Sun (from the central body's center to the subsolar point)
-- the theta-angle describes positive longitudes (east)
-- the phi-angle describes positive latitudes (north)
+# Arguments
+- `r::Real`: Radial distance from the central body's center.
+- `theta::Real`: Longitude angle (rad), positive towards the east.
+- `phi::Real`: Latitude angle (rad), positive towards the north.
+- `X::Tuple` or `X::AbstractVector` or `X::AbstractGlobalPosition`: Position to convert.
 
-The subsolar point is defined as `R, 0, 0` where `R` is the radius of the central body.
+# Notes
+In a planetary context, the subsolar point is defined as `(R, 0, 0)`, where `R` is the
+radius of the central body.
 """
 GlobalSphericalPosition(X::Tuple) = GlobalSphericalPosition(X...)
 GlobalSphericalPosition(X::AbstractVector) = GlobalSphericalPosition(X...)
@@ -170,22 +162,24 @@ end
 
 
 """
-    [1] GlobalCartesianVelocity(x::Real, y::Real, z::Real)
-    [3] GlobalCartesianVelocity(V::Tuple)
-    [4] GlobalCartesianVelocity(V::AbstractVector)
-    [5] GlobalCartesianVelocity(v::GlobalCartesianVelocity)
-    [6] GlobalCartesianVelocity(x::AbstractGlobalPosition, v::AbstractVelocity)
+    GlobalCartesianVelocity(x, y, z)
+    GlobalCartesianVelocity(V)
+    GlobalCartesianVelocity(x, v)
 
-Three dimensional velocity vector in a global cartesian coordinate system [1].
-Converts tuples, vector or other velocity type into `GlobalCartesianVelocity` [2,3,4,5].
+Three-dimensional velocity vector in a global Cartesian coordinate system.
+Converts tuples, vectors, or other velocity types to `GlobalCartesianVelocity`.
 
-In a planetary context, global cartesian coordinates are defined as follows:
-- the x-axis points towards the Sun (from the central body's center to the subsolar point)
-- the y-axis points towards the positive longitude (east)
-- the z-axis points towards the positive latitude (north), completing the coordinate system
+# Arguments
+- `x::Real`, `y::Real`, `z::Real`: Cartesian velocity components.
+- `V::Tuple` or `V::AbstractVector` or `V::GlobalCartesianVelocity`: Velocity to convert.
+- `x::AbstractGlobalPosition`: Position used for the velocity transformation.
+- `v::AbstractVelocity`: Velocity at position `x`.
 
-**Notes**
-- type-stability cannot be guaranteed for integer subtypes of `AbstractGlobalPosition` in [5]
+# Notes
+In a planetary context, global Cartesian coordinates are defined as follows:
+- The x-axis points towards the Sun (from the central body's center to the subsolar point).
+- The y-axis points towards positive longitude (east).
+- The z-axis points towards positive latitude (north), completing the coordinate system.
 """
 GlobalCartesianVelocity(V::Tuple) = GlobalCartesianVelocity(V...)
 GlobalCartesianVelocity(V::AbstractVector) = GlobalCartesianVelocity(V...)
@@ -205,22 +199,24 @@ end
 
 
 """
-    [1] LocalCartesianVelocity(x::Real, y::Real, z::Real)
-    [2] LocalCartesianVelocity(V::Tuple)
-    [3] LocalCartesianVelocity(V::AbstractVector)
-    [4] LocalCartesianVelocity(v::LocalCartesianVelocity)
-    [6] LocalCartesianVelocity(x::AbstractGlobalPosition, v::AbstractVelocity)
+    LocalCartesianVelocity(x, y, z)
+    LocalCartesianVelocity(V)
+    LocalCartesianVelocity(x, v)
 
-Three dimensional velocity vector in a local cartesian coordinate system [1].
-Converts tuples, vector or other velocity type into `LocalCartesianVelocity` [2,3,4,5,6].
+Three-dimensional velocity vector in a local Cartesian coordinate system.
+Converts tuples, vectors, or other velocity types to `LocalCartesianVelocity`.
 
-In planetary contexts, local cartesian coordinates are defined as follows:
-- the x-axis is tangent to the surface, pointing towards positive longitude (east)
-- the y-axis is tangent to the surface, pointing towards positive latitude (north)
-- the z-axis is pointing radially outwards
+# Arguments
+- `x::Real`, `y::Real`, `z::Real`: Cartesian velocity components.
+- `V::Tuple` or `V::AbstractVector` or `V::LocalCartesianVelocity`: Velocity to convert.
+- `x::AbstractGlobalPosition`: Position used for the velocity transformation.
+- `v::AbstractVelocity`: Velocity at position `x`.
 
-**Notes**
-- type-stability cannot be guaranteed for integer subtypes of `AbstractGlobalPosition` in [5]
+# Notes
+In a planetary context, local Cartesian coordinates are defined as follows:
+- The x-axis is tangent to the surface and points towards positive longitude (east).
+- The y-axis is tangent to the surface and points towards positive latitude (north).
+- The z-axis points radially outwards.
 """
 LocalCartesianVelocity(V::Tuple) = LocalCartesianVelocity(V...)
 LocalCartesianVelocity(V::AbstractVector) = LocalCartesianVelocity(V...)
@@ -228,7 +224,7 @@ LocalCartesianVelocity(v::LocalCartesianVelocity) = v
 LocalCartesianVelocity(::AbstractPosition, v::LocalCartesianVelocity) = v
 LocalCartesianVelocity(x::AbstractPosition, v::AbstractVelocity) = LocalCartesianVelocity(GlobalSphericalPosition(x), v)
 function LocalCartesianVelocity(x::GlobalCartesianPosition, v::GlobalCartesianVelocity)
-    xy, xyz = sqrt(x.x^2 + x.y^2), norm(x)
+    xy, xyz = hypot(x.x, x.y), norm(x)
     sintheta, costheta = x.y / xy, x.x / xy
     sinphi, cosphi = x.z / xyz, xy / xyz
     return LocalCartesianVelocity(
@@ -285,8 +281,8 @@ _getphi(a::Union{Tuple, AbstractVector}) = a[3]
 Calculate the azimuth angle in (rad) of the tuple/vector `x`. The optional argument `S` can
 be provided to cast the result to a specific type.
 """
-azimuth(x::Union{Tuple, AbstractVector}) = sgn(x[2]) * acos( x[1] / sqrt(x[1]^2 + x[2]^2) )
-azimuth(x::AbstractCartesianVector) = sgn(x.y) * acos( x.x / sqrt(x.x^2 + x.y^2) )
+azimuth(x::Union{Tuple, AbstractVector}) = sgn(x[2]) * acos( x[1] / hypot(x[1], x[2]) )
+azimuth(x::AbstractCartesianVector) = sgn(x.y) * acos( x.x / hypot(x.x, x.y) )
 azimuth(x::AbstractSphericalVector) = x.theta
 azimuth(S::Type{<:AbstractFloat}, args...) = S(azimuth(args...))
 
@@ -297,8 +293,8 @@ azimuth(S::Type{<:AbstractFloat}, args...) = S(azimuth(args...))
 Calculate the elevation angle in (rad) of the tuple/vector `x`. The optional argument `S`
 can be provided to cast the result to a specific type.
 """
-elevation(x::Union{Tuple, AbstractVector}) = atan(x[3] / sqrt(x[1]^2 + x[2]^2))
-elevation(x::AbstractCartesianVector) = atan(x.z / sqrt(x.x^2 + x.y^2))
+elevation(x::Union{Tuple, AbstractVector}) = atan(x[3] / hypot(x[1], x[2]))
+elevation(x::AbstractCartesianVector) = atan(x.z / hypot(x.x, x.y))
 elevation(x::AbstractSphericalVector) = x.phi
 elevation(S::Type{<:AbstractFloat}, args...) = S(elevation(args...))
 
@@ -362,8 +358,8 @@ be provided to cast the result to a specific type.
 **Notes**
 - the zenith angle is the same-sign `pi/2`-inversion of the elevation angle
 """
-zenith(x::Union{Tuple, AbstractVector}) = atan(sqrt(x[1]^2 + x[2]^2) / x[3])
-zenith(x::AbstractCartesianVector) = atan(sqrt(x.x^2 + x.y^2) / x.z)
+zenith(x::Union{Tuple, AbstractVector}) = atan(hypot(x[1], x[2]) / x[3])
+zenith(x::AbstractCartesianVector) = atan(hypot(x.x, x.y) / x.z)
 zenith(x::AbstractSphericalVector) = pi/2 - x.phi
 zenith(S::Type{<:AbstractFloat}, args...) = S(zenith(args...))
 
@@ -446,8 +442,8 @@ Base.vec(a::T) where {T<:AbstractSphericalVector} = [a.r, a.theta, a.phi]
 LinearAlgebra.dot(a::T, b::S) where {T<:AbstractEVector, S<:AbstractEVector} = a * b
 
 
-LinearAlgebra.norm(a::T) where {T<:AbstractCartesianVector} = sqrt(a.x^2 + a.y^2 + a.z^2)
-LinearAlgebra.norm(x::AbstractSphericalVector) = x.r
+LinearAlgebra.norm(a::T) where {T<:AbstractCartesianVector} = hypot(a.x, a.y, a.z)
+LinearAlgebra.norm(x::AbstractSphericalVector) = abs(x.r)
 # LinearAlgebra.normalize is automatically defined now.
 
 
