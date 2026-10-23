@@ -16,8 +16,8 @@ temperature `T` in (K) and the mass `m` in (kg).
 - Defined Methods: `rand`, `cdf`, `pdf`
 """
 struct MBAzimuthDistribution{S<:AbstractFloat} <: AbstractDistribution; T::S; m::S; end
-MBAzimuthDistribution(T::Real, m::Real) = MBAzimuthDistribution(promote(T, m)...)
-MBAzimuthDistribution(T::Integer, m::Integer) = MBAzimuthDistribution(promote(T, m, 1.0)[1:2]...)
+MBAzimuthDistribution(T::Real, m::Real) = MBAzimuthDistribution(map(float, promote(T, m))...)
+
 
 
 """
@@ -35,8 +35,7 @@ the temperature `T` in (K) and the mass `m` in (kg).
 - Defined Methods: `rand`, `cdf`, `pdf`
 """
 struct MBFluxAzimuthDistribution{S<:AbstractFloat} <: AbstractDistribution; T::S; m::S; end
-MBFluxAzimuthDistribution(T::Real, m::Real) = MBFluxAzimuthDistribution(promote(T, m)...)
-MBFluxAzimuthDistribution(T::Integer, m::Integer) = MBFluxAzimuthDistribution(promote(T, m, 1.0)[1:2]...)
+MBFluxAzimuthDistribution(T::Real, m::Real) = MBFluxAzimuthDistribution(map(float, promote(T, m))...)
 
 
 """
@@ -54,8 +53,7 @@ temperature `T` in (K) and the mass `m` in (kg).
 - Defined Methods: `rand`, `cdf`, `pdf`
 """
 struct MBElevationDistribution{S<:AbstractFloat} <: AbstractDistribution; T::S; m::S; end
-MBElevationDistribution(T::Real, m::Real) = MBElevationDistribution(promote(T, m)...)
-MBElevationDistribution(T::Integer, m::Integer) = MBElevationDistribution(promote(T, m, 1.0)[1:2]...)
+MBElevationDistribution(T::Real, m::Real) = MBElevationDistribution(map(float, promote(T, m))...)
 
 
 """
@@ -73,8 +71,7 @@ the temperature `T` in (K) and the mass `m` in (kg).
 - Defined Methods: `rand`, `cdf`, `pdf`
 """
 struct MBFluxElevationDistribution{S<:AbstractFloat} <: AbstractDistribution; T::S; m::S; end
-MBFluxElevationDistribution(T::Real, m::Real) = MBFluxElevationDistribution(promote(T, m)...)
-MBFluxElevationDistribution(T::Integer, m::Integer) = MBFluxElevationDistribution(promote(T, m, 1.0)[1:2]...)
+MBFluxElevationDistribution(T::Real, m::Real) = MBFluxElevationDistribution(map(float, promote(T, m))...)
 
 
 """
@@ -92,8 +89,7 @@ temperature `T` in (K) and the mass `m` in (kg).
 - Defined Methods: `rand`, `cdf`, `pdf`
 """
 struct MBSpeedDistribution{S<:AbstractFloat} <: AbstractDistribution; T::S; m::S; end
-MBSpeedDistribution(T::Real, m::Real) = MBSpeedDistribution(promote(T, m)...)
-MBSpeedDistribution(T::Integer, m::Integer) = MBSpeedDistribution(promote(T, m, 1.0)[1:2]...)
+MBSpeedDistribution(T::Real, m::Real) = MBSpeedDistribution(map(float, promote(T, m))...)
 
 
 """
@@ -111,8 +107,7 @@ temperature `T` in (K) and the mass `m` in (kg).
 - Defined Methods: `rand`, `cdf`, `pdf`
 """
 struct MBFluxSpeedDistribution{S<:AbstractFloat} <: AbstractDistribution; T::S; m::S; end
-MBFluxSpeedDistribution(T::Real, m::Real) = MBFluxSpeedDistribution(promote(T, m)...)
-MBFluxSpeedDistribution(T::Integer, m::Integer) = MBFluxSpeedDistribution(promote(T, m, 1.0)[1:2]...)
+MBFluxSpeedDistribution(T::Real, m::Real) = MBFluxSpeedDistribution(map(float, promote(T, m))...)
 
 
 """
@@ -131,8 +126,7 @@ temperature `T` in (K) and the mass `m` in (kg).
 - Defined Methods: `rand`, `cdf`, `pdf`
 """
 struct MBVelocityDistribution{S<:AbstractFloat} <: AbstractDistribution; T::S; m::S; end
-MBVelocityDistribution(T::Real, m::Real) = MBVelocityDistribution(promote(T, m)...)
-MBVelocityDistribution(T::Integer, m::Integer) = MBVelocityDistribution(promote(T, m, 1.0)[1:2]...)
+MBVelocityDistribution(T::Real, m::Real) = MBVelocityDistribution(map(float, promote(T, m))...)
 
 
 """
@@ -151,8 +145,7 @@ temperature `T` in (K) and the mass `m` in (kg).
 - Defined Methods: `rand`, `cdf`, `pdf`
 """
 struct MBFluxVelocityDistribution{S<:AbstractFloat} <: AbstractDistribution; T::S; m::S; end
-MBFluxVelocityDistribution(T::Real, m::Real) = MBFluxVelocityDistribution(promote(T, m)...)
-MBFluxVelocityDistribution(T::Integer, m::Integer) = MBFluxVelocityDistribution(promote(T, m, 1.0)[1:2]...)
+MBFluxVelocityDistribution(T::Real, m::Real) = MBFluxVelocityDistribution(map(float, promote(T, m))...)
 
 
 
@@ -260,7 +253,7 @@ end
 function pdf(d::MBFluxSpeedDistribution{S}, x::Real) where {S<:AbstractFloat}
     if d.T == 0; return zero(S); end
     a = d.m / (2 * BOLTZMANN_CONSTANT * d.T)
-    return S(a^2 * x^3 * exp(- a*x^2))
+    return S(2 * a^2 * x^3 * exp(- a*x^2))
 end
 
 function pdf(d::MBVelocityDistribution{S}, x::_TVLCV) where {S<:AbstractFloat}
