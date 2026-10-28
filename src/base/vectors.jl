@@ -152,10 +152,9 @@ GlobalSphericalPosition(X::AbstractVector) = GlobalSphericalPosition(X...)
 GlobalSphericalPosition(x::GlobalSphericalPosition) = x
 function GlobalSphericalPosition(x::GlobalCartesianPosition{T}) where {T<:AbstractFloat}
     r     = norm(x)
-    theta = atan(x.y / x.x)
+    theta = atan(x.y, x.x) # equivalent to atan2(y, x)
     phi   = asin(x.z / r)
     if isnan(theta); theta = 0;    end
-    if x.x < 0;      theta += pi;  end
     if theta > pi;   theta -= 2pi; end
     return GlobalSphericalPosition{T}(r, theta, phi)
 end
